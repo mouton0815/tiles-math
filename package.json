@@ -2,7 +2,7 @@
   "name": "tile-math",
   "version": "1.0.0",
   "description": "Algorithms and data structures for mapping geo coordinates to slippy-map tiles, clustering of adjacent tiles, and finding largest squares included in clusters",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc",

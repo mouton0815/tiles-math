@@ -2,7 +2,9 @@ import { Bounds } from './Bounds'
 import { Centroid } from './Centroid'
 import { tile2coords } from '../algorithms/tile2coords'
 
-/// A square of tiles
+///
+/// A square of tiles.
+///
 export class TileSquare {
     x: number // x coordinate of the tile in the upper-left square corner
     y: number // y coordinate of the tile in the upper-left square corner

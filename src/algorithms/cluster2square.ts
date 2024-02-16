@@ -2,7 +2,9 @@ import { ClusterSquare } from '../containers/ClusterSquare'
 import { TileRectangle } from '../types/TileRectangle'
 import { TileSet } from '../containers/TileSet'
 
+///
 /// Finds the maximum square of tiles included in the tile cluster
+///
 export function cluster2square(cluster: TileSet): ClusterSquare {
     const state = new MergingState()
     for (const x of cluster.getSortedXs()) {

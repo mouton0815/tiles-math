@@ -1,7 +1,9 @@
 import { Bounds } from './Bounds'
 import { tile2coords } from '../algorithms/tile2coords'
 
+///
 /// A map tile compatible with the conventions of https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames.
+///
 export class Tile  {
     x: number
     y: number

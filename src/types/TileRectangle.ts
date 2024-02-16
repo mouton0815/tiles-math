@@ -3,7 +3,9 @@ import { Centroid } from './Centroid'
 import { TileSquare } from './TileSquare'
 import { tile2coords } from '../algorithms/tile2coords'
 
-/// A rectangle of tiles
+///
+/// A rectangle of tiles.
+///
 export class TileRectangle {
     x: number // x coordinate of the tile in the upper-left rectangle corner
     y: number // y coordinate of the tile in the upper-left rectangle corner

@@ -1,7 +1,9 @@
 import { Coords } from './Coords'
 import { tile2coords } from '../algorithms/tile2coords'
 
+///
 /// A point with fractional numbers used for representing centroid in the tiles "coordinate system".
+///
 export class Centroid {
     x: number
     y: number

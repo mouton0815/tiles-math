@@ -6,6 +6,7 @@ import { BoundarySegment } from '../types/BoundarySegment'
 ///
 export class ClusterBoundaries {
     array: Array<BoundaryPolyline>
+
     constructor() {
         this.array = new Array<BoundaryPolyline>()
     }

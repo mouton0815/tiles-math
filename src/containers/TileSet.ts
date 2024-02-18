@@ -4,6 +4,7 @@ import { Centroid } from '../types/Centroid'
 ///
 /// A set of {@link Tile}s stored as columns (x axis) and rows (y axis).
 ///
+// TODO: Use key-sorted Set and Map (and get rid of "toSorted" methods
 export class TileSet {
     tiles: Map<number, Set<number>> // Access-optimized tile storage: Map<x, Set<y>>
     size: number // Number of tiles in this set
@@ -133,6 +134,7 @@ export class TileSet {
     }
 
     /// Selects all tiles with no left neighbor and applies the callback function
+    // TODO: Deprecated
     mapLeft<T>(callback: (tile: Tile, index: number) => T): Array<T> {
         let index = 0
         const results = new Array<T>()
@@ -148,6 +150,7 @@ export class TileSet {
     }
 
     /// Selects all tiles with no right neighbor and applies the callback function
+    // TODO: Deprecated
     mapRight<T>(callback: (tile: Tile, index: number) => T): Array<T> {
         let index = 0
         const results = new Array<T>()
@@ -163,6 +166,7 @@ export class TileSet {
     }
 
     /// Selects all tiles with no neighbor above and applies the callback function
+    // TODO: Deprecated
     mapAbove<T>(callback: (tile: Tile, index: number) => T): Array<T> {
         let index = 0
         const results = new Array<T>()
@@ -177,6 +181,7 @@ export class TileSet {
     }
 
     /// Selects all tiles with no neighbor below and applies the callback function
+    // TODO: Deprecated
     mapBelow<T>(callback: (tile: Tile, index: number) => T): Array<T> {
         let index = 0
         const results = new Array<T>()

@@ -12,24 +12,24 @@ export class ClusterBoundaries {
     }
 
     addUpperEdge(x: number, y: number) {
-        this.prepend(BoundarySegment.fromUpperEdge(x, y))
+        this.#prepend(BoundarySegment.fromUpperEdge(x, y))
     }
 
     addLeftEdge(x: number, y: number) {
-        this.append(BoundarySegment.fromLeftEdge(x, y))
+        this.#append(BoundarySegment.fromLeftEdge(x, y))
     }
 
     addLowerEdge(x: number, y: number) {
-        this.append(BoundarySegment.fromLowerEdge(x, y))
+        this.#append(BoundarySegment.fromLowerEdge(x, y))
     }
 
     addRightEdge(x: number, y: number) {
-        this.prepend(BoundarySegment.fromRightEdge(x, y))
+        this.#prepend(BoundarySegment.fromRightEdge(x, y))
     }
 
     /// Internal method that searches for a matching polyline start to prepend the segment.
     /// If no such line exits, the method creates a new polyline with the segment.
-    prepend(segment: BoundarySegment) {
+    #prepend(segment: BoundarySegment) {
         for (const boundary of this.array) {
             if (boundary.tryPrepend(segment)) {
                 return
@@ -40,12 +40,19 @@ export class ClusterBoundaries {
 
     /// Internal method that searches for a matching polyline end to append the segment.
     /// If no such line exits, the method creates a new polyline with the segment.
-    append(segment: BoundarySegment) {
+    #append(segment: BoundarySegment) {
         for (const boundary of this.array) {
             if (boundary.tryAppend(segment)) {
                 return
             }
         }
         this.array.push(new BoundaryPolyline(segment))
+    }
+
+    /// Iterates through the polylines in creation order
+    *[Symbol.iterator]() {
+        for (const boundary of this.array) {
+            yield boundary
+        }
     }
 }

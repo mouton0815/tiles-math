@@ -24,16 +24,18 @@ test('boundary-boundaries-outer-inner', () => {
     boundaries.addLowerEdge(3, 3)
     boundaries.addRightEdge(3, 3)
     expect(boundaries.array.length).toBe(2)
+    // Outer boundary
     expect(boundaries.array[0].segments).toEqual([
         BoundarySegment.of(4, 4, 4, 1), // Right segment
         BoundarySegment.of(4, 1, 1, 1), // Upper segment
         BoundarySegment.of(1, 1, 1, 4), // Left segment
         BoundarySegment.of(1, 4, 4, 4), // Lower segment
     ])
+    // Inner boundary
     expect(boundaries.array[1].segments).toEqual([
-        BoundarySegment.of(3, 3, 2, 3), // Upper segment
-        BoundarySegment.of(2, 3, 2, 2), // Right segment
-        BoundarySegment.of(2, 2, 3, 2), // Lower segment
-        BoundarySegment.of(3, 2, 3, 3), // Left segment
+        BoundarySegment.of(3, 3, 2, 3), // Lower segment
+        BoundarySegment.of(2, 3, 2, 2), // Left segment
+        BoundarySegment.of(2, 2, 3, 2), // Upper segment
+        BoundarySegment.of(3, 2, 3, 3), // Right segment
     ])
 })

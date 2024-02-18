@@ -6,6 +6,8 @@ import { Centroid } from '../types/Centroid'
 ///
 // TODO: Use key-sorted Set and Map (and get rid of "toSorted" methods
 export class TileSet {
+    static EMPTY_SET = new Set<number>()
+
     tiles: Map<number, Set<number>> // Access-optimized tile storage: Map<x, Set<y>>
     size: number // Number of tiles in this set
     xSum: number // For calculation ...
@@ -195,9 +197,10 @@ export class TileSet {
         return results
     }
 
-    /// Convenience function
-    toArray(): Array<Tile> {
-        return [...this] // Use *[Symbol.iterator]()
+    /// Returns the set of y coordinates of all tiles with the passed x coordinate.
+    /// The returned set may be empty, but never undefined or null.
+    getYSet(x: number): Set<number> {
+        return this.tiles.get(x) || TileSet.EMPTY_SET
     }
 
     /// Returns all x coordinates of this map in ascending order
@@ -207,7 +210,12 @@ export class TileSet {
 
     /// Returns all y coordinates for x in ascending order
     getSortedYs(x: number): Array<number> {
-        return Array.from(this.tiles.get(x) || new Set<number>()).toSorted()
+        return Array.from(this.tiles.get(x) || TileSet.EMPTY_SET).toSorted()
+    }
+
+    /// Convenience function
+    toArray(): Array<Tile> {
+        return [...this] // Use *[Symbol.iterator]()
     }
 
     /// Iterates through the tiles in insertion order

@@ -1,24 +1,27 @@
 import { TileSet } from '../containers/TileSet'
 import { ClusterBoundaries } from '../containers/ClusterBoundaries'
 
+///
+/// Computes the boundary line(s) of the cluster.
+///
 export function cluster2boundaries(cluster: TileSet): ClusterBoundaries {
     const boundaries = new ClusterBoundaries()
     for (const x of cluster.getSortedXs()) {
-        const ySet = cluster.tiles.get(x) // TODO: Illegal access
+        const ySet = cluster.getYSet(x) // All y coordinates of tiles with x
+        const ySetL = cluster.getYSet(x - 1) // Left neighbors
+        const ySetR = cluster.getYSet(x + 1) // Right neighbors
         for (const y of cluster.getSortedYs(x)) {
             // Check for neighbors counterclockwise
-            if (!ySet || !ySet.has(y - 1)) { // Upper neighbor? // TODO: Could be checked via array index - 1
+            if (!ySet.has(y - 1)) { // Has upper neighbor?
                 boundaries.addUpperEdge(x, y)
             }
-            const ySetLeft = cluster.tiles.get(x - 1)
-            if (!ySetLeft || !ySetLeft.has(y)) { // Left neighbor?
+            if (!ySetL.has(y)) { // Has left neighbor?
                 boundaries.addLeftEdge(x, y)
             }
-            if (!ySet || !ySet.has(y + 1)) { // Lower neighbor? // TODO: Could be checked via array index + 1
+            if (!ySet.has(y + 1)) { // Has lower neighbor?
                 boundaries.addLowerEdge(x, y)
             }
-            const ySetRight = cluster.tiles.get(x + 1)
-            if (!ySetRight || !ySetRight.has(y)) { // Right neighbor?
+            if (!ySetR.has(y)) { // Has right neighbor?
                 boundaries.addRightEdge(x, y)
             }
         }

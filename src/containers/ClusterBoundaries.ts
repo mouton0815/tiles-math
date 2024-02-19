@@ -49,10 +49,20 @@ export class ClusterBoundaries {
         this.array.push(new BoundaryPolyline(segment))
     }
 
+    /// Similar to Array.map() function
+    map<T>(callback: (line: BoundaryPolyline, index: number) => T): Array<T> {
+        let index = 0
+        const results = new Array<T>()
+        for (const line of this) { // Use *[Symbol.iterator]()
+            results.push(callback(line, index++))
+        }
+        return results
+    }
+
     /// Iterates through the polylines in creation order
     *[Symbol.iterator]() {
-        for (const boundary of this.array) {
-            yield boundary
+        for (const line of this.array) {
+            yield line
         }
     }
 }

@@ -8,12 +8,14 @@ and group those tiles in various ways, similar to what
 
 Specifically, `tile-math`
 * maps geo positions (latitude, longitude) to map tiles of a given zoom level,
-* combines adjacent tiles to clusters and selects the largest cluster,
+* combines adjacent tiles to clusters,
+* selects the maximum tile cluster,
+* computes the boundary polyline(s) of a tile cluster,
 * detects the maximum-size square included in a tile cluster,
 * finds all maximum-size rectangles embedded in a cluster,
-* calculates the map coordinates of tiles, clusters, squares, rectangles.  
+* calculates the map coordinates of tiles, clusters, polylines, squares, rectangles.  
 
 The map coordinates calculated for the various artifacts are compatible with Leaflet's
 [LatLng](https://leafletjs.com/reference.html#latlng) and [LatLngBounds](https://leafletjs.com/reference.html#latlngbounds)
-types, and can thus directly used for drawing [Rectangles](https://leafletjs.com/reference.html#rectangle),
-[Polyline](https://leafletjs.com/reference.html#polyline), and similar map overlays.
+types, and can thus directly used for drawing Leaflet [Rectangles](https://leafletjs.com/reference.html#rectangle),
+[Polylines](https://leafletjs.com/reference.html#polyline), and similar map overlays.

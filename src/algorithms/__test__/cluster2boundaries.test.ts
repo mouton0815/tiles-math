@@ -3,6 +3,11 @@ import { TileSet } from '../../containers/TileSet'
 import { Tile } from '../../types/Tile'
 import { cluster2boundaries } from '../cluster2boundaries'
 
+test('cluster2boundaries-empty', () => {
+    const boundaries = cluster2boundaries(new TileSet())
+    expect(boundaries.array.length).toBe(0)
+})
+
 test('cluster2boundaries-inner-outer', () => {
     //     1   2   3   4
     // 1 | x | x | x | x |

@@ -21,7 +21,7 @@ In particular, the map coordinates calculated for the various artifacts are comp
 types, and can thus directly used for drawing Leaflet [Rectangles](https://leafletjs.com/reference.html#rectangle),
 [Polylines](https://leafletjs.com/reference.html#polyline), and similar map overlays.
 
-Repository [???]() shows an example of applying `tile-math` to a (React) Leaflet map.
+Repository [???]() shows an example of applying `tile-math` to a [React Leaflet](https://react-leaflet.js.org) map.
 Red squares represent tiles of zoom level 14 touched by (fake) rides,
 purple regions show smaller clusters (i.e. tiles with four neighbors),
 the blue area depicts the maximum cluster (with the orange circle as its [centroid](https://en.wikipedia.org/wiki/Centroid)),
@@ -34,3 +34,25 @@ it can be used in the browser and in Node servers. The latter is very useful to 
 for all your rides and runs, and then deliver the resulting tile set via API to the browser.
 
 # Installation
+```
+npm install tile-math
+```
+
+# Usage
+## Display a Tile Set created from GPS Positions
+```typescript jsx
+import { Rectangle } from 'react-leaflet'
+import { coords2tile, Coords, TileSet } from 'tile-math'
+
+const zoom = 14 // Zoom level for tile math (14 is the zoom used by VeloViewer and others)
+const coords : Array<Coords> = [[51.335793, 12.371988], ...] // The latitude-longitude pairs or your rides and runs
+const tileSet = new TileSet().addAll(coords.map(latLon => coords2tile(latLon, zoom)))
+
+const App = () => (
+    <div>
+        {tileSet.map((tile, index) => (
+            <Rectangle key={index} bounds={tile.bounds(zoom)} pathOptions={{ color: 'red' }} />
+        ))}
+    </div>
+)
+```

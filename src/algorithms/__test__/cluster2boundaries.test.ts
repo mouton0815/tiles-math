@@ -26,8 +26,7 @@ test('cluster2boundaries-inner-outer', () => {
         Tile.of(4, 1),
         Tile.of(4, 3),
     ])
-    const boundaries = cluster2boundaries(cluster)
-    const array = [...boundaries]
+    const array = [...cluster2boundaries(cluster)]
     expect(array.length).toBe(2)
     // Outer boundary
     expect(array[0].segments).toEqual([
@@ -42,5 +41,49 @@ test('cluster2boundaries-inner-outer', () => {
         BoundarySegment.of(2, 3, 2, 2), // Left segment
         BoundarySegment.of(2, 2, 4, 2), // Upper segment
         BoundarySegment.of(4, 2, 4, 3), // Right segment
+    ])
+})
+
+test('cluster2boundaries-non-connected', () => {
+    // This is not a regular max cluster because tile [3,2] is not connected.
+    // Still the algorithms works and finds complete and unique line segments.
+    //     1   2   3
+    // 1 | x | x |   |
+    // 2 | x |   | x |
+    // 3 | x | x |   |
+    // 4 |   | x | x |
+    const cluster = new TileSet().addAll([ // Insert in 'random' order
+        Tile.of(1, 2),
+        Tile.of(3, 2),
+        Tile.of(3, 4),
+        Tile.of(2, 3),
+        Tile.of(1, 1),
+        Tile.of(2, 1),
+        Tile.of(1, 3),
+        Tile.of(2, 4),
+    ])
+    const array = [...cluster2boundaries(cluster)]
+    expect(array.length).toBe(2)
+    // Outer-left boundary
+    expect(array[0].segments).toEqual([
+        BoundarySegment.of(4, 3, 4, 2), // Right segment
+        BoundarySegment.of(4, 2, 3, 2), // Upper segment (right)
+        BoundarySegment.of(3, 2, 3, 1), // Right segment (upper)
+        BoundarySegment.of(3, 1, 1, 1), // Upper segment
+        BoundarySegment.of(1, 1, 1, 4), // Left segment (upper)
+        BoundarySegment.of(1, 4, 2, 4), // Lower segment (left)
+        BoundarySegment.of(2, 4, 2, 5), // Left segment (lower)
+        BoundarySegment.of(2, 5, 4, 5), // Lower segment (middle)
+    ])
+    // Inner-right boundary (strange but correct behavior of the algorithm :)
+    expect(array[1].segments).toEqual([
+        BoundarySegment.of(4, 5, 4, 4), // Right segment (lower)
+        BoundarySegment.of(4, 4, 3, 4), // Upper segment (lower right)
+        BoundarySegment.of(3, 4, 3, 3), // Right segment (lower inner)
+        BoundarySegment.of(3, 3, 2, 3), // Upper segment (inner)
+        BoundarySegment.of(2, 3, 2, 2), // Right segment (inner)
+        BoundarySegment.of(2, 2, 3, 2), // Upper segment (inner)
+        BoundarySegment.of(3, 2, 3, 3), // Left segment (inner)
+        BoundarySegment.of(3, 3, 4, 3), // Lower segment (right)
     ])
 })

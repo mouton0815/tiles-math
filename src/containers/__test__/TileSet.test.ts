@@ -129,34 +129,6 @@ test('map-with-index', () => {
     expect(results).toEqual([4, 5, 6])
 })
 
-test('mapLeft', () => {
-    const tiles : Array<Tile> = [Tile.of(2, 2), Tile.of(1, 2), Tile.of(1, 1)]
-    const tileSet = new TileSet().addAll(tiles)
-    const results = tileSet.mapLeft(tile => tile.x + tile.y)
-    expect(results).toEqual([3, 2]) // First tile filtered out
-})
-
-test('mapRight', () => {
-    const tiles : Array<Tile> = [Tile.of(2, 2), Tile.of(1, 2), Tile.of(1, 1)]
-    const tileSet = new TileSet().addAll(tiles)
-    const results = tileSet.mapRight(tile => tile.x + tile.y)
-    expect(results).toEqual([4, 2]) // Middle tile filtered out
-})
-
-test('mapAbove', () => {
-    const tiles : Array<Tile> = [Tile.of(2, 2), Tile.of(1, 2), Tile.of(1, 1)]
-    const tileSet = new TileSet().addAll(tiles)
-    const results = tileSet.mapAbove(tile => tile.x + tile.y)
-    expect(results).toEqual([4, 2]) // Middle tile filtered out
-})
-
-test('mapBelow', () => {
-    const tiles : Array<Tile> = [Tile.of(2, 2), Tile.of(1, 2), Tile.of(1, 1)]
-    const tileSet = new TileSet().addAll(tiles)
-    const results = tileSet.mapBelow(tile => tile.x + tile.y)
-    expect(results).toEqual([4, 3]) // Last tile filtered out
-})
-
 test('toArray', () => {
     const tiles : Array<Tile> = [Tile.of(1, 2), Tile.of(2, 1), Tile.of(1, 1)]
     const tileSet = new TileSet().addAll(tiles)

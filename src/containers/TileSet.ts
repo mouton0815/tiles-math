@@ -4,7 +4,7 @@ import { Centroid } from '../types/Centroid'
 ///
 /// A set of {@link Tile}s stored as columns (x axis) and rows (y axis).
 ///
-// TODO: Use key-sorted Set and Map (and get rid of "toSorted" methods
+// TODO: Use key-sorted Set and Map (and get rid of "toSorted" methods)
 export class TileSet {
     static EMPTY_SET = new Set<number>()
 
@@ -66,16 +66,6 @@ export class TileSet {
             yset.forEach(y => this.add(Tile.of(x, y)))
         })
         return this
-        /*
-        for (const [x, otherYSet] of other.map.entries()) {
-            const thisYSet = this.map.get(x)
-            if (thisYSet) {
-                otherYSet.forEach(y => thisYSet.add(y))
-            } else {
-                this.map.set(x, otherYSet)
-            }
-        }
-        */
     }
 
     /// Returns true iff the tile has one neighbor
@@ -131,68 +121,6 @@ export class TileSet {
         const results = new Array<T>()
         for (const tile of this) { // Use *[Symbol.iterator]()
             results.push(callback(tile, index++))
-        }
-        return results
-    }
-
-    /// Selects all tiles with no left neighbor and applies the callback function
-    // TODO: Deprecated
-    mapLeft<T>(callback: (tile: Tile, index: number) => T): Array<T> {
-        let index = 0
-        const results = new Array<T>()
-        for (const [x, ySet] of this.tiles) {
-            const leftYSet = this.tiles.get(x - 1)
-            for (const y of ySet) {
-                if (!leftYSet || !leftYSet.has(y)) {
-                    results.push(callback(Tile.of(x, y), index++))
-                }
-            }
-        }
-        return results
-    }
-
-    /// Selects all tiles with no right neighbor and applies the callback function
-    // TODO: Deprecated
-    mapRight<T>(callback: (tile: Tile, index: number) => T): Array<T> {
-        let index = 0
-        const results = new Array<T>()
-        for (const [x, ySet] of this.tiles) {
-            const rightYSet = this.tiles.get(x + 1)
-            for (const y of ySet) {
-                if (!rightYSet || !rightYSet.has(y)) {
-                    results.push(callback(Tile.of(x, y), index++))
-                }
-            }
-        }
-        return results
-    }
-
-    /// Selects all tiles with no neighbor above and applies the callback function
-    // TODO: Deprecated
-    mapAbove<T>(callback: (tile: Tile, index: number) => T): Array<T> {
-        let index = 0
-        const results = new Array<T>()
-        for (const [x, ySet] of this.tiles) {
-            for (const y of ySet) {
-                if (!ySet.has(y - 1)) {
-                    results.push(callback(Tile.of(x, y), index++))
-                }
-            }
-        }
-        return results
-    }
-
-    /// Selects all tiles with no neighbor below and applies the callback function
-    // TODO: Deprecated
-    mapBelow<T>(callback: (tile: Tile, index: number) => T): Array<T> {
-        let index = 0
-        const results = new Array<T>()
-        for (const [x, ySet] of this.tiles) {
-            for (const y of ySet) {
-                if (!ySet.has(y + 1)) {
-                    results.push(callback(Tile.of(x, y), index++))
-                }
-            }
         }
         return results
     }

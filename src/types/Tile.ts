@@ -17,28 +17,8 @@ export class Tile  {
         return new Tile(x, y)
     }
 
-    /// Bounding box of this tile given a zoom level
+    /// Bounding box of this tile given a zoom level.
     bounds(zoom: number): Bounds {
         return [tile2coords(this.x, this.y, zoom), tile2coords(this.x + 1, this.y + 1, zoom)]
-    }
-
-    /// Left boundary line of the tile
-    leftLine(zoom: number): Bounds {
-        return [tile2coords(this.x, this.y, zoom), tile2coords(this.x, this.y + 1, zoom)]
-    }
-
-    /// Right boundary line of the tile
-    rightLine(zoom: number): Bounds {
-        return [tile2coords(this.x + 1, this.y, zoom), tile2coords(this.x + 1, this.y + 1, zoom)]
-    }
-
-    /// Upper boundary line of the tile
-    upperLine(zoom: number): Bounds {
-        return [tile2coords(this.x, this.y, zoom), tile2coords(this.x + 1, this.y, zoom)]
-    }
-
-    /// Lower boundary line of the tile
-    lowerLine(zoom: number): Bounds {
-        return [tile2coords(this.x, this.y + 1, zoom), tile2coords(this.x + 1, this.y + 1, zoom)]
     }
 }

@@ -26,5 +26,18 @@
   },
   "files": [
     "dist"
+  ],
+  "keywords": [
+    "map",
+    "tile",
+    "slippy map",
+    "slippy tile",
+    "cluster",
+    "clustering",
+    "maximum square",
+    "openstreetmap",
+    "leaflet",
+    "gps",
+    "geospatial"
   ]
 }

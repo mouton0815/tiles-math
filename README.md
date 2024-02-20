@@ -46,10 +46,10 @@ import { Rectangle } from 'react-leaflet'
 import { coords2tile, TileSet } from 'tile-math'
 
 const zoom = 14 // Zoom level for tile math (14 is the zoom used by VeloViewer and others)
-const coords = [[51.335793, 12.371988], ...] // The latitude-longitude pairs or your rides and runs
+const coords = [[51.492084, 0.010122], ...] // The latitude-longitude pairs or your rides and runs
 const tiles = new TileSet().addAll(coords.map(latLon => coords2tile(latLon, zoom)))
 
-const App = () => (
+export const TileContainer = () => (
     <div>
         {tiles.map((tile, index) => (
             <Rectangle key={index} bounds={tile.bounds(zoom)} pathOptions={{ color: 'red' }} />
@@ -57,3 +57,4 @@ const App = () => (
     </div>
 )
 ```
+The complete source code can be found [here](./demo/src/SimpleTileContainer.tsx).

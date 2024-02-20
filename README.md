@@ -21,17 +21,18 @@ In particular, the map coordinates calculated for the various artifacts are comp
 types, and can thus directly used for drawing Leaflet [Rectangles](https://leafletjs.com/reference.html#rectangle),
 [Polylines](https://leafletjs.com/reference.html#polyline), and similar map overlays.
 
-Repository [???]() shows an example of applying `tile-math` to a [React Leaflet](https://react-leaflet.js.org) map.
+The [demo](./demo) folder shows an example of applying `tile-math` to a [React Leaflet](https://react-leaflet.js.org) map.
 Red squares represent tiles of zoom level 14 touched by (fake) rides,
 purple regions show smaller clusters (i.e. tiles with four neighbors),
 the blue area depicts the maximum cluster (with the orange circle as its [centroid](https://en.wikipedia.org/wiki/Centroid)),
 and the yellow frame shows the maximum square:
 
-<img src="demo.png" alt="Integration into Leaflet" style="width:700px;"/>
+<img src="demo.png" alt="Screenshot of the demo integration into React Leaflet" style="width:700px;"/>
 
-Because `tile-math` is pure Javascript (written in Typescript) and not bound to any framework,
-it can be used in the browser and in Node servers. The latter is very useful to pre-compute all tiles
-for all your rides and runs, and then deliver the resulting tile set via API to the browser.
+Because `tile-math` is a pure Javascript library (written in Typescript) without dependencies
+and without reference to a specific map framework, it can be used in the browser and in Node servers.
+The latter is very useful to pre-compute all tiles for all your rides and runs, and then deliver
+the resulting tile set via API to the browser.
 
 # Installation
 ```
@@ -42,15 +43,15 @@ npm install tile-math
 ## Display a Tile Set created from GPS Positions
 ```typescript jsx
 import { Rectangle } from 'react-leaflet'
-import { coords2tile, Coords, TileSet } from 'tile-math'
+import { coords2tile, TileSet } from 'tile-math'
 
 const zoom = 14 // Zoom level for tile math (14 is the zoom used by VeloViewer and others)
-const coords : Array<Coords> = [[51.335793, 12.371988], ...] // The latitude-longitude pairs or your rides and runs
-const tileSet = new TileSet().addAll(coords.map(latLon => coords2tile(latLon, zoom)))
+const coords = [[51.335793, 12.371988], ...] // The latitude-longitude pairs or your rides and runs
+const tiles = new TileSet().addAll(coords.map(latLon => coords2tile(latLon, zoom)))
 
 const App = () => (
     <div>
-        {tileSet.map((tile, index) => (
+        {tiles.map((tile, index) => (
             <Rectangle key={index} bounds={tile.bounds(zoom)} pathOptions={{ color: 'red' }} />
         ))}
     </div>

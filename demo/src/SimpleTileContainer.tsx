@@ -3,11 +3,13 @@ import { coords2tile, Coords, TileSet } from 'tile-math'
 
 const zoom = 14
 
-// Coordinates (lat, lon) taken e.g. from a GPX file
+// Coordinates (lat, lon) taken e.g. from a GPX file.
+// Note that indexes 1 and 2 map to the same tile.
 const coords: Array<Coords> = [
-    [51.492084,  0.010122],
-    [51.480127, -0.001128],
-    [51.478603,  0.012518],
+    [51.488084,  0.013122],
+    [51.476927, -0.006128],
+    [51.470527, -0.009128],
+    [51.468603,  0.012518],
     [51.458606,  0.010687]
 ]
 

@@ -2,7 +2,7 @@ import { BoundaryPolyline } from './BoundaryPolyline'
 import { BoundarySegment } from '../types/BoundarySegment'
 
 ///
-/// Contains all polylines the defined the boundaries of a cluster.
+/// Contains all polylines of the defined the boundaries of a cluster.
 ///
 export class ClusterBoundaries {
     array: Array<BoundaryPolyline>
@@ -28,10 +28,12 @@ export class ClusterBoundaries {
     }
 
     /// Internal method that searches for a matching polyline start to prepend the segment.
-    /// If no such line exits, the method creates a new polyline with the segment.
+    /// If a line was found, the method also tries to append the line to another matching line.
+    /// Otherwise, the method creates a new polyline with the segment.
     #prepend(segment: BoundarySegment) {
-        for (const boundary of this.array) {
-            if (boundary.tryPrepend(segment)) {
+        for (const [index, line] of this.array.entries()) {
+            if (line.tryPrepend(segment)) {
+                this.#tryAppend(segment, index)
                 return
             }
         }
@@ -39,14 +41,38 @@ export class ClusterBoundaries {
     }
 
     /// Internal method that searches for a matching polyline end to append the segment.
-    /// If no such line exits, the method creates a new polyline with the segment.
+    /// If a line was found, the method also tries to prepend the line to another matching line.
+    /// Otherwise, the method creates a new polyline with the segment.
     #append(segment: BoundarySegment) {
-        for (const boundary of this.array) {
-            if (boundary.tryAppend(segment)) {
+        for (const [index, line] of this.array.entries()) {
+            if (line.tryAppend(segment)) {
+                this.#tryPrepend(segment, index)
                 return
             }
         }
         this.array.push(new BoundaryPolyline(segment))
+    }
+
+    /// Tries to prepend the line with otherIndex to another existing line.
+    #tryPrepend(segment: BoundarySegment, otherIndex: number) {
+        for (const [index, line] of this.array.entries()) {
+            if (index !== otherIndex && line.canPrepend(segment)) {
+                line.prependLine(this.array[otherIndex]) // Prepend other line to this line
+                this.array.splice(otherIndex, 1) // Delete other line
+                break
+            }
+        }
+    }
+
+    /// Tries to append the line with otherIndex to another existing line.
+    #tryAppend(segment: BoundarySegment, otherIndex: number) {
+        for (const [index, line] of this.array.entries()) {
+            if (index !== otherIndex && line.canAppend(segment)) {
+                line.appendLine(this.array[otherIndex]) // Append other line to this line
+                this.array.splice(otherIndex, 1) // Delete other line
+                break
+            }
+        }
     }
 
     /// Similar to Array.map() function

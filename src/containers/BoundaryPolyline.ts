@@ -11,6 +11,26 @@ export class BoundaryPolyline {
         this.segments.push(segment)
     }
 
+    /// Appends the other line to this line.
+    appendLine(other: BoundaryPolyline) {
+        this.segments.push(...other.segments)
+    }
+
+    /// Appends the other line to this line.
+    prependLine(other: BoundaryPolyline) {
+        this.segments.unshift(...other.segments)
+    }
+
+    canPrepend(segment: BoundarySegment): boolean {
+        const firstSegment = this.segments[0] // Array is never empty
+        return segment.x2 === firstSegment.x1 && segment.y2 === firstSegment.y1
+    }
+
+    canAppend(segment: BoundarySegment): boolean {
+        const lastSegment = this.segments[this.segments.length - 1] // Array is never empty
+        return segment.x1 === lastSegment.x2 && segment.y1 === lastSegment.y2
+    }
+
     /// Inserts the new segment before the start of this boundary if the end coordinates of the segment
     /// are equal to the start coordinates of the boundary. Returns true in this case and false otherwise.
     tryPrepend(segment: BoundarySegment): boolean {

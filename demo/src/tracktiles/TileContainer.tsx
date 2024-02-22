@@ -1,5 +1,5 @@
 import { Rectangle, Polyline } from 'react-leaflet'
-import { coords2tile, Coords, TileSet } from 'tile-math'
+import { coords2tile, TileSet } from 'tile-math'
 import { sampleCoords } from '../sample-coords'
 
 const zoom = 14

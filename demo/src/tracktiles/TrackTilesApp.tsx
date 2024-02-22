@@ -1,7 +1,7 @@
 import { MapContainer, TileLayer } from 'react-leaflet'
 import { TileContainer } from './TileContainer'
 
-const mapCenter = [51.482084, 0] // Greenwich
+const mapCenter = { lat: 51.482084, lng: 0 } // Greenwich
 
 export const TrackTilesApp = () => (
     <MapContainer center={mapCenter} zoom={13} scrollWheelZoom={true} style={{ minHeight: '100vh', minWidth: '100vw' }}>

@@ -17,7 +17,8 @@ const coords: Array<Coords> = [
 // and add them to a set. Duplicate tiles are ignored.
 const tiles = new TileSet().addAll(coords.map(latLon => coords2tile(latLon, zoom)))
 
-export const SimpleTileContainer = () => (
+// For every tile, draws a red square on the map, using the Tile.bounds method.
+export const TileContainer = () => (
     <div>
         {tiles.map((tile, index) => (
             <Rectangle key={index} bounds={tile.bounds(zoom)} pathOptions={{ color: 'red', weight: 0.5 }} />

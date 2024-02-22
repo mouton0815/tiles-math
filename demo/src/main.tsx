@@ -1,10 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { SimpleTileApp } from './SimpleTileApp'
 import 'leaflet/dist/leaflet.css'
+import { TrackTilesApp } from './tracktiles/TrackTilesApp'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
-        <SimpleTileApp />
+        <TrackTilesApp />
     </React.StrictMode>
 )

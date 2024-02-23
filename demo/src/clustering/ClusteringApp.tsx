@@ -1,7 +1,7 @@
 import { MapContainer, TileLayer } from 'react-leaflet'
 import { TileContainer } from './TileContainer'
 
-const mapCenter = { lat: 51.482084, lng: 0 } // Greenwich
+const mapCenter = { lat: 51.48, lng: -0.008 }
 
 export const ClusteringApp = () => (
     <MapContainer center={mapCenter} zoom={13} scrollWheelZoom={true} style={{ minHeight: '100vh', minWidth: '100vw' }}>

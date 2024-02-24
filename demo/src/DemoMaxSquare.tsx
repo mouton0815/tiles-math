@@ -42,5 +42,5 @@ const TileContainer = () => (
 )
 
 export const DemoMaxSquare = () => (
-    <OSMContainer TileContainer={TileContainer} mapCenter={mapCenter} mapZoom={mapZoom} />
+    <OSMContainer tileContainer={<TileContainer />} mapCenter={mapCenter} mapZoom={mapZoom} />
 )

@@ -1,15 +1,15 @@
-import { ComponentType } from 'react'
+import { ReactElement } from 'react'
 import { MapContainer, TileLayer } from 'react-leaflet'
 import { Coords } from 'tile-math'
 
 type OSMContainerProps = {
-    TileContainer: ComponentType
+    tileContainer: ReactElement
     mapCenter: Coords
     mapZoom: number
 }
 
 // Leaflet map container with OSM tiles
-export const OSMContainer = ({ TileContainer, mapCenter, mapZoom }: OSMContainerProps) => (
+export const OSMContainer = ({ tileContainer, mapCenter, mapZoom }: OSMContainerProps) => (
     <MapContainer
         center={mapCenter}
         zoom={mapZoom}
@@ -19,7 +19,6 @@ export const OSMContainer = ({ TileContainer, mapCenter, mapZoom }: OSMContainer
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        {/* The custom tile container as child element */}
-        <TileContainer />
+        {tileContainer}
     </MapContainer>
 )

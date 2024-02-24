@@ -39,5 +39,5 @@ const TileContainer = () => (
 )
 
 export const DemoBoundaries = () => (
-    <OSMContainer TileContainer={TileContainer} mapCenter={mapCenter} mapZoom={mapZoom} />
+    <OSMContainer tileContainer={<TileContainer />} mapCenter={mapCenter} mapZoom={mapZoom} />
 )

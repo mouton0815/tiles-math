@@ -4,7 +4,7 @@
 //
 
 import { Rectangle } from 'react-leaflet'
-import { coords2tile, tiles2clusters, Coords, TileSet } from '../dist'
+import { coords2tile, tiles2clusters, Coords, TileSet } from 'tile-math'
 import { OSMContainer } from './OSMContainer'
 import { sampleCoords } from './sample-coords'
 
@@ -41,5 +41,5 @@ const TileContainer = () => (
 )
 
 export const DemoClustering = () => (
-    <OSMContainer TileContainer={TileContainer} mapCenter={mapCenter} mapZoom={mapZoom} />
+    <OSMContainer tileContainer={<TileContainer />} mapCenter={mapCenter} mapZoom={mapZoom} />
 )

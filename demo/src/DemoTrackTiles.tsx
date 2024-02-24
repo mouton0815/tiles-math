@@ -4,7 +4,7 @@
 //
 
 import { Rectangle, Polyline } from 'react-leaflet'
-import { coords2tile, Coords, TileSet } from '../dist'
+import { coords2tile, Coords, TileSet } from 'tile-math'
 import { OSMContainer } from './OSMContainer'
 import { sampleCoords } from './sample-coords'
 
@@ -27,5 +27,5 @@ const TileContainer = () => (
 )
 
 export const DemoTrackTiles = () => (
-    <OSMContainer TileContainer={TileContainer} mapCenter={mapCenter} mapZoom={mapZoom} />
+    <OSMContainer tileContainer={<TileContainer />} mapCenter={mapCenter} mapZoom={mapZoom} />
 )

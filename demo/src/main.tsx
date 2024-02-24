@@ -1,14 +1,13 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
+import { BrowserRouter } from 'react-router-dom'
 import 'leaflet/dist/leaflet.css'
-// import { TrackTilesApp } from './tracktiles/TrackTilesApp'
-// import { ClusteringApp } from './clustering/ClusteringApp'
-// import { BoundariesApp } from './BoundariesApp'
-// import { DemoMaxSquare } from './DemoMaxSquare'
-import { DemoAllFeatures } from './DemoAllFeatures'
+import { App } from './App'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
-        <DemoAllFeatures />
+        <BrowserRouter>
+            <App />
+        </BrowserRouter>
     </React.StrictMode>
 )

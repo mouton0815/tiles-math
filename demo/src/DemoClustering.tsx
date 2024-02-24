@@ -4,13 +4,12 @@
 //
 
 import { Rectangle } from 'react-leaflet'
-import { coords2tile, tiles2clusters, Coords, TileSet } from 'tile-math'
+import { coords2tile, tiles2clusters, TileSet } from 'tile-math'
 import { OSMContainer } from './OSMContainer'
 import { sampleCoords } from './sample-coords'
 
 const tileZoom = 14 // VeloViewer and others use zoom-level 14 tiles
 const mapZoom  = 13
-const mapCenter : Coords = [51.48, -0.008]
 
 const tiles = new TileSet().addAll(sampleCoords.map(latLon => coords2tile(latLon, tileZoom)))
 
@@ -41,5 +40,5 @@ const TileContainer = () => (
 )
 
 export const DemoClustering = () => (
-    <OSMContainer tileContainer={<TileContainer />} mapCenter={mapCenter} mapZoom={mapZoom} />
+    <OSMContainer tileContainer={<TileContainer />} mapZoom={mapZoom} />
 )

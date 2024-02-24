@@ -6,8 +6,8 @@ import { OSMContainer } from './OSMContainer'
 // Constants controlling the map view and tile generation
 const tileZoom = 14 // VeloViewer and others use zoom-level 14 tiles
 const areaSize = 12 // Edge length of the map area to be filled with random tiles (should be an even number
-const addDelay = 200 // Delay between adding two random tiles
-const mapCenter : Coords = [51.48, -0.008]
+const addDelay = 100 // Delay between adding two random tiles
+const mapCenter : Coords = [51.476, -0.008]
 
 type TilesContainerProps = {
     tiles: TileSet

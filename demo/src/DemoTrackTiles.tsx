@@ -4,13 +4,12 @@
 //
 
 import { Rectangle, Polyline } from 'react-leaflet'
-import { coords2tile, Coords, TileSet } from 'tile-math'
+import { coords2tile, TileSet } from 'tile-math'
 import { OSMContainer } from './OSMContainer'
 import { sampleCoords } from './sample-coords'
 
 const tileZoom = 14 // VeloViewer and others use zoom-level 14 tiles
 const mapZoom  = 13
-const mapCenter : Coords = [51.48, -0.008]
 
 // Map all coordinates to tile names (https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames)
 // and add them to a set. Duplicate tiles are ignored.
@@ -27,5 +26,5 @@ const TileContainer = () => (
 )
 
 export const DemoTrackTiles = () => (
-    <OSMContainer tileContainer={<TileContainer />} mapCenter={mapCenter} mapZoom={mapZoom} />
+    <OSMContainer tileContainer={<TileContainer />} mapZoom={mapZoom} />
 )

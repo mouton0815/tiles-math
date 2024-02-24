@@ -57,4 +57,4 @@ export const TileContainer = () => (
     </div>
 )
 ```
-The complete source code can be found [here](demo/src/tracktiles/TrackTilesApp.tsx).
+The complete source code can be found [here](demo/src/DemoTrackTiles.tsx).

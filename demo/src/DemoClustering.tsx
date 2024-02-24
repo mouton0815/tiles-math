@@ -19,7 +19,7 @@ const tiles = new TileSet().addAll(sampleCoords.map(latLon => coords2tile(latLon
 // the set of remaining tiles ('detached')
 const { detached, surrounded, maxCluster } = tiles2clusters(tiles)
 
-// Display the detached tiles (red), the minor clusters (purple), and the max cluster (blue).
+// Displays the detached tiles (red), the minor clusters (purple), and the max cluster (blue).
 const TileContainer = () => (
     <div>
         <>

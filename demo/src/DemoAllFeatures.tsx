@@ -3,24 +3,19 @@ import { Circle, Polyline, Rectangle } from 'react-leaflet'
 import { coords2tile, cluster2boundaries, cluster2square, tiles2clusters, Coords, Tile, TileSet } from 'tile-math'
 import { OSMContainer } from './OSMContainer'
 
-// Constants controlling the map view
-const tileZoom = 14 // Zoom level for tile math (14 is the zoom used by VeloViewer and others)
-const squareSize = 10 // Edge length of the map area to be filled with random tiles
-const mapCenter: Coords = [51.482084, 0] // Greenwich
-
-// Derived constants
-const centerTile = coords2tile(mapCenter, tileZoom)
-const leftBorder = centerTile.x - squareSize / 2
-const upperBorder = centerTile.y - squareSize / 2
-const mapZoom = tileZoom - Math.ceil(squareSize / 10) - 1
-const delay = Math.round(1 / (squareSize * squareSize) * 30000)
-
+// Constants controlling the map view and tile generation
+const tileZoom = 14 // VeloViewer and others use zoom-level 14 tiles
+const areaSize = 12 // Edge length of the map area to be filled with random tiles (should be an even number
+const addDelay = 200 // Delay between adding two random tiles
+const mapCenter : Coords = [51.48, -0.008]
 
 type TilesContainerProps = {
     tiles: TileSet
     zoom: number
 }
 
+// Displays detached tiles (red), minor clusters (purple), max cluster (blue), boundaries lines of
+// the max cluster (blue), and the centroid of the max cluster (orange).
 const TileContainer = ({ tiles, zoom }: TilesContainerProps) => {
     const clusters = tiles2clusters(tiles)
     const squares = cluster2square(clusters.maxCluster)
@@ -63,8 +58,12 @@ const TileContainer = ({ tiles, zoom }: TilesContainerProps) => {
     )
 }
 
-
 export const DemoAllFeatures = () => {
+    const centerTile = coords2tile(mapCenter, tileZoom)
+    const leftBorder = centerTile.x - areaSize / 2
+    const upperBorder = centerTile.y - areaSize / 2
+    const mapZoom = tileZoom - Math.ceil(areaSize / 12) - 1
+
     const initTileSet = new TileSet().add(centerTile)
     const [tileSet, setTileSet] = useState<TileSet>(initTileSet)
 
@@ -73,9 +72,9 @@ export const DemoAllFeatures = () => {
         const timer = (ms: number) => new Promise(res => setTimeout(res, ms));
         (async function() {
             while (true) {
-                const tile = Tile.of(leftBorder + randomInt(squareSize), upperBorder + randomInt(squareSize))
+                const tile = Tile.of(leftBorder + randomInt(areaSize), upperBorder + randomInt(areaSize))
                 setTileSet(new TileSet(tileSet.add(tile)))
-                await timer(delay)
+                await timer(addDelay)
             }
         })()
     }, [])

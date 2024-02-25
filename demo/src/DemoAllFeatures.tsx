@@ -50,7 +50,7 @@ const TileContainer = ({ tileSet, tileZoom }: TilesContainerProps) => {
             </>
             <>
                 {centroid &&
-                    <Circle center={centroid.position(tileZoom)} pane={'markerPane'} radius={200} pathOptions={{ color: 'orange', weight: 3, opacity: 1 }} />
+                    <Circle center={centroid.position()} pane={'markerPane'} radius={200} pathOptions={{ color: 'orange', weight: 3, opacity: 1 }} />
                 }
             </>
         </div>

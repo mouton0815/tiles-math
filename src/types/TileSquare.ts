@@ -28,7 +28,7 @@ export class TileSquare {
 
     /// Calculates the centroid of the square
     centroid(): Centroid {
-        return Centroid.of((2 * this.x + this.s) / 2, (2 * this.y + this.s) / 2)
+        return Centroid.of((2 * this.x + this.s) / 2, (2 * this.y + this.s) / 2, this.z)
     }
 
     /// Returns the Euclidean distance from the centroid of this square to the given point

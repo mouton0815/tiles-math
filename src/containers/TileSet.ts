@@ -121,7 +121,7 @@ export class TileSet {
         // Round to two decimal places (mainly for stable unit tests)
         const xCenter = Math.round(this.xSum / this.size * 100) / 100
         const yCenter = Math.round(this.ySum / this.size * 100) / 100
-        return Centroid.of(xCenter, yCenter)
+        return Centroid.of(xCenter, yCenter, this.zoom || 0) // zoom is always defined if set is non-empty
     }
 
     /// Similar to Array.map() function

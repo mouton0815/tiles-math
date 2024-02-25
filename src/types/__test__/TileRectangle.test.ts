@@ -30,10 +30,10 @@ test('rectangle-strongly-contains', () => {
 })
 
 test('rectangle-centroid', () => {
-    expect(TileRectangle.of(1, 1, 1, 1, 0).centroid()).toEqual(Centroid.of(1.5, 1.5))
-    expect(TileRectangle.of(2, 2, 2, 2, 0).centroid()).toEqual(Centroid.of(3, 3))
-    expect(TileRectangle.of(3, 3, 3, 3, 0).centroid()).toEqual(Centroid.of(4.5, 4.5))
-    expect(TileRectangle.of(4, 4, 4, 4, 0).centroid()).toEqual(Centroid.of(6, 6))
+    expect(TileRectangle.of(1, 1, 1, 1, 5).centroid()).toEqual(Centroid.of(1.5, 1.5, 5))
+    expect(TileRectangle.of(2, 2, 2, 2, 5).centroid()).toEqual(Centroid.of(3, 3, 5))
+    expect(TileRectangle.of(3, 3, 3, 3, 5).centroid()).toEqual(Centroid.of(4.5, 4.5, 5))
+    expect(TileRectangle.of(4, 4, 4, 4, 5).centroid()).toEqual(Centroid.of(6, 6, 5))
 })
 
 test('rectangle-squares-of-square', () => {

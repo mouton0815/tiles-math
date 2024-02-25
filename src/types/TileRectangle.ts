@@ -39,7 +39,7 @@ export class TileRectangle {
 
     /// Calculates the centroid of the rectangle
     centroid(): Centroid {
-        return Centroid.of((2 * this.x + this.w) / 2, (2 * this.y + this.h) / 2)
+        return Centroid.of((2 * this.x + this.w) / 2, (2 * this.y + this.h) / 2, this.z)
     }
 
     /// Iterates through all embedded squares with the same side length as the shorter rectangle side

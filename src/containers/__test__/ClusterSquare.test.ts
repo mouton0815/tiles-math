@@ -4,7 +4,7 @@ import { TileSquare } from '../../types/TileSquare'
 import { Centroid } from '../../types/Centroid'
 
 test('square-empty-get-center', () => {
-    let squares = new ClusterSquare(Centroid.of(0, 0))
+    let squares = new ClusterSquare(Centroid.of(0, 0, 0))
     expect(squares.getCenterSquare()).toBe(null)
 })
 
@@ -17,14 +17,14 @@ test('square-get-center', () => {
     // 2 | x | x | x | x | x |
     // 3 | x | x | x | x | x |
     // 4 |   |   | x | x |   |
-    expect(createForCentroid(Centroid.of(3.4, 2.5))).toEqual(TileSquare.of(2, 2, 2, 7))
-    expect(createForCentroid(Centroid.of(3.6, 2.5))).toEqual(TileSquare.of(3, 2, 2, 7))
-    expect(createForCentroid(Centroid.of(3.0, 1.6))).toEqual(TileSquare.of(3, 1, 2, 7))
-    expect(createForCentroid(Centroid.of(3.0, 2.1))).toEqual(TileSquare.of(2, 2, 2, 7))
+    expect(createForCentroid(3.4, 2.5)).toEqual(TileSquare.of(2, 2, 2, 7))
+    expect(createForCentroid(3.6, 2.5)).toEqual(TileSquare.of(3, 2, 2, 7))
+    expect(createForCentroid(3.0, 1.6)).toEqual(TileSquare.of(3, 1, 2, 7))
+    expect(createForCentroid(3.0, 2.1)).toEqual(TileSquare.of(2, 2, 2, 7))
 })
 
-function createForCentroid(centroid: Centroid): TileSquare | null {
-    const squares = new ClusterSquare(centroid)
+function createForCentroid(x: number, y: number): TileSquare | null {
+    const squares = new ClusterSquare(Centroid.of(x, y, 7))
     squares.add(TileRectangle.of(1, 2, 5, 2, 7))
     squares.add(TileRectangle.of(3, 1, 2, 4, 7))
     expect(squares.getSquareSize()).toBe(2)

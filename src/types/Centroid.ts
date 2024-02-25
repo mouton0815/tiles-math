@@ -7,14 +7,16 @@ import { tile2coords } from '../algorithms/tile2coords'
 export class Centroid {
     x: number
     y: number
-    constructor(x: number, y: number) {
+    z: number // zoom
+    constructor(x: number, y: number, z: number) {
         this.x = x
         this.y = y
+        this.z = z
     }
-    static of(x: number, y: number): Centroid {
-        return new Centroid(x, y)
+    static of(x: number, y: number, z: number): Centroid {
+        return new Centroid(x, y, z)
     }
-    position(zoom: number): Coords {
-        return tile2coords(this.x, this.y, zoom)
+    position(): Coords {
+        return tile2coords(this.x, this.y, this.z)
     }
 }

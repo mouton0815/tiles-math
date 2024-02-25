@@ -9,14 +9,14 @@ test('square-equals', () => {
 })
 
 test('square-centroid', () => {
-    expect(TileSquare.of(1, 1, 1, 0).centroid()).toEqual(Centroid.of(1.5, 1.5))
-    expect(TileSquare.of(2, 2, 2, 0).centroid()).toEqual(Centroid.of(3, 3))
-    expect(TileSquare.of(3, 3, 3, 0).centroid()).toEqual(Centroid.of(4.5, 4.5))
-    expect(TileSquare.of(4, 4, 4, 0).centroid()).toEqual(Centroid.of(6, 6))
+    expect(TileSquare.of(1, 1, 1, 7).centroid()).toEqual(Centroid.of(1.5, 1.5, 7))
+    expect(TileSquare.of(2, 2, 2, 7).centroid()).toEqual(Centroid.of(3, 3, 7))
+    expect(TileSquare.of(3, 3, 3, 7).centroid()).toEqual(Centroid.of(4.5, 4.5, 7))
+    expect(TileSquare.of(4, 4, 4, 7).centroid()).toEqual(Centroid.of(6, 6, 7))
 })
 
 test('square-distanceTo', () => {
     const square = TileSquare.of(1, 1, 4, 0) // Centroid: 3, 3
-    const centroid = Centroid.of(5, 5)
+    const centroid = Centroid.of(5, 5, 0)
     expect(square.distanceTo(centroid)).toBe(Math.sqrt(8)) // Dist: sqrt((3-5)^2 + (3-5)^2)
 })

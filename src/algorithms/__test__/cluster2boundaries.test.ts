@@ -11,7 +11,7 @@ test('cluster2boundaries-empty', () => {
 test('cluster2boundaries-half-open', () => {
     //     1
     // 1 | x |
-    const cluster = new TileSet().add(Tile.of(1, 1))
+    const cluster = new TileSet().add(Tile.of(1, 1, 0))
     const array = [...cluster2boundaries(cluster)]
     expect(array.length).toBe(1)
     expect(array[0].segments).toEqual([
@@ -28,11 +28,11 @@ test('cluster2boundaries-half-open', () => {
     // 2 | x |   |
     // 3 | x | x |
     const cluster = new TileSet().addAll([ // Insert in 'random' order
-        Tile.of(2, 1),
-        Tile.of(1, 2),
-        Tile.of(2, 3),
-        Tile.of(1, 1),
-        Tile.of(1, 3),
+        Tile.of(2, 1, 0),
+        Tile.of(1, 2, 0),
+        Tile.of(2, 3, 0),
+        Tile.of(1, 1, 0),
+        Tile.of(1, 3, 0),
     ])
     const array = [...cluster2boundaries(cluster)]
     expect(array.length).toBe(1)
@@ -54,17 +54,17 @@ test('cluster2boundaries-inner-outer', () => {
     // 2 | x |   |   | x |
     // 3 | x | x | x | x |
     const cluster = new TileSet().addAll([ // Insert in 'random' order
-        Tile.of(3, 3),
-        Tile.of(1, 2),
-        Tile.of(4, 3),
-        Tile.of(2, 3),
-        Tile.of(1, 1),
-        Tile.of(3, 1),
-        Tile.of(4, 2),
-        Tile.of(2, 1),
-        Tile.of(1, 3),
-        Tile.of(4, 1),
-        Tile.of(4, 3),
+        Tile.of(3, 3, 0),
+        Tile.of(1, 2, 0),
+        Tile.of(4, 3, 0),
+        Tile.of(2, 3, 0),
+        Tile.of(1, 1, 0),
+        Tile.of(3, 1, 0),
+        Tile.of(4, 2, 0),
+        Tile.of(2, 1, 0),
+        Tile.of(1, 3, 0),
+        Tile.of(4, 1, 0),
+        Tile.of(4, 3, 0),
     ])
     const array = [...cluster2boundaries(cluster)]
     expect(array.length).toBe(2)
@@ -93,14 +93,14 @@ test('cluster2boundaries-non-connected', () => {
     // 3 | x | x |   |
     // 4 |   | x | x |
     const cluster = new TileSet().addAll([ // Insert in 'random' order
-        Tile.of(1, 2),
-        Tile.of(3, 2),
-        Tile.of(3, 4),
-        Tile.of(2, 3),
-        Tile.of(1, 1),
-        Tile.of(2, 1),
-        Tile.of(1, 3),
-        Tile.of(2, 4),
+        Tile.of(1, 2, 0),
+        Tile.of(3, 2, 0),
+        Tile.of(3, 4, 0),
+        Tile.of(2, 3, 0),
+        Tile.of(1, 1, 0),
+        Tile.of(2, 1, 0),
+        Tile.of(1, 3, 0),
+        Tile.of(2, 4, 0),
     ])
     const array = [...cluster2boundaries(cluster)]
     expect(array.length).toBe(2)

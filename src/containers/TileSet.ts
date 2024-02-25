@@ -9,6 +9,7 @@ export class TileSet {
     static EMPTY_SET = new Set<number>()
 
     tiles: Map<number, Set<number>> // Access-optimized tile storage: Map<x, Set<y>>
+    zoom: number | null // Null as long as no tile was added
     size: number // Number of tiles in this set
     xSum: number // For calculation ...
     ySum: number // ... of centroid
@@ -18,20 +19,27 @@ export class TileSet {
     constructor(other?: TileSet) {
         if (other) {
             this.tiles = other.tiles
+            this.zoom = other.zoom
             this.size = other.size
             this.xSum = other.xSum
             this.ySum = other.ySum
         } else {
             this.tiles = new Map<number, Set<number>>()
+            this.zoom = null
             this.size = 0
             this.xSum = 0
             this.ySum = 0
         }
     }
 
-    /// Adds a tile and returns the TileMap object.
+    /// Adds a tile and returns the TileSet object.
     /// Duplicate tiles are ignored.
     add(tile: Tile): this {
+        if (this.zoom === null) {
+            this.zoom = tile.z
+        } else if (this.zoom !== tile.z) {
+            throw Error('A TileSet can only store tiles of same zoom level')
+        }
         let ySet = this.tiles.get(tile.x)
         if (!ySet) {
            ySet = new Set<number>()
@@ -46,7 +54,7 @@ export class TileSet {
         return this
     }
 
-    /// Adds a sequence of tile and returns the TileMap object
+    /// Adds a sequence of tile and returns the TileSet object
     addAll(tiles: Iterable<Tile>): this {
         for (const tile of tiles) {
             this.add(tile)
@@ -60,10 +68,11 @@ export class TileSet {
         return !!ySet && ySet.has(tile.y)
     }
 
-    /// Merges the other TileMap into this TileMap
+    /// Merges the other TileSet into this TileSet
     merge(other: TileSet): this {
+        const z = other.zoom || 0 // Note: other.zoom is non-null if forEach selects at least one tile
         other.tiles.forEach((yset, x) => {
-            yset.forEach(y => this.add(Tile.of(x, y)))
+            yset.forEach(y => this.add(Tile.of(x, y, z)))
         })
         return this
     }
@@ -148,9 +157,10 @@ export class TileSet {
 
     /// Iterates through the tiles in insertion order
     *[Symbol.iterator]() {
+        const z = this.zoom || 0 // Note: this.zoom is non-null if iterator returns at least on tile
         for (const [x, ySet] of this.tiles) {
             for (const y of ySet) {
-                yield Tile.of(x, y)
+                yield Tile.of(x, y, z)
             }
         }
     }

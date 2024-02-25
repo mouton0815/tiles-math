@@ -19,7 +19,7 @@ const tiles = new TileSet().addAll(sampleCoords.map(latLon => coords2tile(latLon
 const TileContainer = () => (
     <div>
         {tiles.map((tile, index) => (
-            <Rectangle key={index} bounds={tile.bounds(tileZoom)} pathOptions={{ color: 'red', weight: 0.5 }} />
+            <Rectangle key={index} bounds={tile.bounds()} pathOptions={{ color: 'red', weight: 0.5 }} />
         ))}
         <Polyline positions={sampleCoords} />
     </div>

@@ -22,12 +22,12 @@ const TileContainer = () => (
     <div>
         <>
             {nonCluster.map((tile, index) => (
-                <Rectangle key={index} bounds={tile.bounds(tileZoom)} pathOptions={{ color: 'red', weight: 0.5 }} />
+                <Rectangle key={index} bounds={tile.bounds()} pathOptions={{ color: 'red', weight: 0.5 }} />
             ))}
         </>
         <>
             {maxCluster.map((tile, index) => (
-                <Rectangle key={index} bounds={tile.bounds(tileZoom)} pathOptions={{ color: 'blue', weight: 0.5 }} />
+                <Rectangle key={index} bounds={tile.bounds()} pathOptions={{ color: 'blue', weight: 0.5 }} />
             ))}
         </>
         <>

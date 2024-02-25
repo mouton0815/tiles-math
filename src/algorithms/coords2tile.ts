@@ -10,5 +10,5 @@ export function coords2tile([lat, lon]: Coords, zoom: number): Tile {
     const latRad = (lat * Math.PI) / 180
     const x = Math.floor(((lon + 180) / 360) * zPow)
     const y = Math.floor(((1 - Math.log(Math.tan(latRad) + 1 / Math.cos(latRad)) / Math.PI) / 2) * zPow)
-    return Tile.of(x, y)
+    return Tile.of(x, y, zoom)
 }

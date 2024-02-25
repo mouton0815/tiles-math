@@ -7,18 +7,20 @@ import { tile2coords } from '../algorithms/tile2coords'
 export class Tile  {
     x: number
     y: number
+    z: number // Zoom
 
-    constructor(x: number, y: number) {
+    constructor(x: number, y: number, z: number) {
         this.x = x
         this.y = y
+        this.z = z
     }
 
-    static of(x: number, y: number): Tile {
-        return new Tile(x, y)
+    static of(x: number, y: number, z: number): Tile {
+        return new Tile(x, y, z)
     }
 
-    /// Bounding box of this tile given a zoom level.
-    bounds(zoom: number): Bounds {
-        return [tile2coords(this.x, this.y, zoom), tile2coords(this.x + 1, this.y + 1, zoom)]
+    /// Bounding box of this tile.
+    bounds(): Bounds {
+        return [tile2coords(this.x, this.y, this.z), tile2coords(this.x + 1, this.y + 1, this.z)]
     }
 }

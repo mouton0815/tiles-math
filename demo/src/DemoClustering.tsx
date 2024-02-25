@@ -23,17 +23,17 @@ const TileContainer = () => (
     <div>
         <>
             {detachedTiles.map((tile, index) => (
-                <Rectangle key={index} bounds={tile.bounds(tileZoom)} pathOptions={{ color: 'red', weight: 0.5 }} />
+                <Rectangle key={index} bounds={tile.bounds()} pathOptions={{ color: 'red', weight: 0.5 }} />
             ))}
         </>
         <>
             {minorClusters.map((tile, index) => (
-                <Rectangle key={index} bounds={tile.bounds(tileZoom)} pathOptions={{ color: 'purple', weight: 2 }} />
+                <Rectangle key={index} bounds={tile.bounds()} pathOptions={{ color: 'purple', weight: 2 }} />
             ))}
         </>
         <>
             {maxCluster.map((tile, index) => (
-                <Rectangle key={index} bounds={tile.bounds(tileZoom)} pathOptions={{ color: 'blue', weight: 2 }} />
+                <Rectangle key={index} bounds={tile.bounds()} pathOptions={{ color: 'blue', weight: 2 }} />
             ))}
         </>
     </div>

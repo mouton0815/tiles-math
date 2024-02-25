@@ -4,7 +4,7 @@ import { TileSet } from '../../containers/TileSet'
 import { Tile } from '../../types/Tile'
 
 test('simple-one', () => {
-    const squares = cluster2square(new TileSet().add(Tile.of(1, 1)))
+    const squares = cluster2square(new TileSet().add(Tile.of(1, 1, 0)))
     expect(squares.getSquareSize()).toBe(1)
     expect(squares.getRectangles()).toEqual([
         TileRectangle.of(1, 1, 1, 1)
@@ -19,7 +19,7 @@ test('simple-two', () => {
         [1, 1], [1, 2],
         [2, 1], [2, 2],
     ]
-    const squares = cluster2square(new TileSet().addAll(tiles.map(r => Tile.of(r[0], r[1]))))
+    const squares = cluster2square(new TileSet().addAll(tiles.map(r => Tile.of(r[0], r[1], 0))))
     expect(squares.getSquareSize()).toBe(2)
     expect(squares.getRectangles()).toEqual([
         TileRectangle.of(1, 1, 2, 2)
@@ -40,7 +40,7 @@ test('overlapping-rectangles of size one', () => {
         [4, 3],
         [5, 1], [5, 2], [5, 3], [5, 4], [5, 5],
     ]
-    const squares = cluster2square(new TileSet().addAll(tiles.map(r => Tile.of(r[0], r[1]))))
+    const squares = cluster2square(new TileSet().addAll(tiles.map(r => Tile.of(r[0], r[1], 0))))
     expect(squares.getSquareSize()).toBe(1)
     expect(squares.getRectangles()).toEqual([
         TileRectangle.of(1, 1, 1, 4),
@@ -64,7 +64,7 @@ test('growing-range', () => {
         [4, 2], [4, 3], [4, 4], [4, 5],
         [5, 1], [5, 2], [5, 3], [5, 4], [5, 5],
     ]
-    const squares = cluster2square(new TileSet().addAll(tiles.map(r => Tile.of(r[0], r[1]))))
+    const squares = cluster2square(new TileSet().addAll(tiles.map(r => Tile.of(r[0], r[1], 0))))
     expect(squares.getSquareSize()).toBe(3)
     expect(squares.getRectangles()).toEqual([
         TileRectangle.of(3, 3, 3, 3)
@@ -85,7 +85,7 @@ test('shrinking-range', () => {
         [4, 4], [4, 5],
         [5, 5],
     ]
-    const squares = cluster2square(new TileSet().addAll(tiles.map(r => Tile.of(r[0], r[1]))))
+    const squares = cluster2square(new TileSet().addAll(tiles.map(r => Tile.of(r[0], r[1], 0))))
     expect(squares.getSquareSize()).toBe(3)
     expect(squares.getRectangles()).toEqual([
         TileRectangle.of(1, 3, 3, 3)
@@ -108,7 +108,7 @@ test('single-3x3-square', () => {
         [5, 1], [5, 2], [5, 3],
         [7, 1],
     ]
-    const squares = cluster2square(new TileSet().addAll(tiles.map(r => Tile.of(r[0], r[1]))))
+    const squares = cluster2square(new TileSet().addAll(tiles.map(r => Tile.of(r[0], r[1], 0))))
     expect(squares.getSquareSize()).toBe(3)
     expect(squares.getRectangles()).toEqual([
         TileRectangle.of(2, 3, 3, 3)
@@ -127,7 +127,7 @@ test('two-overlapping-2x2-squares-v1', () => {
         [2, 1], [2, 3], [2, 4], [2, 5],
         [3, 2], [3, 4], [3, 5],
     ]
-    const squares = cluster2square(new TileSet().addAll(tiles.map(r => Tile.of(r[0], r[1]))))
+    const squares = cluster2square(new TileSet().addAll(tiles.map(r => Tile.of(r[0], r[1], 0))))
     expect(squares.getSquareSize()).toBe(2)
     expect(squares.getRectangles()).toEqual([
         TileRectangle.of(1, 3, 2, 2),
@@ -147,7 +147,7 @@ test('two-overlapping-2x2-squares-v2', () => {
         [3, 2], [3, 3],
         [4, 3],
     ]
-    const squares = cluster2square(new TileSet().addAll(tiles.map(r => Tile.of(r[0], r[1]))))
+    const squares = cluster2square(new TileSet().addAll(tiles.map(r => Tile.of(r[0], r[1], 0))))
     expect(squares.getSquareSize()).toBe(2)
     expect(squares.getRectangles()).toEqual([
         TileRectangle.of(1, 3, 2, 2),
@@ -170,7 +170,7 @@ test('central-2x2-square-with-rectangles', () => {
         [4, 2], [4, 3], //[4, 4],
         [5, 2], [5, 3],
     ]
-    const squares = cluster2square(new TileSet().addAll(tiles.map(r => Tile.of(r[0], r[1]))))
+    const squares = cluster2square(new TileSet().addAll(tiles.map(r => Tile.of(r[0], r[1], 0))))
     expect(squares.getSquareSize()).toBe(2)
     expect(squares.getRectangles()).toEqual([
         TileRectangle.of(1, 2, 5, 2),
@@ -190,7 +190,7 @@ test('three-overlapping-2x2-squares', () => {
         [3, 1], [3, 2], [3, 3],
         [4, 1], [4, 2],
     ]
-    const squares = cluster2square(new TileSet().addAll(tiles.map(r => Tile.of(r[0], r[1]))))
+    const squares = cluster2square(new TileSet().addAll(tiles.map(r => Tile.of(r[0], r[1], 0))))
     expect(squares.getSquareSize()).toBe(2)
     expect(squares.getRectangles()).toEqual([
         TileRectangle.of(1, 3, 2, 2),
@@ -213,7 +213,7 @@ test('two-overlapping-3x3-squares', () => {
         [4, 1], [4, 2], [4, 3], [4, 4], [4, 5],
         [5, 1], [5, 2], [5, 3], [5, 5],
     ]
-    const squares = cluster2square(new TileSet().addAll(tiles.map(r => Tile.of(r[0], r[1]))))
+    const squares = cluster2square(new TileSet().addAll(tiles.map(r => Tile.of(r[0], r[1], 0))))
     expect(squares.getSquareSize()).toBe(3)
     expect(squares.getRectangles()).toEqual([
         TileRectangle.of(2, 3, 3, 3),
@@ -232,7 +232,7 @@ test('two-detached-2x2-squares', () => {
         [4, 1], [4, 2], [4, 3],
         [5, 1], [5, 2], [5, 3],
     ]
-    const squares = cluster2square(new TileSet().addAll(tiles.map(r => Tile.of(r[0], r[1]))))
+    const squares = cluster2square(new TileSet().addAll(tiles.map(r => Tile.of(r[0], r[1], 0))))
     expect(squares.getSquareSize()).toBe(2)
     expect(squares.getRectangles()).toEqual([
         TileRectangle.of(1, 2, 2, 2),
@@ -258,7 +258,7 @@ test('real-world-bug', () => {
         [6, 1], [6, 2], [6, 3],
         [7, 1], [7, 2],
     ]
-    const squares = cluster2square(new TileSet().addAll(tiles.map(r => Tile.of(r[0], r[1]))))
+    const squares = cluster2square(new TileSet().addAll(tiles.map(r => Tile.of(r[0], r[1], 0))))
     expect(squares.getSquareSize()).toBe(2)
     expect(squares.getRectangles()).toEqual([
         TileRectangle.of(1, 3, 2, 3),

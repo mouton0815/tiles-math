@@ -25,17 +25,17 @@ const TileContainer = ({ tiles, zoom }: TilesContainerProps) => {
         <div>
             <>
                 {detachedTiles.map((tile, index) => (
-                    <Rectangle key={index} bounds={tile.bounds(zoom)} pathOptions={{ color: 'red', weight: 0.5, opacity: 0.5 }} />
+                    <Rectangle key={index} bounds={tile.bounds()} pathOptions={{ color: 'red', weight: 0.5, opacity: 0.5 }} />
                 ))}
             </>
             <>
                 {minorClusters.map((tile, index) => (
-                    <Rectangle key={index} bounds={tile.bounds(zoom)} pathOptions={{ color: 'purple', weight: 1, opacity: 1 }} />
+                    <Rectangle key={index} bounds={tile.bounds()} pathOptions={{ color: 'purple', weight: 1, opacity: 1 }} />
                 ))}
             </>
             <>
                 {maxCluster.map((tile, index) => (
-                    <Rectangle key={index} bounds={tile.bounds(zoom)} pathOptions={{ color: 'blue', weight: 0.5, opacity: 0.5 }} />
+                    <Rectangle key={index} bounds={tile.bounds()} pathOptions={{ color: 'blue', weight: 0.5, opacity: 0.5 }} />
                 ))}
             </>
             <>
@@ -71,7 +71,7 @@ export const DemoAllFeatures = () => {
         const timer = (ms: number) => new Promise(res => setTimeout(res, ms));
         (async function() {
             while (true) {
-                const tile = Tile.of(leftBorder + randomInt(areaSize), upperBorder + randomInt(areaSize))
+                const tile = Tile.of(leftBorder + randomInt(areaSize), upperBorder + randomInt(areaSize), tileZoom)
                 setTileSet(new TileSet(tileSet.add(tile)))
                 await timer(addDelay)
             }

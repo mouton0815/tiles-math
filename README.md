@@ -41,11 +41,16 @@ npm install tile-math
 
 # Usage
 ## Display a Tile Set created from GPS Positions
+Assume you have a number of tracks stored e.g. as GPX files. With function `coords2tile` you find the
+tile touched by a latitude-longitude pair, given a zoom level (often 14). Class `TileSet` holds all unique
+(non-duplicate) tiles of all your rides and runs. Note that you can compute the tile set on the backend,
+and deliver them via API.
+
 ```typescript jsx
 import { Rectangle } from 'react-leaflet'
 import { coords2tile, TileSet } from 'tile-math'
 
-const zoom = 14 // Zoom level for tile math (14 is the zoom used by VeloViewer and others)
+const zoom = 14 // VeloViewer and others use zoom-level 14 tiles
 const coords = [[51.492084, 0.010122], ...] // The latitude-longitude pairs or your rides
 const tiles = new TileSet().addAll(coords.map(latLon => coords2tile(latLon, zoom)))
 
@@ -57,4 +62,104 @@ export const TileContainer = () => (
     </div>
 )
 ```
-The complete source code can be found [here](demo/src/DemoTrackTiles.tsx).
+
+The complete source code can be found in [DemoTrackTiles.tsx](demo/src/DemoTrackTiles.tsx).
+
+## Clustering of a Tile Set
+Tiles with a neighboring tile on each side belong to a cluster. A tile set can have multiple clusters.
+The largest cluster is called _max cluster_. The following code snipped takes a tile set as input and
+computes the max cluster, all minor clusters, and the remaining set of detached tiles:
+
+```typescript jsx
+import { Rectangle } from 'react-leaflet'
+import { tiles2clusters, TileSet } from 'tile-math'
+
+const zoom = 14
+const tiles = new TileSet().addAll([...]) // The input tile set 
+const { detached, surrounded, maxCluster } = tiles2clusters(tiles)
+
+export const TileContainer = () => (
+    <div>
+        <>
+            {detached.map((tile, index) => (
+                <Rectangle key={index} bounds={tile.bounds(tileZoom)} pathOptions={{ color: 'red', weight: 0.5 }} />
+            ))}
+        </>
+        <>
+            {surrounded.map((tile, index) => (
+                <Rectangle key={index} bounds={tile.bounds(tileZoom)} pathOptions={{ color: 'purple', weight: 1 }} />
+            ))}
+        </>
+        <>
+            {maxCluster.map((tile, index) => (
+                <Rectangle key={index} bounds={tile.bounds(tileZoom)} pathOptions={{ color: 'blue', weight: 2 }} />
+            ))}
+        </>
+    </div>
+)
+```
+
+For more information see [DemoClustering.tsx](demo/src/DemoClustering.tsx).
+
+## Show the Boundaries of a Tile Cluster
+You may want to highlight the boundaries of a cluster on the map. Note that a cluster may have an outer boundary,
+and multiple inner boundary polylines for cut-out areas.
+
+```typescript jsx
+import { Polyline, Rectangle } from 'react-leaflet'
+import { cluster2boundaries, tiles2clusters, TileSet } from 'tile-math'
+
+const zoom = 14
+const tiles = new TileSet().addAll([...]) // The input tile set 
+const { maxCluster } = tiles2clusters(tiles)
+const boundaries = cluster2boundaries(maxCluster)
+
+export const TileContainer = () => (
+    <div>
+        <>
+            {maxCluster.map((tile, index) => (
+                <Rectangle key={index} bounds={tile.bounds(tileZoom)} pathOptions={{ color: 'blue', weight: 0.5 }} />
+            ))}
+        </>
+        <>
+            {boundaries.map((line, index) => (
+                <Polyline key={index} positions={line.positions(tileZoom)} pathOptions={{ color: 'blue', weight: 4 }} />
+            ))}
+        </>
+    </div>
+)
+```
+
+The source code can be found in [DemoBoundaries.tsx](demo/src/DemoBoundaries.tsx).
+
+## Find the Max Square embedded in a Tile Cluster
+The _max square_ is the square with the maximum edge length embeddable into the max cluster.
+There may be several max squares in a cluster. Function `cluster2square` selects the max square
+that is closest to the [centroid](https://en.wikipedia.org/wiki/Centroid) of the max cluster.
+
+```typescript jsx
+import { Rectangle } from 'react-leaflet'
+import { cluster2square, tiles2clusters, TileSet } from 'tile-math'
+
+const zoom = 14
+const tiles = new TileSet().addAll([...]) // The input tile set 
+const { maxCluster } = tiles2clusters(tiles)
+const maxSquare = cluster2square(maxCluster).getCenterSquare()
+
+export const TileContainer = () => (
+    <div>
+        <>
+            {maxCluster.map((tile, index) => (
+                <Rectangle key={index} bounds={tile.bounds(tileZoom)} pathOptions={{ color: 'blue', weight: 0.5 }} />
+            ))}
+        </>
+        <>
+            {maxSquare &&
+                <Rectangle bounds={maxSquare.bounds(tileZoom)} pathOptions={{ fill: false, color: 'yellow', weight: 4 }} />
+            }
+        </>
+    </div>
+)
+```
+
+See [DemoMaxSquare.tsx](demo/src/DemoMaxSquare.tsx) for the complete source code.

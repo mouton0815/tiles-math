@@ -12,6 +12,6 @@
     "node_modules",
     "dist",
     "demo",
-    // "src/**/__test__/**"
+    //"src/**/__test__/**"
   ]
 }

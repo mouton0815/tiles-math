@@ -10,14 +10,14 @@ const addDelay = 100 // Delay between adding two random tiles
 const mapCenter : Coords = [51.476, -0.008]
 
 type TilesContainerProps = {
-    tiles: TileSet
-    zoom: number
+    tileSet: TileSet
+    tileZoom: number
 }
 
 // Displays detached tiles (red), minor clusters (purple), max cluster (blue), boundaries lines of
 // the max cluster (blue), and the centroid of the max cluster (orange).
-const TileContainer = ({ tiles, zoom }: TilesContainerProps) => {
-    const { detachedTiles, minorClusters, maxCluster } = tiles2clusters(tiles)
+const TileContainer = ({ tileSet, tileZoom }: TilesContainerProps) => {
+    const { detachedTiles, minorClusters, maxCluster } = tiles2clusters(tileSet)
     const maxSquare = cluster2square(maxCluster).getCenterSquare()
     const boundaries = cluster2boundaries(maxCluster)
     const centroid = maxCluster.centroid()
@@ -40,17 +40,17 @@ const TileContainer = ({ tiles, zoom }: TilesContainerProps) => {
             </>
             <>
                 {boundaries.map((line, index) => (
-                    <Polyline key={index} positions={line.positions(zoom)} pathOptions={{ color: 'blue', weight: 2, opacity: 1 }} />
+                    <Polyline key={index} positions={line.positions(tileZoom)} pathOptions={{ color: 'blue', weight: 2, opacity: 1 }} />
                 ))}
             </>
             <>
                 {maxSquare &&
-                    <Rectangle bounds={maxSquare.bounds(zoom)} pane={'markerPane'} pathOptions={{ fill: false, color: 'yellow', weight: 3, opacity: 1 }} />
+                    <Rectangle bounds={maxSquare.bounds(tileZoom)} pane={'markerPane'} pathOptions={{ fill: false, color: 'yellow', weight: 3, opacity: 1 }} />
                 }
             </>
             <>
                 {centroid &&
-                    <Circle center={centroid.position(zoom)} pane={'markerPane'} radius={200} pathOptions={{ color: 'orange', weight: 3, opacity: 1 }} />
+                    <Circle center={centroid.position(tileZoom)} pane={'markerPane'} radius={200} pathOptions={{ color: 'orange', weight: 3, opacity: 1 }} />
                 }
             </>
         </div>
@@ -78,7 +78,7 @@ export const DemoAllFeatures = () => {
         })()
     }, [])
 
-    const tileContainer = <TileContainer tiles={tileSet} zoom={tileZoom} />
+    const tileContainer = <TileContainer tileSet={tileSet} tileZoom={tileZoom} />
     return (
         <OSMContainer tileContainer={tileContainer} mapCenter={mapCenter} mapZoom={mapZoom} />
     )

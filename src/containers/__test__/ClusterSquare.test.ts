@@ -25,49 +25,49 @@ test('square-get-center', () => {
 
 function createForCentroid(centroid: Centroid): TileSquare | null {
     const squares = new ClusterSquare(centroid)
-    squares.add(TileRectangle.of(1, 2, 5, 2))
-    squares.add(TileRectangle.of(3, 1, 2, 4))
+    squares.add(TileRectangle.of(1, 2, 5, 2, 0))
+    squares.add(TileRectangle.of(3, 1, 2, 4, 0))
     expect(squares.getSquareSize()).toBe(2)
     return squares.getCenterSquare()
 }
 
 test('rectangles-add-rectangle', () => {
     const squares = new ClusterSquare(null)
-    squares.add(TileRectangle.of(1, 1, 2, 3))
+    squares.add(TileRectangle.of(1, 1, 2, 3, 0))
     expect(squares.getSquareSize()).toBe(2)
-    expect(squares.getRectangles()).toEqual([TileRectangle.of(1, 1, 2, 3)])
+    expect(squares.getRectangles()).toEqual([TileRectangle.of(1, 1, 2, 3, 0)])
 })
 
 test('rectangles-rectangle-add-longer-short-side', () => {
     const squares = new ClusterSquare(null)
-    squares.add(TileRectangle.of(1, 1, 2, 3))
-    squares.add(TileRectangle.of(1, 1, 3, 3)) // Clears the array because the square size increases
+    squares.add(TileRectangle.of(1, 1, 2, 3, 0))
+    squares.add(TileRectangle.of(1, 1, 3, 3, 0)) // Clears the array because the square size increases
     expect(squares.getSquareSize()).toBe(3)
-    expect(squares.getRectangles()).toEqual([TileRectangle.of(1, 1, 3, 3)])
+    expect(squares.getRectangles()).toEqual([TileRectangle.of(1, 1, 3, 3, 0)])
 })
 
 test('square-add-rectangle-shorter-short-side', () => {
     const squares = new ClusterSquare(null)
-    squares.add(TileRectangle.of(1, 1, 3, 3))
-    squares.add(TileRectangle.of(1, 1, 2, 3)) // Ignored
+    squares.add(TileRectangle.of(1, 1, 3, 3, 0))
+    squares.add(TileRectangle.of(1, 1, 2, 3, 0)) // Ignored
     expect(squares.getSquareSize()).toBe(3)
-    expect(squares.getRectangles()).toEqual([TileRectangle.of(1, 1, 3, 3)])
+    expect(squares.getRectangles()).toEqual([TileRectangle.of(1, 1, 3, 3, 0)])
 })
 
 test('square-add-rectangle-longer-long-side', () => {
     const squares = new ClusterSquare(null)
-    squares.add(TileRectangle.of(2, 1, 2, 2))
-    squares.add(TileRectangle.of(1, 1, 4, 2)) // Replaces the previous entry
+    squares.add(TileRectangle.of(2, 1, 2, 2, 0))
+    squares.add(TileRectangle.of(1, 1, 4, 2, 0)) // Replaces the previous entry
     expect(squares.getSquareSize()).toBe(2)
-    expect(squares.getRectangles()).toEqual([TileRectangle.of(1, 1, 4, 2)])
+    expect(squares.getRectangles()).toEqual([TileRectangle.of(1, 1, 4, 2, 0)])
 })
 
 test('square-add-rectangle-shorter-long-side', () => {
     const squares = new ClusterSquare(null)
-    squares.add(TileRectangle.of(1, 1, 4, 2))
-    squares.add(TileRectangle.of(2, 1, 2, 2)) // Ignored
+    squares.add(TileRectangle.of(1, 1, 4, 2, 0))
+    squares.add(TileRectangle.of(2, 1, 2, 2, 0)) // Ignored
     expect(squares.getSquareSize()).toBe(2)
-    expect(squares.getRectangles()).toEqual([TileRectangle.of(1, 1, 4, 2)])
+    expect(squares.getRectangles()).toEqual([TileRectangle.of(1, 1, 4, 2, 0)])
 })
 
 test('square-overlapping-rectangles', () => {
@@ -78,21 +78,21 @@ test('square-overlapping-rectangles', () => {
     // 3 | x | x | x | x | x | x |
     // 4 |   | x | x |   | x | x |
     const squares = new ClusterSquare(null)
-    squares.add(TileRectangle.of(1, 2, 6, 2))
-    squares.add(TileRectangle.of(2, 1, 2, 4))
-    squares.add(TileRectangle.of(5, 1, 2, 4))
+    squares.add(TileRectangle.of(1, 2, 6, 2, 0))
+    squares.add(TileRectangle.of(2, 1, 2, 4, 0))
+    squares.add(TileRectangle.of(5, 1, 2, 4, 0))
     expect(squares.getSquareSize()).toBe(2)
     expect(squares.getRectangles()).toEqual([
-        TileRectangle.of(1, 2, 6, 2),
-        TileRectangle.of(2, 1, 2, 4),
-        TileRectangle.of(5, 1, 2, 4)
+        TileRectangle.of(1, 2, 6, 2, 0),
+        TileRectangle.of(2, 1, 2, 4, 0),
+        TileRectangle.of(5, 1, 2, 4, 0)
     ])
 })
 
 test('square-map-rectangles', () => {
     const squares = new ClusterSquare(null)
-    squares.add(TileRectangle.of(1, 1, 2, 3))
-    squares.add(TileRectangle.of(3, 1, 3, 2))
+    squares.add(TileRectangle.of(1, 1, 2, 3, 0))
+    squares.add(TileRectangle.of(3, 1, 3, 2, 0))
     const results = squares.mapRectangles((rect, index) => rect.w + index)
     expect(results).toEqual([2, 4])
 })

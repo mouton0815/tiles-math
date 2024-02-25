@@ -11,24 +11,26 @@ export class TileRectangle {
     y: number // y coordinate of the tile in the upper-left rectangle corner
     w: number // number of horizontal tiles in this rectangle
     h: number // number of vertical tiles in this rectangle
+    z: number // zoom level of contained tiles
 
-    constructor(x: number, y: number, w: number, h: number) {
+    constructor(x: number, y: number, w: number, h: number, z: number) {
         this.x = x
         this.y = y
         this.w = w
         this.h = h
+        this.z = z
     }
 
-    static of(x: number, y: number, w: number, h: number): TileRectangle {
-        return new TileRectangle(x, y, w, h)
+    static of(x: number, y: number, w: number, h: number, z: number): TileRectangle {
+        return new TileRectangle(x, y, w, h, z)
     }
 
     equals(other: TileRectangle): boolean {
-        return this.x === other.x && this.y === other.y && this.w === other.w && this.h === other.h
+        return this.x === other.x && this.y === other.y && this.w === other.w && this.h === other.h && this.z === other.z
     }
 
     contains(other: TileRectangle): boolean {
-        return this.x <= other.x && this.y <= other.y && this.x + this.w >= other.x + other.w && this.y + this.h >= other.y + other.h
+        return this.z === other.z && this.x <= other.x && this.y <= other.y && this.x + this.w >= other.x + other.w && this.y + this.h >= other.y + other.h
     }
 
     stronglyContains(other: TileRectangle): boolean {
@@ -54,7 +56,7 @@ export class TileRectangle {
     }
 
     /// Bounding box of this rectangle given a zoom level
-    bounds(zoom: number): Bounds {
-        return [tile2coords(this.x, this.y, zoom), tile2coords(this.x + this.w, this.y + this.h, zoom)]
+    bounds(): Bounds {
+        return [tile2coords(this.x, this.y, this.z), tile2coords(this.x + this.w, this.y + this.h, this.z)]
     }
 }

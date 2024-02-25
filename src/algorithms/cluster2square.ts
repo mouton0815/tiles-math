@@ -7,7 +7,7 @@ import { Centroid } from '../types/Centroid'
 /// Finds the maximum square of tiles included in the tile cluster
 ///
 export function cluster2square(cluster: TileSet): ClusterSquare {
-    const state = new MergingState(cluster.centroid())
+    const state = new MergingState(cluster.zoom, cluster.centroid())
     for (const x of cluster.getSortedXs()) {
         state.newColumn(x)
         const sequence = new Sequence()
@@ -29,6 +29,7 @@ export function cluster2square(cluster: TileSet): ClusterSquare {
 /// Interleaves a range with all ranges of prevColumn.
 /// Adds interleaved ranges to currColumn and to the pool of squares / rectangles.
 function interleaveRange(range: Range, state: MergingState) {
+    const zoom = state.zoom || 0 // At this point, state.zoom is never null
     let maxOverlap = 0 // Maximum overlapping range in previous column
     for (const prevRange of state.prevColumn) {
         const yMin = Math.max(range.yMin, prevRange.yMin)
@@ -37,7 +38,7 @@ function interleaveRange(range: Range, state: MergingState) {
         const width = prevRange.width + 1
         // Add bounding rectangle to pool of max squares
         if (Math.min(overlap, width) >= state.squares.getSquareSize()) {
-            state.squares.add(TileRectangle.of(state.x - width + 1, yMin, width, overlap))
+            state.squares.add(TileRectangle.of(state.x - width + 1, yMin, width, overlap, zoom))
         }
         // Add width-extended range only if it is larger than or equal to max square
         if (overlap >= state.squares.getSquareSize()) {
@@ -47,7 +48,7 @@ function interleaveRange(range: Range, state: MergingState) {
     }
     // If this is the first column, add a rectangle of width one
     if (state.squares.getSquareSize() <= 1) {
-        state.squares.add(TileRectangle.of(state.x, range.yMin, 1, range.yMax - range.yMin + 1))
+        state.squares.add(TileRectangle.of(state.x, range.yMin, 1, range.yMax - range.yMin + 1, zoom))
     }
     // Add new range only if it is larger than / equal to max square and any merged range from previous column,
     // because only then it can contribute to upcoming larger or equal-sized squares.
@@ -86,11 +87,13 @@ class Sequence {
 
 /// Holds all data needed by the cluster2square function
 class MergingState {
+    zoom: number | null
     squares: ClusterSquare
     prevColumn: Array<Range>
     currColumn: Array<Range>
     x: number
-    constructor(centroid: Centroid | null) {
+    constructor(zoom: number | null, centroid: Centroid | null) {
+        this.zoom = zoom
         this.squares = new ClusterSquare(centroid)
         this.prevColumn = new Array<Range>()
         this.currColumn = new Array<Range>()

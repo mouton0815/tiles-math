@@ -46,11 +46,11 @@ export class TileRectangle {
     *squares() {
         if (this.w >= this.h) {
             for (let i = 0; i <= this.w - this.h; ++i) {
-                yield TileSquare.of(this.x + i, this.y, this.h)
+                yield TileSquare.of(this.x + i, this.y, this.h, this.z)
             }
         } else {
             for (let i = 0; i <= this.h - this.w; ++i) {
-                yield TileSquare.of(this.x, this.y + i, this.w)
+                yield TileSquare.of(this.x, this.y + i, this.w, this.z)
             }
         }
     }

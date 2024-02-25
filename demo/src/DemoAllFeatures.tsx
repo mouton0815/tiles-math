@@ -45,7 +45,7 @@ const TileContainer = ({ tileSet, tileZoom }: TilesContainerProps) => {
             </>
             <>
                 {maxSquare &&
-                    <Rectangle bounds={maxSquare.bounds(tileZoom)} pane={'markerPane'} pathOptions={{ fill: false, color: 'yellow', weight: 3, opacity: 1 }} />
+                    <Rectangle bounds={maxSquare.bounds()} pane={'markerPane'} pathOptions={{ fill: false, color: 'yellow', weight: 3, opacity: 1 }} />
                 }
             </>
             <>

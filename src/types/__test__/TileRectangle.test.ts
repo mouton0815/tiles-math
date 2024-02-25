@@ -37,24 +37,24 @@ test('rectangle-centroid', () => {
 })
 
 test('rectangle-squares-of-square', () => {
-    const iter = TileRectangle.of(1, 1, 2, 2, 0).squares()
-    expect([...iter]).toEqual([TileSquare.of(1, 1, 2)])
+    const iter = TileRectangle.of(1, 1, 2, 2, 7).squares()
+    expect([...iter]).toEqual([TileSquare.of(1, 1, 2, 7)])
 })
 
 test('rectangle-squares-of-horizontal-rectangle', () => {
-    const iter = TileRectangle.of(2, 1, 4, 2, 0).squares() // Width 4, height 2
+    const iter = TileRectangle.of(2, 1, 4, 2, 7).squares() // Width 4, height 2
     expect([...iter]).toEqual([
-        TileSquare.of(2, 1, 2),
-        TileSquare.of(3, 1, 2),
-        TileSquare.of(4, 1, 2),
+        TileSquare.of(2, 1, 2, 7),
+        TileSquare.of(3, 1, 2, 7),
+        TileSquare.of(4, 1, 2, 7),
     ])
 })
 
 test('rectangle-squares-of-vertical-rectangle', () => {
     const iter = TileRectangle.of(1, 2, 2, 4, 0).squares() // Width 2, height 4
     expect([...iter]).toEqual([
-        TileSquare.of(1, 2, 2),
-        TileSquare.of(1, 3, 2),
-        TileSquare.of(1, 4, 2),
+        TileSquare.of(1, 2, 2, 0),
+        TileSquare.of(1, 3, 2, 0),
+        TileSquare.of(1, 4, 2, 0),
     ])
 })

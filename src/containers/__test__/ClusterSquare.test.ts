@@ -17,16 +17,16 @@ test('square-get-center', () => {
     // 2 | x | x | x | x | x |
     // 3 | x | x | x | x | x |
     // 4 |   |   | x | x |   |
-    expect(createForCentroid(Centroid.of(3.4, 2.5))).toEqual(TileSquare.of(2, 2, 2))
-    expect(createForCentroid(Centroid.of(3.6, 2.5))).toEqual(TileSquare.of(3, 2, 2))
-    expect(createForCentroid(Centroid.of(3.0, 1.6))).toEqual(TileSquare.of(3, 1, 2))
-    expect(createForCentroid(Centroid.of(3.0, 2.1))).toEqual(TileSquare.of(2, 2, 2))
+    expect(createForCentroid(Centroid.of(3.4, 2.5))).toEqual(TileSquare.of(2, 2, 2, 7))
+    expect(createForCentroid(Centroid.of(3.6, 2.5))).toEqual(TileSquare.of(3, 2, 2, 7))
+    expect(createForCentroid(Centroid.of(3.0, 1.6))).toEqual(TileSquare.of(3, 1, 2, 7))
+    expect(createForCentroid(Centroid.of(3.0, 2.1))).toEqual(TileSquare.of(2, 2, 2, 7))
 })
 
 function createForCentroid(centroid: Centroid): TileSquare | null {
     const squares = new ClusterSquare(centroid)
-    squares.add(TileRectangle.of(1, 2, 5, 2, 0))
-    squares.add(TileRectangle.of(3, 1, 2, 4, 0))
+    squares.add(TileRectangle.of(1, 2, 5, 2, 7))
+    squares.add(TileRectangle.of(3, 1, 2, 4, 7))
     expect(squares.getSquareSize()).toBe(2)
     return squares.getCenterSquare()
 }

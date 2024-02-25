@@ -32,7 +32,7 @@ const TileContainer = () => (
         </>
         <>
             {maxSquare &&
-                <Rectangle bounds={maxSquare.bounds(tileZoom)} pathOptions={{ fill: false, color: 'yellow', weight: 4 }} />
+                <Rectangle bounds={maxSquare.bounds()} pathOptions={{ fill: false, color: 'yellow', weight: 4 }} />
             }
         </>
     </div>

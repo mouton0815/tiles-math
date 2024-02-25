@@ -76,17 +76,17 @@ import { tiles2clusters, TileSet } from 'tile-math'
 
 const zoom = 14
 const tiles = new TileSet().addAll([...]) // The input tile set 
-const { detached, surrounded, maxCluster } = tiles2clusters(tiles)
+const { detachedTiles, minorClusters, maxCluster } = tiles2clusters(tiles)
 
 export const TileContainer = () => (
     <div>
         <>
-            {detached.map((tile, index) => (
+            {detachedTiles.map((tile, index) => (
                 <Rectangle key={index} bounds={tile.bounds(tileZoom)} pathOptions={{ color: 'red', weight: 0.5 }} />
             ))}
         </>
         <>
-            {surrounded.map((tile, index) => (
+            {minorClusters.map((tile, index) => (
                 <Rectangle key={index} bounds={tile.bounds(tileZoom)} pathOptions={{ color: 'purple', weight: 1 }} />
             ))}
         </>

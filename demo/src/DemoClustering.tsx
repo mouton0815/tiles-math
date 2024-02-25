@@ -16,18 +16,18 @@ const tiles = new TileSet().addAll(sampleCoords.map(latLon => coords2tile(latLon
 // Compute the maximum cluster ('maxCluster'),
 // all smaller clusters ('surrounded'), and
 // the set of remaining tiles ('detached')
-const { detached, surrounded, maxCluster } = tiles2clusters(tiles)
+const { detachedTiles, minorClusters, maxCluster } = tiles2clusters(tiles)
 
 // Displays the detached tiles (red), the minor clusters (purple), and the max cluster (blue).
 const TileContainer = () => (
     <div>
         <>
-            {detached.map((tile, index) => (
+            {detachedTiles.map((tile, index) => (
                 <Rectangle key={index} bounds={tile.bounds(tileZoom)} pathOptions={{ color: 'red', weight: 0.5 }} />
             ))}
         </>
         <>
-            {surrounded.map((tile, index) => (
+            {minorClusters.map((tile, index) => (
                 <Rectangle key={index} bounds={tile.bounds(tileZoom)} pathOptions={{ color: 'purple', weight: 2 }} />
             ))}
         </>

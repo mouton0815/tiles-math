@@ -50,5 +50,5 @@ export function tiles2clusters(tiles: TileSet): TileClusters {
         return curr.merge(prev)
     }, new TileSet())
 
-    return { detached, surrounded, maxCluster }
+    return { detachedTiles: detached, minorClusters: surrounded, maxCluster }
 }

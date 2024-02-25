@@ -17,19 +17,19 @@ type TilesContainerProps = {
 // Displays detached tiles (red), minor clusters (purple), max cluster (blue), boundaries lines of
 // the max cluster (blue), and the centroid of the max cluster (orange).
 const TileContainer = ({ tiles, zoom }: TilesContainerProps) => {
-    const { detached, surrounded, maxCluster } = tiles2clusters(tiles)
+    const { detachedTiles, minorClusters, maxCluster } = tiles2clusters(tiles)
     const maxSquare = cluster2square(maxCluster).getCenterSquare()
     const boundaries = cluster2boundaries(maxCluster)
     const centroid = maxCluster.centroid()
     return (
         <div>
             <>
-                {detached.map((tile, index) => (
+                {detachedTiles.map((tile, index) => (
                     <Rectangle key={index} bounds={tile.bounds(zoom)} pathOptions={{ color: 'red', weight: 0.5, opacity: 0.5 }} />
                 ))}
             </>
             <>
-                {surrounded.map((tile, index) => (
+                {minorClusters.map((tile, index) => (
                     <Rectangle key={index} bounds={tile.bounds(zoom)} pathOptions={{ color: 'purple', weight: 1, opacity: 1 }} />
                 ))}
             </>

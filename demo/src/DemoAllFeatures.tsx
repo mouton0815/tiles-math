@@ -10,14 +10,13 @@ const addDelay = 100 // Delay between adding two random tiles
 const mapCenter : Coords = [51.476, -0.008]
 
 type TilesContainerProps = {
-    tileSet: TileSet
-    tileZoom: number
+    tiles: TileSet
 }
 
 // Displays detached tiles (red), minor clusters (purple), max cluster (blue), boundaries lines of
 // the max cluster (blue), and the centroid of the max cluster (orange).
-const TileContainer = ({ tileSet, tileZoom }: TilesContainerProps) => {
-    const { detachedTiles, minorClusters, maxCluster } = tiles2clusters(tileSet)
+const TileContainer = ({ tiles }: TilesContainerProps) => {
+    const { detachedTiles, minorClusters, maxCluster } = tiles2clusters(tiles)
     const maxSquare = cluster2square(maxCluster).getCenterSquare()
     const boundaries = cluster2boundaries(maxCluster)
     const centroid = maxCluster.centroid()
@@ -40,7 +39,7 @@ const TileContainer = ({ tileSet, tileZoom }: TilesContainerProps) => {
             </>
             <>
                 {boundaries.map((line, index) => (
-                    <Polyline key={index} positions={line.positions(tileZoom)} pathOptions={{ color: 'blue', weight: 2, opacity: 1 }} />
+                    <Polyline key={index} positions={line.positions()} pathOptions={{ color: 'blue', weight: 2, opacity: 1 }} />
                 ))}
             </>
             <>
@@ -78,7 +77,7 @@ export const DemoAllFeatures = () => {
         })()
     }, [])
 
-    const tileContainer = <TileContainer tileSet={tileSet} tileZoom={tileZoom} />
+    const tileContainer = <TileContainer tiles={tileSet} />
     return (
         <OSMContainer tileContainer={tileContainer} mapCenter={mapCenter} mapZoom={mapZoom} />
     )

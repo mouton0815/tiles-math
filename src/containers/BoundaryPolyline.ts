@@ -4,11 +4,13 @@ import { tile2coords } from '../algorithms/tile2coords'
 
 export class BoundaryPolyline {
     segments: Array<BoundarySegment>
+    zoom: number
 
     /// Initializes a new cluster boundary with a start segment.
-    constructor(segment: BoundarySegment) {
+    constructor(segment: BoundarySegment, zoom: number) {
         this.segments = new Array<BoundarySegment>()
         this.segments.push(segment)
+        this.zoom = zoom
     }
 
     /// Appends the other line to this line.
@@ -71,15 +73,15 @@ export class BoundaryPolyline {
         return firstSegment.x1 === lastSegment.x2 && firstSegment.y1 === lastSegment.y2
     }
 
-    positions(zoom: number): Array<Coords> {
+    positions(): Array<Coords> {
         const results = new Array<Coords>()
         let first = true
         for (const segment of this.segments) {
             if (first) {
-                results.push(tile2coords(segment.x1, segment.y1, zoom))
+                results.push(tile2coords(segment.x1, segment.y1, this.zoom))
                 first = false
             }
-            results.push(tile2coords(segment.x2, segment.y2, zoom))
+            results.push(tile2coords(segment.x2, segment.y2, this.zoom))
         }
         return results
     }

@@ -5,6 +5,7 @@ import { ClusterBoundaries } from '../containers/ClusterBoundaries'
 /// Computes the boundary line(s) of the cluster.
 ///
 export function cluster2boundaries(cluster: TileSet): ClusterBoundaries {
+    const zoom = cluster.zoom || 0 // zoom is always defined if the TileSet contains at least one tile
     const boundaries = new ClusterBoundaries()
     for (const x of cluster.getSortedXs()) {
         const ySet = cluster.getYSet(x) // All y coordinates of tiles with x
@@ -13,16 +14,16 @@ export function cluster2boundaries(cluster: TileSet): ClusterBoundaries {
         for (const y of cluster.getSortedYs(x)) {
             // Check for neighbors counterclockwise
             if (!ySet.has(y - 1)) { // Has upper neighbor?
-                boundaries.addUpperEdge(x, y)
+                boundaries.addUpperEdge(x, y, zoom)
             }
             if (!ySetL.has(y)) { // Has left neighbor?
-                boundaries.addLeftEdge(x, y)
+                boundaries.addLeftEdge(x, y, zoom)
             }
             if (!ySet.has(y + 1)) { // Has lower neighbor?
-                boundaries.addLowerEdge(x, y)
+                boundaries.addLowerEdge(x, y, zoom)
             }
             if (!ySetR.has(y)) { // Has right neighbor?
-                boundaries.addRightEdge(x, y)
+                boundaries.addRightEdge(x, y, zoom)
             }
         }
     }

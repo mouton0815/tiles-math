@@ -31,7 +31,7 @@ const TileContainer = () => (
         </>
         <>
             {boundaries.map((line, index) => (
-                <Polyline key={index} positions={line.positions(tileZoom)} pathOptions={{ color: 'blue', weight: 4 }} />
+                <Polyline key={index} positions={line.positions()} pathOptions={{ color: 'blue', weight: 4 }} />
             ))}
         </>
     </div>

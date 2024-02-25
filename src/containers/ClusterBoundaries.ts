@@ -11,46 +11,46 @@ export class ClusterBoundaries {
         this.array = new Array<BoundaryPolyline>()
     }
 
-    addUpperEdge(x: number, y: number) {
-        this.#prepend(BoundarySegment.fromUpperEdge(x, y))
+    addUpperEdge(x: number, y: number, zoom: number) {
+        this.#prepend(BoundarySegment.fromUpperEdge(x, y), zoom)
     }
 
-    addLeftEdge(x: number, y: number) {
-        this.#append(BoundarySegment.fromLeftEdge(x, y))
+    addLeftEdge(x: number, y: number, zoom: number) {
+        this.#append(BoundarySegment.fromLeftEdge(x, y), zoom)
     }
 
-    addLowerEdge(x: number, y: number) {
-        this.#append(BoundarySegment.fromLowerEdge(x, y))
+    addLowerEdge(x: number, y: number, zoom: number) {
+        this.#append(BoundarySegment.fromLowerEdge(x, y), zoom)
     }
 
-    addRightEdge(x: number, y: number) {
-        this.#prepend(BoundarySegment.fromRightEdge(x, y))
+    addRightEdge(x: number, y: number, zoom: number) {
+        this.#prepend(BoundarySegment.fromRightEdge(x, y), zoom)
     }
 
     /// Internal method that searches for a matching polyline start to prepend the segment.
     /// If a line was found, the method also tries to append the line to another matching line.
     /// Otherwise, the method creates a new polyline with the segment.
-    #prepend(segment: BoundarySegment) {
+    #prepend(segment: BoundarySegment, zoom: number) {
         for (const [index, line] of this.array.entries()) {
             if (line.tryPrepend(segment)) {
                 this.#tryAppend(segment, index)
                 return
             }
         }
-        this.array.push(new BoundaryPolyline(segment))
+        this.array.push(new BoundaryPolyline(segment, zoom))
     }
 
     /// Internal method that searches for a matching polyline end to append the segment.
     /// If a line was found, the method also tries to prepend the line to another matching line.
     /// Otherwise, the method creates a new polyline with the segment.
-    #append(segment: BoundarySegment) {
+    #append(segment: BoundarySegment, zoom: number) {
         for (const [index, line] of this.array.entries()) {
             if (line.tryAppend(segment)) {
                 this.#tryPrepend(segment, index)
                 return
             }
         }
-        this.array.push(new BoundaryPolyline(segment))
+        this.array.push(new BoundaryPolyline(segment, zoom))
     }
 
     /// Tries to prepend the line with otherIndex to another existing line.

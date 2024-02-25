@@ -1,12 +1,13 @@
 import { ClusterSquare } from '../containers/ClusterSquare'
 import { TileRectangle } from '../types/TileRectangle'
 import { TileSet } from '../containers/TileSet'
+import { Centroid } from '../types/Centroid'
 
 ///
 /// Finds the maximum square of tiles included in the tile cluster
 ///
 export function cluster2square(cluster: TileSet): ClusterSquare {
-    const state = new MergingState()
+    const state = new MergingState(cluster.centroid())
     for (const x of cluster.getSortedXs()) {
         state.newColumn(x)
         const sequence = new Sequence()
@@ -89,8 +90,8 @@ class MergingState {
     prevColumn: Array<Range>
     currColumn: Array<Range>
     x: number
-    constructor() {
-        this.squares = new ClusterSquare()
+    constructor(centroid: Centroid | null) {
+        this.squares = new ClusterSquare(centroid)
         this.prevColumn = new Array<Range>()
         this.currColumn = new Array<Range>()
         this.x = -2 // This will always lead to a gap even if the first column is at x = 0

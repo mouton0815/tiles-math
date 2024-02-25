@@ -13,10 +13,13 @@ import { TileSquare } from '../types/TileSquare'
 /// This allows to display possible maximum-square extensions on the map.
 ///
 export class ClusterSquare {
+    centroid: Centroid | null // The centroid of the source cluster
     squareSize: number
     rectangles: Array<TileRectangle> // All rectangles with shorter side equal to squareSize
 
-    constructor() {
+    /// The centroid may be null only if the source cluster is empty
+    constructor(centroid: Centroid | null) {
+        this.centroid = centroid
         this.squareSize = 0
         this.rectangles = new Array<TileRectangle>()
     }
@@ -53,16 +56,18 @@ export class ClusterSquare {
         return this.rectangles
     }
 
-    /// Returns the square whose centroid has the closest distance to the passed centroid
-    getCenterSquare(centroid: Centroid): TileSquare | null {
+    /// Returns the square whose centroid has the closest distance to the cluster centroid
+    getCenterSquare(): TileSquare | null {
         let closest : TileSquare | null = null
-        let minDist = Number.MAX_SAFE_INTEGER
-        for (const rectangle of this.rectangles) {
-            for (const square of rectangle.squares()) {
-                const distance = square.distanceTo(centroid)
-                if (closest === null || distance < minDist) {
-                    closest = square
-                    minDist = distance
+        if (this.centroid !== null) {
+            let minDist = Number.MAX_SAFE_INTEGER
+            for (const rectangle of this.rectangles) {
+                for (const square of rectangle.squares()) {
+                    const distance = square.distanceTo(this.centroid)
+                    if (closest === null || distance < minDist) {
+                        closest = square
+                        minDist = distance
+                    }
                 }
             }
         }

@@ -6,7 +6,7 @@ import { TileClusters } from '../containers/TileClusters'
 ///
 export function tiles2clusters(tiles: TileSet): TileClusters {
     let clusters = new Array<TileSet>()
-    const detached = new TileSet()
+    const detached = new TileSet(tiles.zoom)
     for (const tile of tiles) {
         if (tiles.hasNeighbors(tile)) {
             let prevCluster : TileSet | null = null
@@ -19,24 +19,24 @@ export function tiles2clusters(tiles: TileSet): TileClusters {
                         prevCluster.merge(cluster)
                         return false
                     }
-                    cluster.add(tile)
+                    cluster.addTile(tile)
                     prevCluster = cluster
                 }
                 return true
             })
             if (prevCluster === null) {
                 // Tile has four neighbors, but does not belong to an existing cluster yet
-                clusters.push(new TileSet().add(tile))
+                clusters.push(new TileSet(tiles.zoom).addTile(tile))
             }
         } else {
-            detached.add(tile)
+            detached.addTile(tile)
         }
     }
 
     // Select the cluster with the largest size
     const maxCluster = clusters.reduce((prev, curr) => {
         return curr.size > prev.size ? curr : prev
-    }, new TileSet())
+    }, new TileSet(tiles.zoom))
 
     // Merge all other cluster candidates (and filter out maxCluster)
     const surrounded = clusters.reduce((prev, curr) => {
@@ -48,7 +48,7 @@ export function tiles2clusters(tiles: TileSet): TileClusters {
             return prev.merge(curr)
         }
         return curr.merge(prev)
-    }, new TileSet())
+    }, new TileSet(tiles.zoom))
 
     return { detachedTiles: detached, minorClusters: surrounded, maxCluster }
 }

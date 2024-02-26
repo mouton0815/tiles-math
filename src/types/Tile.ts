@@ -1,10 +1,11 @@
 import { Bounds } from './Bounds'
 import { tile2coords } from '../algorithms/tile2coords'
+import { TileNo } from './TileNo'
 
 ///
 /// A map tile compatible with the conventions of https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames.
 ///
-export class Tile  {
+export class Tile implements TileNo {
     x: number
     y: number
     z: number // Zoom

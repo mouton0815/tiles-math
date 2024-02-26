@@ -3,7 +3,7 @@ import { TileSet } from '../../containers/TileSet'
 import { Tile } from '../../types/Tile'
 
 test('cluster-empty', () => {
-    const tileClusters = tiles2clusters(new TileSet())
+    const tileClusters = tiles2clusters(new TileSet(0))
     expect(tileClusters.maxCluster.toArray()).toEqual([])
     expect(tileClusters.minorClusters.toArray()).toEqual([])
     expect(tileClusters.detachedTiles.toArray()).toEqual([])
@@ -12,7 +12,7 @@ test('cluster-empty', () => {
 test('cluster-none', () => {
     const tile1 = Tile.of(1, 2, 0)
     const tile2 = Tile.of(3, 2, 0)
-    const allTiles = new TileSet().addAll([tile1, tile2])
+    const allTiles = new TileSet(0).addTiles([tile1, tile2])
     const tileClusters = tiles2clusters(allTiles)
     expect(tileClusters.maxCluster.toArray()).toEqual([])
     expect(tileClusters.minorClusters.toArray()).toEqual([])
@@ -25,7 +25,7 @@ test('cluster-simple', () => {
     const tileBelow  = Tile.of(2, 3, 0)
     const tileCenter = Tile.of(2, 2, 0) // Central tile => the cluster
     const tileAbove  = Tile.of(2, 1, 0)
-    const allTiles = new TileSet().addAll([tileLeft, tileRight, tileBelow, tileCenter, tileAbove])
+    const allTiles = new TileSet(0).addTiles([tileLeft, tileRight, tileBelow, tileCenter, tileAbove])
     const tileClusters = tiles2clusters(allTiles)
     expect(tileClusters.maxCluster.toArray()).toEqual([tileCenter])
     expect(tileClusters.minorClusters.toArray()).toEqual([])
@@ -41,7 +41,7 @@ test('cluster-separated', () => {
     const tile2Center = Tile.of(3, 3, 0) // Central tile => cluster B
     const tile2Right  = Tile.of(4, 3, 0)
     const tile2Below  = Tile.of(3, 4, 0)
-    const allTiles = new TileSet().addAll([tile1Left, tile1Right, tile1Below, tile1Center, tile1Above, tile2Center, tile2Right, tile2Below])
+    const allTiles = new TileSet(0).addTiles([tile1Left, tile1Right, tile1Below, tile1Center, tile1Above, tile2Center, tile2Right, tile2Below])
     const tileClusters = tiles2clusters(allTiles)
     expect(tileClusters.maxCluster.toArray()).toEqual([tile2Center]) // It is tile2Center because x=3 was added before x=2
     expect(tileClusters.minorClusters.toArray()).toEqual([tile1Center])
@@ -57,7 +57,7 @@ test('cluster-large', () => {
     const tileRight   = Tile.of(4, 2, 0)
     const tileBelow2  = Tile.of(3, 3, 0)
     const tileAbove2  = Tile.of(3, 1, 0)
-    const allTiles = new TileSet().addAll([tileLeft, tileCenter2, tileBelow1, tileCenter1, tileAbove1, tileRight, tileBelow2, tileAbove2])
+    const allTiles = new TileSet(0).addTiles([tileLeft, tileCenter2, tileBelow1, tileCenter1, tileAbove1, tileRight, tileBelow2, tileAbove2])
     const tileClusters = tiles2clusters(allTiles)
     expect(tileClusters.maxCluster.toArray()).toEqual([tileCenter2, tileCenter1])
     expect(tileClusters.minorClusters.toArray()).toEqual([])
@@ -86,7 +86,7 @@ test('cluster-large-and-separated', () => {
     const tile3Left    = Tile.of(4, 2, 0)
     const tile3Below   = Tile.of(5, 3, 0)
     const tile3Above   = Tile.of(5, 1, 0)
-    const allTiles = new TileSet().addAll([
+    const allTiles = new TileSet(0).addTiles([
         tile1Center, tile1Left, tile1Right, tile1Below, tile1Above,
         tile2Left, tile2Center2, tile2Below1, tile2Center1, tile2Above1, tile2Right, tile2Below2, tile2Above2,
         tile3Right, tile3Center, tile3Left, tile3Below, tile3Above])

@@ -5,14 +5,14 @@
 //
 
 import { Rectangle } from 'react-leaflet'
-import { cluster2square, coords2tile, tiles2clusters, TileSet } from 'tile-math'
+import { cluster2square, tiles2clusters, TileSet } from 'tile-math'
 import { OSMContainer } from './OSMContainer'
 import { sampleCoords } from './sample-coords'
 
 const tileZoom = 14 // VeloViewer and others use zoom-level 14 tiles
 const mapZoom  = 13
 
-const tiles = new TileSet().addAll(sampleCoords.map(latLon => coords2tile(latLon, tileZoom)))
+const tiles = new TileSet(tileZoom).addCoords(sampleCoords)
 const { detachedTiles, minorClusters, maxCluster } = tiles2clusters(tiles)
 const nonCluster = detachedTiles.merge(minorClusters) // Do not distinguish between normal tiles and smaller clusters
 const maxSquare = cluster2square(maxCluster).getCenterSquare()

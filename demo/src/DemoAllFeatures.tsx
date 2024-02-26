@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react'
 import { Circle, Polyline, Rectangle } from 'react-leaflet'
-import { coords2tile, cluster2boundaries, cluster2square, tiles2clusters, Coords, Tile, TileSet } from 'tile-math'
+import { coords2tile, cluster2boundaries, cluster2square, tiles2clusters, Coords, TileSet } from 'tile-math'
 import { OSMContainer } from './OSMContainer'
 
 // Constants controlling the map view and tile generation
 const tileZoom = 14 // VeloViewer and others use zoom-level 14 tiles
-const areaSize = 12 // Edge length of the map area to be filled with random tiles (should be an even number
+const edgeSize = 12 // Edge length of the map area to be filled with random tiles (should be an even number
 const addDelay = 100 // Delay between adding two random tiles
 const mapCenter : Coords = [51.476, -0.008]
 
@@ -58,20 +58,21 @@ const TileContainer = ({ tiles }: TilesContainerProps) => {
 
 export const DemoAllFeatures = () => {
     const centerTile = coords2tile(mapCenter, tileZoom)
-    const leftBorder = centerTile.x - areaSize / 2
-    const upperBorder = centerTile.y - areaSize / 2
-    const mapZoom = tileZoom - Math.ceil(areaSize / 12) - 1
+    const leftBorder = centerTile.x - edgeSize / 2
+    const upperBorder = centerTile.y - edgeSize / 2
+    const mapZoom = tileZoom - Math.ceil(edgeSize / 12) - 1
+    const areaSize = edgeSize * edgeSize
 
-    const initTileSet = new TileSet().add(centerTile)
+    const initTileSet = new TileSet(tileZoom).addTile(centerTile)
     const [tileSet, setTileSet] = useState<TileSet>(initTileSet)
 
     useEffect(() => {
         // Call useEffect repeatedly to add more random tiles
         const timer = (ms: number) => new Promise(res => setTimeout(res, ms));
         (async function() {
-            while (true) {
-                const tile = Tile.of(leftBorder + randomInt(areaSize), upperBorder + randomInt(areaSize), tileZoom)
-                setTileSet(new TileSet(tileSet.add(tile)))
+            while (tileSet.size < areaSize) {
+                const tileNo = { x: leftBorder + randomInt(edgeSize), y: upperBorder + randomInt(edgeSize) }
+                setTileSet(tileSet.addTile(tileNo).clone())
                 await timer(addDelay)
             }
         })()

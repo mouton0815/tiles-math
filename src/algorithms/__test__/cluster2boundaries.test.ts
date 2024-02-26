@@ -1,17 +1,16 @@
 import { BoundarySegment } from '../../types/BoundarySegment'
 import { TileSet } from '../../containers/TileSet'
-import { Tile } from '../../types/Tile'
 import { cluster2boundaries } from '../cluster2boundaries'
 
 test('cluster2boundaries-empty', () => {
-    const boundaries = cluster2boundaries(new TileSet())
+    const boundaries = cluster2boundaries(new TileSet(0))
     expect(boundaries.array.length).toBe(0)
 })
 
 test('cluster2boundaries-half-open', () => {
     //     1
     // 1 | x |
-    const cluster = new TileSet().add(Tile.of(1, 1, 0))
+    const cluster = new TileSet(0).addTile({ x: 1, y: 1 })
     const array = [...cluster2boundaries(cluster)]
     expect(array.length).toBe(1)
     expect(array[0].segments).toEqual([
@@ -27,12 +26,12 @@ test('cluster2boundaries-half-open', () => {
     // 1 | x | x |
     // 2 | x |   |
     // 3 | x | x |
-    const cluster = new TileSet().addAll([ // Insert in 'random' order
-        Tile.of(2, 1, 0),
-        Tile.of(1, 2, 0),
-        Tile.of(2, 3, 0),
-        Tile.of(1, 1, 0),
-        Tile.of(1, 3, 0),
+    const cluster = new TileSet(0).addTiles([ // Insert in 'random' order
+        { x: 2, y: 1 },
+        { x: 1, y: 2 },
+        { x: 2, y: 3 },
+        { x: 1, y: 1 },
+        { x: 1, y: 3 },
     ])
     const array = [...cluster2boundaries(cluster)]
     expect(array.length).toBe(1)
@@ -53,18 +52,18 @@ test('cluster2boundaries-inner-outer', () => {
     // 1 | x | x | x | x |
     // 2 | x |   |   | x |
     // 3 | x | x | x | x |
-    const cluster = new TileSet().addAll([ // Insert in 'random' order
-        Tile.of(3, 3, 0),
-        Tile.of(1, 2, 0),
-        Tile.of(4, 3, 0),
-        Tile.of(2, 3, 0),
-        Tile.of(1, 1, 0),
-        Tile.of(3, 1, 0),
-        Tile.of(4, 2, 0),
-        Tile.of(2, 1, 0),
-        Tile.of(1, 3, 0),
-        Tile.of(4, 1, 0),
-        Tile.of(4, 3, 0),
+    const cluster = new TileSet(0).addTiles([ // Insert in 'random' order
+        { x: 3, y: 3 },
+        { x: 1, y: 2 },
+        { x: 4, y: 3 },
+        { x: 2, y: 3 },
+        { x: 1, y: 1 },
+        { x: 3, y: 1 },
+        { x: 4, y: 2 },
+        { x: 2, y: 1 },
+        { x: 1, y: 3 },
+        { x: 4, y: 1 },
+        { x: 4, y: 3 },
     ])
     const array = [...cluster2boundaries(cluster)]
     expect(array.length).toBe(2)
@@ -92,15 +91,15 @@ test('cluster2boundaries-non-connected', () => {
     // 2 | x |   | x |
     // 3 | x | x |   |
     // 4 |   | x | x |
-    const cluster = new TileSet().addAll([ // Insert in 'random' order
-        Tile.of(1, 2, 0),
-        Tile.of(3, 2, 0),
-        Tile.of(3, 4, 0),
-        Tile.of(2, 3, 0),
-        Tile.of(1, 1, 0),
-        Tile.of(2, 1, 0),
-        Tile.of(1, 3, 0),
-        Tile.of(2, 4, 0),
+    const cluster = new TileSet(0).addTiles([ // Insert in 'random' order
+        { x: 1, y: 2 },
+        { x: 3, y: 2 },
+        { x: 3, y: 4 },
+        { x: 2, y: 3 },
+        { x: 1, y: 1 },
+        { x: 2, y: 1 },
+        { x: 1, y: 3 },
+        { x: 2, y: 4 },
     ])
     const array = [...cluster2boundaries(cluster)]
     expect(array.length).toBe(2)

@@ -4,7 +4,7 @@
 //
 
 import { Rectangle, Polyline } from 'react-leaflet'
-import { coords2tile, TileSet } from 'tile-math'
+import { TileSet } from 'tile-math'
 import { OSMContainer } from './OSMContainer'
 import { sampleCoords } from './sample-coords'
 
@@ -13,7 +13,7 @@ const mapZoom  = 13
 
 // Map all coordinates to tile names (https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames)
 // and add them to a set. Duplicate tiles are ignored.
-const tiles = new TileSet().addAll(sampleCoords.map(latLon => coords2tile(latLon, tileZoom)))
+const tiles = new TileSet(tileZoom).addCoords(sampleCoords)
 
 // For every tile, draw a red square on the map, using the Tile.bounds method.
 const TileContainer = () => (

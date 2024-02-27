@@ -1,6 +1,6 @@
 import { ReactElement } from 'react'
 import { MapContainer, TileLayer } from 'react-leaflet'
-import { Coords } from 'tile-math'
+import { Coords } from 'tiles-math'
 
 const defaultCenter : Coords = [51.479, -0.008]
 

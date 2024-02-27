@@ -1,5 +1,5 @@
 {
-  "name": "tile-math",
+  "name": "tiles-math",
   "version": "1.0.0",
   "description": "Algorithms and data structures for mapping geo coordinates to slippy-map tiles, clustering of adjacent tiles, and finding largest squares included in clusters",
   "main": "./dist/index.js",
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mouton0815/tile-math.git"
+    "url": "git+https://github.com/mouton0815/tiles-math.git"
   },
   "author": "torsten.schlieder@gmx.net",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mouton0815/tile-math/issues"
+    "url": "https://github.com/mouton0815/tiles-math/issues"
   },
-  "homepage": "https://github.com/mouton0815/tile-math#readme",
+  "homepage": "https://github.com/mouton0815/tiles-math#readme",
   "devDependencies": {
     "@types/jest": "^29.5.12",
     "jest": "^29.7.0",

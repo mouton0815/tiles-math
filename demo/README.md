@@ -1,3 +1,3 @@
-# Demonstration of tile-math Calculations  
+# Demonstration of `tiles-math` Calculations  
 
 TODO: Description

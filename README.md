@@ -1,11 +1,11 @@
-# Tile Math
+# Tiles Math
 
 This library provides algorithms and data structures to map your rides and runs to [slippy map tiles](https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames).
 It then groups the tiles in various ways, similar to what
 [VeloViewer](https://veloviewer.com/explorer), [StatsHunters](https://www.statshunters.com),
 [Squadrats](https://squadrats.com/activities), and [RideEveryTile](https://rideeverytile.com) do.
 
-Specifically, `tile-math`
+Specifically, `tiles-math`
 * maps geo positions (latitude, longitude) to map tiles of a given zoom level,
 * combines adjacent tiles to connected clusters,
 * selects the maximum-size tile cluster,
@@ -21,7 +21,7 @@ In particular, the map coordinates calculated for the various artifacts are comp
 types, and can thus directly used for drawing Leaflet [Rectangles](https://leafletjs.com/reference.html#rectangle),
 [Polylines](https://leafletjs.com/reference.html#polyline), and similar map overlays.
 
-The [demo](./demo) folder shows an example of applying `tile-math` to a [React Leaflet](https://react-leaflet.js.org) map.
+The [demo](./demo) folder shows an example of applying `tiles-math` to a [React Leaflet](https://react-leaflet.js.org) map.
 Red squares represent tiles of zoom level 14 touched by (fake) rides,
 purple regions show smaller clusters (i.e. tiles with four neighbors),
 the blue area depicts the maximum cluster (with the orange circle as its [centroid](https://en.wikipedia.org/wiki/Centroid)),
@@ -29,14 +29,14 @@ and the yellow frame shows the maximum square:
 
 <img src="demo.png" alt="Screenshot of the demo integration into React Leaflet" style="width:700px;"/>
 
-Because `tile-math` is a pure Javascript library (written in Typescript) without dependencies
+Because `tiles-math` is a pure Javascript library (written in Typescript) without dependencies
 and without reference to a specific map framework, it can be used in the browser and in Node servers.
 The latter is very useful to pre-compute all tiles for all your rides and runs, and then deliver
 the resulting tile set via API to the browser.
 
 # Installation
 ```
-npm install tile-math
+npm install tiles-math
 ```
 
 # Usage
@@ -48,7 +48,7 @@ and deliver them via API.
 
 ```typescript jsx
 import { Rectangle } from 'react-leaflet'
-import { coords2tile, TileSet } from 'tile-math'
+import { coords2tile, TileSet } from 'tiles-math'
 
 const zoom = 14 // VeloViewer and others use zoom-level 14 tiles
 const coords = [[51.492084, 0.010122], ...] // The latitude-longitude pairs or your rides
@@ -72,7 +72,7 @@ computes the max cluster, all minor clusters, and the remaining set of detached 
 
 ```typescript jsx
 import { Rectangle } from 'react-leaflet'
-import { tiles2clusters, TileSet } from 'tile-math'
+import { tiles2clusters, TileSet } from 'tiles-math'
 
 const zoom = 14
 const tiles = new TileSet().addAll([...]) // The input tile set 
@@ -107,7 +107,7 @@ and multiple inner boundary polylines for cut-out areas.
 
 ```typescript jsx
 import { Polyline, Rectangle } from 'react-leaflet'
-import { cluster2boundaries, tiles2clusters, TileSet } from 'tile-math'
+import { cluster2boundaries, tiles2clusters, TileSet } from 'tiles-math'
 
 const zoom = 14
 const tiles = new TileSet().addAll([...]) // The input tile set 
@@ -139,7 +139,7 @@ that is closest to the [centroid](https://en.wikipedia.org/wiki/Centroid) of the
 
 ```typescript jsx
 import { Rectangle } from 'react-leaflet'
-import { cluster2square, tiles2clusters, TileSet } from 'tile-math'
+import { cluster2square, tiles2clusters, TileSet } from 'tiles-math'
 
 const zoom = 14
 const tiles = new TileSet().addAll([...]) // The input tile set 

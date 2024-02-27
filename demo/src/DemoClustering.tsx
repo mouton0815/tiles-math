@@ -4,7 +4,7 @@
 //
 
 import { Rectangle } from 'react-leaflet'
-import { tiles2clusters, TileSet } from 'tile-math'
+import { tiles2clusters, TileSet } from 'tiles-math'
 import { OSMContainer } from './OSMContainer'
 import { sampleCoords } from './sample-coords'
 

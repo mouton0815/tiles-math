@@ -1,4 +1,4 @@
-import { Coords } from 'tile-math'
+import { Coords } from 'tiles-math'
 
 // Example coordinates (latitude, longitude).
 // Such coordinates could be taken from a GPX file (where track points would be much denser).

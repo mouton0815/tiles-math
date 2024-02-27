@@ -4,7 +4,7 @@
 //
 
 import { Rectangle, Polyline } from 'react-leaflet'
-import { TileSet } from 'tile-math'
+import { TileSet } from 'tiles-math'
 import { OSMContainer } from './OSMContainer'
 import { sampleCoords } from './sample-coords'
 

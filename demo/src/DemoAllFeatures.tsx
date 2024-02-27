@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Circle, Polyline, Rectangle } from 'react-leaflet'
-import { coords2tile, cluster2boundaries, cluster2square, tiles2clusters, Coords, TileSet } from 'tile-math'
+import { coords2tile, cluster2boundaries, cluster2square, tiles2clusters, Coords, TileSet } from 'tiles-math'
 import { OSMContainer } from './OSMContainer'
 
 // Constants controlling the map view and tile generation

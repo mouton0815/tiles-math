@@ -9,13 +9,13 @@ const edgeSize = 12 // Edge length of the map area to be filled with random tile
 const addDelay = 100 // Delay between adding two random tiles
 const mapCenter : Coords = [51.476, -0.008]
 
-type TilesContainerProps = {
+type TileContainerProps = {
     tiles: TileSet
 }
 
 // Displays detached tiles (red), minor clusters (purple), max cluster (blue), boundaries lines of
 // the max cluster (blue), and the centroid of the max cluster (orange).
-const TileContainer = ({ tiles }: TilesContainerProps) => {
+const TileContainer = ({ tiles }: TileContainerProps) => {
     const { detachedTiles, minorClusters, maxCluster } = tiles2clusters(tiles)
     const maxSquare = cluster2square(maxCluster).getCenterSquare()
     const boundaries = cluster2boundaries(maxCluster)

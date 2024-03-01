@@ -21,29 +21,69 @@ test('cluster2boundaries-half-open', () => {
     ])
 })
 
-test('cluster2boundaries-half-open', () => {
-    //     1   2
-    // 1 | x | x |
-    // 2 | x |   |
-    // 3 | x | x |
+test('cluster2boundaries-right-open', () => {
+    //     1   2   3
+    // 1 | x | x | x |
+    // 2 | x |   |   |
+    // 3 | x |   | x |
+    // 4 | x | x | x |
     const cluster = new TileSet(0).addTiles([ // Insert in 'random' order
+        { x: 3, y: 4 },
+        { x: 2, y: 4 },
         { x: 2, y: 1 },
         { x: 1, y: 2 },
-        { x: 2, y: 3 },
+        { x: 3, y: 3 },
         { x: 1, y: 1 },
         { x: 1, y: 3 },
+        { x: 3, y: 1 },
+        { x: 1, y: 4 },
     ])
     const array = [...cluster2boundaries(cluster)]
     expect(array.length).toBe(1)
     expect(array[0].segments).toEqual([
-        BoundarySegment.of(3, 4, 3, 3), // Right segment (lower)
-        BoundarySegment.of(3, 3, 2, 3), // Upper segment (lower right)
-        BoundarySegment.of(2, 3, 2, 2), // Right segment (middle)
-        BoundarySegment.of(2, 2, 3, 2), // Lower segment (upper right)
-        BoundarySegment.of(3, 2, 3, 1), // Right segment (upper)
-        BoundarySegment.of(3, 1, 1, 1), // Upper segment
-        BoundarySegment.of(1, 1, 1, 4), // Left segment
-        BoundarySegment.of(1, 4, 3, 4), // Lower segment
+        BoundarySegment.of(4, 5, 4, 3), // Right segment (lower)
+        BoundarySegment.of(4, 3, 3, 3), // Upper segment (lower right)
+        BoundarySegment.of(3, 3, 3, 4), // Left segment (lower right)
+        BoundarySegment.of(3, 4, 2, 4), // Upper segment (lower middle)
+        BoundarySegment.of(2, 4, 2, 2), // Right segment (middle)
+        BoundarySegment.of(2, 2, 4, 2), // Lower segment (upper)
+        BoundarySegment.of(4, 2, 4, 1), // Right segment (upper)
+        BoundarySegment.of(4, 1, 1, 1), // Upper segment
+        BoundarySegment.of(1, 1, 1, 5), // Left segment
+        BoundarySegment.of(1, 5, 4, 5), // Lower segment
+    ])
+})
+
+test('cluster2boundaries-left-open', () => {
+    //     1   2   3
+    // 1 | x | x | x |
+    // 2 |   |   | x |
+    // 3 | x |   | x |
+    // 4 | x | x | x |
+    const cluster = new TileSet(0).addTiles([ // Insert in 'random' order
+        { x: 1, y: 3 },
+        { x: 3, y: 4 },
+        { x: 2, y: 4 },
+        { x: 2, y: 1 },
+        { x: 3, y: 2 },
+        { x: 3, y: 3 },
+        { x: 1, y: 1 },
+        { x: 3, y: 1 },
+        { x: 1, y: 4 },
+    ])
+    const array = [...cluster2boundaries(cluster)]
+    expect(array.length).toBe(1)
+    expect(array[0].segments).toEqual([
+        BoundarySegment.of(4, 5, 4, 1), // Right segment
+        BoundarySegment.of(4, 1, 1, 1), // Upper segment
+        BoundarySegment.of(1, 1, 1, 2), // Left segment (upper)
+        BoundarySegment.of(1, 2, 3, 2), // Lower segment (upper)
+        BoundarySegment.of(3, 2, 3, 4), // Left segment (right)
+        BoundarySegment.of(3, 4, 2, 4), // Upper segment (lower middle)
+        BoundarySegment.of(2, 4, 2, 3), // Right segment (left)
+        BoundarySegment.of(2, 3, 1, 3), // Upper segment (left)
+        BoundarySegment.of(1, 3, 1, 5), // Left segment (lower)
+        BoundarySegment.of(1, 5, 4, 5), // Lower segment
     ])
 })
 

@@ -7,7 +7,7 @@ import { DemoAllFeatures } from './DemoAllFeatures'
 import './App.css'
 
 export const App = () => (
-    <div>
+    <>
         <Routes>
             <Route path="/" element={<Layout />}>
                 <Route index element={<DemoTrackTiles />} />
@@ -17,11 +17,11 @@ export const App = () => (
                 <Route path='all-features' element={<DemoAllFeatures />} />
             </Route>
         </Routes>
-    </div>
+    </>
 )
 
 const Layout = () => (
-    <div id='layout'>
+    <div>
         <nav>
             <ul>
                 <li><Link to="/">Map Coordinates to Tiles</Link></li>

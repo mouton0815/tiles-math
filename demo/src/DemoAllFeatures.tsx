@@ -7,7 +7,7 @@ import { OSMContainer } from './OSMContainer'
 const tileZoom = 14 // VeloViewer and others use zoom-level 14 tiles
 const edgeSize = 12 // Edge length of the map area to be filled with random tiles (should be an even number
 const addDelay = 100 // Delay between adding two random tiles
-const mapCenter : Coords = [51.476, -0.008]
+const areaCenter : Coords = [51.476, -0.008]
 
 type TileContainerProps = {
     tiles: TileSet
@@ -57,7 +57,7 @@ const TileContainer = ({ tiles }: TileContainerProps) => {
 }
 
 export const DemoAllFeatures = () => {
-    const centerTile = coords2tile(mapCenter, tileZoom)
+    const centerTile = coords2tile(areaCenter, tileZoom)
     const leftBorder = centerTile.x - edgeSize / 2
     const upperBorder = centerTile.y - edgeSize / 2
     const mapZoom = tileZoom - Math.ceil(edgeSize / 12) - 1
@@ -80,7 +80,7 @@ export const DemoAllFeatures = () => {
 
     const tileContainer = <TileContainer tiles={tileSet} />
     return (
-        <OSMContainer tileContainer={tileContainer} mapCenter={mapCenter} mapZoom={mapZoom} />
+        <OSMContainer tileContainer={tileContainer} mapZoom={mapZoom} />
     )
 }
 

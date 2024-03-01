@@ -2,7 +2,7 @@ import { ReactElement } from 'react'
 import { MapContainer, TileLayer } from 'react-leaflet'
 import { Coords } from 'tiles-math'
 
-const defaultCenter : Coords = [51.479, -0.008]
+const defaultCenter : Coords = [51.483, -0.008]
 
 type OSMContainerProps = {
     tileContainer: ReactElement
@@ -16,7 +16,7 @@ export const OSMContainer = ({ tileContainer, mapCenter, mapZoom }: OSMContainer
         center={mapCenter || defaultCenter}
         zoom={mapZoom}
         scrollWheelZoom={true}
-        style={{ height: '100%', minWidth: '100%' }}>
+        style={{ height: '100vh', minWidth: '100vw' }}>
         <TileLayer
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

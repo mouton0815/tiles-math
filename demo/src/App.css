@@ -3,9 +3,11 @@ body {
     margin: 0;
     font-family: Arial, Helvetica, sans-serif;
 }
-#layout {
-    height: 100vh;
-    width: 100vw;
+nav {
+    position: fixed;
+    z-index: 1000;
+    width: 100%;
+    text-align: center;
 }
 ul {
     list-style-type: none;
@@ -16,11 +18,11 @@ ul {
 }
 
 li {
-    float: left;
+    display: inline-block;
 }
 
 li a {
-    display: block;
+    display: inline-block;
     color: white;
     text-align: center;
     padding: 10px 25px 10px 25px;
@@ -30,3 +32,9 @@ li a {
 li a:hover {
     background-color: #111111;
 }
+
+.leaflet-control-container {
+    position: absolute;
+    top: 50px;
+}
+

@@ -1,6 +1,6 @@
-///
-/// An edge as part of a {@link ClusterBoundary}.
-///
+/**
+ * An edge as part of a {@link BoundaryPolyline}.
+ */
 export class BoundarySegment {
     x1: number
     y1: number

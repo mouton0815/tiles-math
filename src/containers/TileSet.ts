@@ -4,10 +4,9 @@ import { TileNo } from '../types/TileNo'
 import { Coords } from '../types/Coords'
 import { coords2tile } from '../algorithms/coords2tile'
 
-///
-/// A set of {@link Tile}s stored as columns (x axis) and rows (y axis).
-///
-// TODO: Use key-sorted Set and Map (and get rid of "toSorted" methods)
+/**
+ * A set of {@link Tile}s stored as columns (x axis) and rows (y axis).
+ */
 export class TileSet {
     static EMPTY_SET = new Set<number>()
 
@@ -17,7 +16,10 @@ export class TileSet {
     xSum: number // For calculation ...
     ySum: number // ... of centroid
 
-    /// Constructor.
+    /**
+     * Constructs a {@TileSet} object for the given zoom level.
+     * @param {number} zoom - The {@link Tile} zoom level (often 14).
+     */
     constructor(zoom: number) {
         this.tiles = new Map<number, Set<number>>()
         this.zoom = zoom
@@ -26,8 +28,11 @@ export class TileSet {
         this.ySum = 0
     }
 
-    /// Creates a shallow copy of the passed tile set.
-    /// This is useful for React's useState effect that tests for object identity.
+    /**
+     * Creates a shallow copy of the passed {@link TileSet}.
+     * This is useful for React's useState effect that tests for object identity.
+     * @returns a shallow copy of this object.
+     */
     clone(): TileSet {
         const cloned = new TileSet(this.zoom)
         cloned.tiles = this.tiles
@@ -37,7 +42,11 @@ export class TileSet {
         return cloned
     }
 
-    /// Adds a {@link TileNo} and returns the TileSet object. Duplicate tiles are ignored.
+    /**
+     * Adds a {@link TileNo} and returns this {@link TileSet} object. Duplicate tiles are ignored.
+     * @param {TileNo} tileNo - A tile to add.
+     * @returns this object.
+     */
     addTile({ x, y }: TileNo): this {
         let ySet = this.tiles.get(x)
         if (!ySet) {
@@ -53,7 +62,11 @@ export class TileSet {
         return this
     }
 
-    /// Adds a sequence of {@link TileNo}s and returns the TileSet object
+    /**
+     * Adds a sequence of {@link TileNo}s and returns this {@link TileSet} object.
+     * @param {Iterable<TileNo>} tiles - an iterable object, for example an Array<TileNo>.
+     * @returns this object.
+     */
     addTiles(tiles: Iterable<TileNo>): this {
         for (const tile of tiles) {
             this.addTile(tile)
@@ -61,7 +74,11 @@ export class TileSet {
         return this
     }
 
-    /// Adds a sequence of {@link Coords}s and returns the TileSet object
+    /**
+     * Adds a sequence of {@link Coords} and returns this {@link TileSet} object.
+     * @param {Iterable<Coords>} coords - an iterable object, for example an Array<TileNo>.
+     * @returns this object.
+     */
     addCoords(coords: Iterable<Coords>): this {
         for (const coord of coords) {
             this.addTile(coords2tile(coord, this.zoom))
@@ -69,13 +86,21 @@ export class TileSet {
         return this
     }
 
-    /// Checks it this map contains the tile
+    /**
+     * Checks whether this {@TileSet} contains the given tile.
+     * @param {TileNo} tile - the tile to check for containment.
+     * @returns true if the {@TileSet} contains the given tile, false otherwise.
+     */
     has(tile: TileNo): boolean {
         const ySet = this.tiles.get(tile.x)
         return !!ySet && ySet.has(tile.y)
     }
 
-    /// Merges the other TileSet into this TileSet
+    /**
+     * Merges the other {@link TileSet} into this TileSet. Duplicates are discarded.
+     * @param {TileSet} other - the tile set to be merged into this tile set.
+     * @returns this object.
+     */
     merge(other: TileSet): this {
         if (this.zoom !== other.zoom) {
             throw new Error('Cannot merge tile sets of different zoom levels')
@@ -86,7 +111,11 @@ export class TileSet {
         return this
     }
 
-    /// Returns true iff the tile has one neighbor
+    /**
+     * Returns true iff the passed {@link TileNo} has at least one neighbor (upper, lower, left, or right).
+     * @param {TileNo} tile - the tile to check for neighborhood.
+     * @returns true if this set has a tile that is a direct neighbor of the given tile, false otherwise.
+     */
     hasNeighbor(tile: TileNo): boolean {
         // Upper or lower neighbor
         let ySet = this.tiles.get(tile.x)
@@ -103,8 +132,11 @@ export class TileSet {
         return !!ySet && ySet.has(tile.y)
     }
 
-    /// Returns true iff the tile has four neighbors.
-    /// If true, this tile belongs to a cluster or forms a new one.
+    /**
+     * Returns true iff the passed {@link TileNo} has four neighbors (upper, lower, left, and right).
+     * @param {TileNo} tile - the tile to check for neighborhood.
+     * @returns true if this set has tiles that are direct neighbors of the given tile, false otherwise.
+     */
     hasNeighbors(tile: TileNo): boolean {
         // Upper and lower neighbor
         let ySet = this.tiles.get(tile.x)
@@ -121,8 +153,11 @@ export class TileSet {
         return !!ySet && ySet.has(tile.y)
     }
 
-    /// Returns the centroid (https://en.wikipedia.org/wiki/Centroid) tile of this tile cluster.
-    /// For every tile, its center is used, that is, tile.x + 0.5 and tile.y + 0.5
+    /**
+     * Returns the {@link Centroid} (https://en.wikipedia.org/wiki/Centroid) tile of this {@link TileSet}.
+     * For every tile, its center is used, that is, tile.x + 0.5 and tile.y + 0.5.
+     * @returns the centroid of this tile set.
+     */
     centroid(): Centroid | null {
         if (this.size === 0) {
             return null // Avoid division by 0
@@ -130,10 +165,12 @@ export class TileSet {
         // Round to two decimal places (mainly for stable unit tests)
         const xCenter = Math.round(this.xSum / this.size * 100) / 100
         const yCenter = Math.round(this.ySum / this.size * 100) / 100
-        return Centroid.of(xCenter, yCenter, this.zoom || 0) // zoom is always defined if set is non-empty
+        return Centroid.of(xCenter, yCenter, this.zoom)
     }
 
-    /// Similar to Array.map() function
+    /**
+     * Similar to Array.map() function.
+     */
     map<T>(callback: (tile: Tile, index: number) => T): Array<T> {
         let index = 0
         const results = new Array<T>()
@@ -143,33 +180,49 @@ export class TileSet {
         return results
     }
 
-    /// Returns the set of y coordinates of all tiles with the passed x coordinate.
-    /// The returned set may be empty, but never undefined or null.
+    /**
+     * Returns the set of y coordinates of all tiles with the passed x coordinate.
+     * The returned set may be empty, but never undefined or null.
+     * @param {number} x - the x coordinate.
+     * @returns the set of y coordinates of tiles with the given x coordinate.
+     */
     getYSet(x: number): Set<number> {
         return this.tiles.get(x) || TileSet.EMPTY_SET
     }
 
-    /// Returns all x coordinates of this map in ascending order
+    /**
+     * Returns all x coordinates of this {@link TileSet} in ascending order.
+     * @returns the set of x coordinates of all stored tiles in ascending order.
+     */
     getSortedXs(): Array<number> {
         return Array.from(this.tiles.keys()).toSorted()
     }
 
-    /// Returns all y coordinates for x in ascending order
+    /**
+     * Returns the array of y coordinates of all tiles with the passed x coordinate in ascending order.
+     * The returned array may be empty, but never undefined or null.
+     * @param {number} x - the x coordinate.
+     * @returns the array of y coordinates of tiles with the given x coordinate in ascending order.
+     */
     getSortedYs(x: number): Array<number> {
         return Array.from(this.tiles.get(x) || TileSet.EMPTY_SET).toSorted()
     }
 
-    /// Convenience function
+    /**
+     * Convenience function.
+     */
     toArray(): Array<Tile> {
         return [...this] // Use *[Symbol.iterator]()
     }
 
-    /// Iterates through the tiles in insertion order
-    *[Symbol.iterator]() {
-        const z = this.zoom || 0 // Note: this.zoom is non-null if iterator returns at least on tile
+    /**
+     * Iterates through the tiles in insertion order.
+     * @returns the yielded {@link Tile}.
+     */
+    *[Symbol.iterator]() : Generator<Tile, void, undefined> {
         for (const [x, ySet] of this.tiles) {
             for (const y of ySet) {
-                yield Tile.of(x, y, z)
+                yield Tile.of(x, y, this.zoom)
             }
         }
     }

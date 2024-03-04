@@ -16,10 +16,10 @@ export class TileRectangle {
     /**
      * Constructs a {@link TileRectangle} object.
      * @param x - the x coordinate of the tile in the upper-left rectangle corner.
-     * @param y - the y coordinate of the tile in the upper-left rectangle corner
-     * @param w - the number of horizontal tiles in this rectangle
-     * @param h - the number of vertical tiles in this rectangle
-     * @param z - the zoom level of contained tiles
+     * @param y - the y coordinate of the tile in the upper-left rectangle corner.
+     * @param w - the number of horizontal tiles in this rectangle.
+     * @param h - the number of vertical tiles in this rectangle.
+     * @param z - the zoom level of contained tiles.
      */
     constructor(x: number, y: number, w: number, h: number, z: number) {
         this.x = x
@@ -35,8 +35,8 @@ export class TileRectangle {
 
     /**
      * Checks whether the other rectangle has the same position and size as this rectangle.
-     * @param other - the rectangle to compare
-     * @returns true if both rectangles are equal, false otherwise
+     * @param other - the rectangle to compare.
+     * @returns true if both rectangles are equal, false otherwise.
      */
     equals(other: TileRectangle): boolean {
         return this.x === other.x && this.y === other.y && this.w === other.w && this.h === other.h && this.z === other.z
@@ -44,8 +44,8 @@ export class TileRectangle {
 
     /**
      * Checks whether this rectangle contains the other rectangle (which includes equality).
-     * @param other - the rectangle to check for containment
-     * @returns true if this rectangle contains the other rectangle, false otherwise
+     * @param other - the rectangle to check for containment.
+     * @returns true if this rectangle contains the other rectangle, false otherwise.
      */
     contains(other: TileRectangle): boolean {
         return this.z === other.z && this.x <= other.x && this.y <= other.y && this.x + this.w >= other.x + other.w && this.y + this.h >= other.y + other.h
@@ -53,7 +53,7 @@ export class TileRectangle {
 
     /**
      * Checks whether this rectangle contains the other rectangle (and is not equal).
-     * @param other - the rectangle to check for containment
+     * @param other - the rectangle to check for containment.
      * @returns true if this rectangle strongly contains the other rectangle, false otherwise
      */
     stronglyContains(other: TileRectangle): boolean {
@@ -86,7 +86,7 @@ export class TileRectangle {
 
     /**
      * Computes the bounding box of this rectangle given a zoom level.
-     * @returns the bounding box
+     * @returns the bounding box.
      */
     bounds(): Bounds {
         return [tile2coords(this.x, this.y, this.z), tile2coords(this.x + this.w, this.y + this.h, this.z)]

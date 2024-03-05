@@ -1,5 +1,5 @@
 /**
- * An edge as part of a {@link BoundaryPolyline}.
+ * An edge as part of a {@link BoundaryPolyline} (internal type).
  */
 export class BoundarySegment {
     x1: number

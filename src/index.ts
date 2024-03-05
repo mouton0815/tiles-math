@@ -5,7 +5,6 @@ export { Centroid } from './types/Centroid'
 export { Tile } from './types/Tile'
 export { TileRectangle } from './types/TileRectangle'
 export { TileSquare } from './types/TileSquare'
-export { BoundarySegment } from './types/BoundarySegment'
 
 // Containers
 export { TileSet } from './containers/TileSet'

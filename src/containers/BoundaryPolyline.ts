@@ -7,8 +7,8 @@ import { tile2coords } from '../algorithms/tile2coords'
  * Method {@link positions} returns a sequence of positions that can be passed to Leaflet's Polyline map element.
  */
 export class BoundaryPolyline {
-    segments: Array<BoundarySegment>
-    zoom: number
+    readonly segments: Array<BoundarySegment>
+    readonly zoom: number
 
     /**
      * Initializes a new {@link BoundaryPolyline} with an initial segment.

@@ -10,8 +10,8 @@ import { coords2tile } from '../algorithms/coords2tile'
 export class TileSet {
     static readonly EMPTY_SET = new Set<number>()
 
-    private tiles: Map<number, Set<number>> // Access-optimized tile storage: Map<x, Set<y>>
-    private zoom: number // Zoom factor for all tiles in the set
+    private readonly tiles: Map<number, Set<number>> // Access-optimized tile storage: Map<x, Set<y>>
+    private readonly zoom: number // Zoom factor for all tiles in the set
     private size: number // Number of tiles in this set
     private xSum: number // For calculation ...
     private ySum: number // ... of centroid
@@ -34,12 +34,7 @@ export class TileSet {
      * @returns a shallow copy of this object.
      */
     clone(): TileSet {
-        const cloned = new TileSet(this.zoom)
-        cloned.tiles = this.tiles
-        cloned.size = this.size
-        cloned.xSum = this.xSum
-        cloned.ySum = this.ySum
-        return cloned
+        return Object.assign({}, this)
     }
 
     /**

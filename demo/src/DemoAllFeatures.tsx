@@ -70,7 +70,7 @@ export const DemoAllFeatures = () => {
         // Call useEffect repeatedly to add more random tiles
         const timer = (ms: number) => new Promise(res => setTimeout(res, ms));
         (async function() {
-            while (tileSet.size < areaSize) {
+            while (tileSet.getSize() < areaSize) {
                 const tileNo = { x: leftBorder + randomInt(edgeSize), y: upperBorder + randomInt(edgeSize) }
                 setTileSet(tileSet.addTile(tileNo).clone())
                 await timer(addDelay)

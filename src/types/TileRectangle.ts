@@ -7,11 +7,11 @@ import { tile2coords } from '../algorithms/tile2coords'
  * A rectangle of tiles.
  */
 export class TileRectangle {
-    x: number
-    y: number
-    w: number
-    h: number
-    z: number
+    readonly x: number
+    readonly y: number
+    readonly w: number
+    readonly h: number
+    readonly z: number
 
     /**
      * Constructs a {@link TileRectangle} object.

@@ -6,10 +6,10 @@ import { tile2coords } from '../algorithms/tile2coords'
  * A square of tiles.
  */
 export class TileSquare {
-    x: number
-    y: number
-    s: number
-    z: number
+    readonly x: number
+    readonly y: number
+    readonly s: number
+    readonly z: number
 
     /**
      * Constructs a {@link TileSquare} object.

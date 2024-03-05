@@ -6,9 +6,9 @@ import { TileNo } from './TileNo'
  * A map tile compatible with the conventions of https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames.
  */
 export class Tile implements TileNo {
-    x: number
-    y: number
-    z: number // Zoom
+    readonly x: number
+    readonly y: number
+    readonly z: number
 
     /**
      * Constructs a {@link Tile}.

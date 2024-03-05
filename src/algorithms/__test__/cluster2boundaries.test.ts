@@ -3,8 +3,8 @@ import { TileSet } from '../../containers/TileSet'
 import { cluster2boundaries } from '../cluster2boundaries'
 
 test('cluster2boundaries-empty', () => {
-    const boundaries = cluster2boundaries(new TileSet(0))
-    expect(boundaries.array.length).toBe(0)
+    const array = [...cluster2boundaries(new TileSet(0))]
+    expect(array.length).toBe(0)
 })
 
 test('cluster2boundaries-half-open', () => {

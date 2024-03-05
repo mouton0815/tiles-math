@@ -1,9 +1,13 @@
 import { TileSet } from '../containers/TileSet'
 import { ClusterBoundaries } from '../containers/ClusterBoundaries'
 
-///
-/// Computes the boundary line(s) of the cluster.
-///
+/**
+ * Computes the boundary {@link BoundaryPolyline}(s) of a {@link TileSet} cluster.
+ * A cluster has more than one boundary polyline if it has empty spaces inside.
+ * Each polyline can be mapped to a sequence of {@link Coords} compatible with Leaflet's Polyline map element.
+ * @param cluster - a tile cluster
+ * @returns the set of cluster boundaries (polylines)
+ */
 export function cluster2boundaries(cluster: TileSet): ClusterBoundaries {
     const zoom = cluster.zoom || 0 // zoom is always defined if the TileSet contains at least one tile
     const boundaries = new ClusterBoundaries()

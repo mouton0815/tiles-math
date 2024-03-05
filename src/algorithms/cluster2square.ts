@@ -3,9 +3,11 @@ import { TileRectangle } from '../types/TileRectangle'
 import { TileSet } from '../containers/TileSet'
 import { Centroid } from '../types/Centroid'
 
-///
-/// Finds the maximum square of tiles included in the tile cluster
-///
+/**
+ * Finds the maximum square of tiles included in the {@link TileSet} cluster.
+ * @param cluster - a tile cluster
+ * @returns an object holding the max square of this tile cluster.
+ */
 export function cluster2square(cluster: TileSet): ClusterSquare {
     const state = new MergingState(cluster.zoom, cluster.centroid())
     for (const x of cluster.getSortedXs()) {
@@ -26,8 +28,10 @@ export function cluster2square(cluster: TileSet): ClusterSquare {
     return state.squares
 }
 
-/// Interleaves a range with all ranges of prevColumn.
-/// Adds interleaved ranges to currColumn and to the pool of squares / rectangles.
+/**
+ * Interleaves a range with all ranges of prevColumn.
+ * Adds interleaved ranges to currColumn and to the pool of squares / rectangles.
+ */
 function interleaveRange(range: Range, state: MergingState) {
     const zoom = state.zoom || 0 // At this point, state.zoom is never null
     let maxOverlap = 0 // Maximum overlapping range in previous column
@@ -57,15 +61,19 @@ function interleaveRange(range: Range, state: MergingState) {
     }
 }
 
-// A range of connected tiles within one (width === 1) or more columns.
-/// Ranges are candidates for rectangles .
+/**
+ * A range of connected tiles within one (width === 1) or more columns.
+ * Ranges are candidates for rectangles.
+ */
 type Range = {
     yMin: number,
     yMax: number,
     width: number
 }
 
-/// A sequence of y values within an x column
+/**
+ * A sequence of y values within an x column
+ */
 class Sequence {
     array: Array<number>
     constructor() {
@@ -85,7 +93,9 @@ class Sequence {
     }
 }
 
-/// Holds all data needed by the cluster2square function
+/**
+ * Holds all data needed by the cluster2square function
+ */
 class MergingState {
     zoom: number | null
     squares: ClusterSquare

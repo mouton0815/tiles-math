@@ -3,6 +3,8 @@ import { Centroid } from '../types/Centroid'
 import { TileSquare } from '../types/TileSquare'
 
 /**
+ * Provides the maximum square of a tile cluster computed with {@link cluster2square}.
+ *
  * Because there may be several maximum squares embeddable into the tile cluster,
  * method {@link getCenterSquare} returns the square with the geometric center ({@link Centroid})
  * closest to the centroid of the surrounding tile cluster.

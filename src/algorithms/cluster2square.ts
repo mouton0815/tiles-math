@@ -9,7 +9,7 @@ import { Centroid } from '../types/Centroid'
  * @returns an object holding the max square of this tile cluster.
  */
 export function cluster2square(cluster: TileSet): ClusterSquare {
-    const state = new MergingState(cluster.zoom, cluster.centroid())
+    const state = new MergingState(cluster.getZoom(), cluster.centroid())
     for (const x of cluster.getSortedXs()) {
         state.newColumn(x)
         const sequence = new Sequence()

@@ -9,7 +9,7 @@ import { ClusterBoundaries } from '../containers/ClusterBoundaries'
  * @returns the set of cluster boundaries (polylines)
  */
 export function cluster2boundaries(cluster: TileSet): ClusterBoundaries {
-    const zoom = cluster.zoom || 0 // zoom is always defined if the TileSet contains at least one tile
+    const zoom = cluster.getZoom()
     const boundaries = new ClusterBoundaries()
     for (const x of cluster.getSortedXs()) {
         const ySet = cluster.getYSet(x) // All y coordinates of tiles with x

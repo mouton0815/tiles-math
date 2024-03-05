@@ -18,7 +18,7 @@ test('clone', () => {
     const tile1 = { x: 1, y: 3 }
     const tile2 = { x: 2, y: 3 }
     const tileSet = new TileSet(0).addTiles([tile1, tile2]).clone()
-    expect(tileSet.size).toBe(2)
+    expect(tileSet.getSize()).toBe(2)
     expect(tileSet.has(tile1)).toBe(true)
     expect(tileSet.has(tile2)).toBe(true)
 })
@@ -33,7 +33,7 @@ test('add', () => {
     const tile = { x: 1, y: 3 }
     const tileSet = new TileSet(0).addTile(tile).addTile(tile)
     expect(tileSet.has(tile)).toBe(true)
-    expect(tileSet.size).toBe(1)
+    expect(tileSet.getSize()).toBe(1)
 })
 
 test('merge', () => {
@@ -45,7 +45,7 @@ test('merge', () => {
     const otherMap = new TileSet(0).addTile(tile2).addTile(tile3)
 
     tileSet.merge(otherMap)
-    expect(tileSet.size).toBe(3)
+    expect(tileSet.getSize()).toBe(3)
     expect(tileSet.has(tile1)).toBe(true)
     expect(tileSet.has(tile2)).toBe(true)
     expect(tileSet.has(tile3)).toBe(true)

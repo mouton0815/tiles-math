@@ -7,8 +7,9 @@ import { TileClusters } from '../containers/TileClusters'
  * @returns all tile clusters of the tile set
  */
 export function tiles2clusters(tiles: TileSet): TileClusters {
+    const zoom = tiles.getZoom()
     let clusters = new Array<TileSet>()
-    const detached = new TileSet(tiles.zoom)
+    const detached = new TileSet(zoom)
     for (const tile of tiles) {
         if (tiles.hasNeighbors(tile)) {
             let prevCluster : TileSet | null = null
@@ -28,7 +29,7 @@ export function tiles2clusters(tiles: TileSet): TileClusters {
             })
             if (prevCluster === null) {
                 // Tile has four neighbors, but does not belong to an existing cluster yet
-                clusters.push(new TileSet(tiles.zoom).addTile(tile))
+                clusters.push(new TileSet(tiles.getZoom()).addTile(tile))
             }
         } else {
             detached.addTile(tile)
@@ -37,8 +38,8 @@ export function tiles2clusters(tiles: TileSet): TileClusters {
 
     // Select the cluster with the largest size
     const maxCluster = clusters.reduce((prev, curr) => {
-        return curr.size > prev.size ? curr : prev
-    }, new TileSet(tiles.zoom))
+        return curr.getSize() > prev.getSize() ? curr : prev
+    }, new TileSet(zoom))
 
     // Merge all other cluster candidates (and filter out maxCluster)
     const surrounded = clusters.reduce((prev, curr) => {
@@ -46,11 +47,11 @@ export function tiles2clusters(tiles: TileSet): TileClusters {
             return prev
         }
         // Merge the smaller cluster into the larger one
-        if (prev.size >= curr.size) {
+        if (prev.getSize() >= curr.getSize()) {
             return prev.merge(curr)
         }
         return curr.merge(prev)
-    }, new TileSet(tiles.zoom))
+    }, new TileSet(zoom))
 
     return { detachedTiles: detached, minorClusters: surrounded, maxCluster }
 }

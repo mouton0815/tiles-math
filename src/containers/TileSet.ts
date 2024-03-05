@@ -8,13 +8,13 @@ import { coords2tile } from '../algorithms/coords2tile'
  * A set of {@link Tile}s stored as columns (x axis) and rows (y axis).
  */
 export class TileSet {
-    static EMPTY_SET = new Set<number>()
+    static readonly EMPTY_SET = new Set<number>()
 
-    tiles: Map<number, Set<number>> // Access-optimized tile storage: Map<x, Set<y>>
-    zoom: number // Zoom factor for all tiles in the set
-    size: number // Number of tiles in this set
-    xSum: number // For calculation ...
-    ySum: number // ... of centroid
+    private tiles: Map<number, Set<number>> // Access-optimized tile storage: Map<x, Set<y>>
+    private zoom: number // Zoom factor for all tiles in the set
+    private size: number // Number of tiles in this set
+    private xSum: number // For calculation ...
+    private ySum: number // ... of centroid
 
     /**
      * Constructs a {@TileSet} object for the given zoom level.
@@ -151,6 +151,20 @@ export class TileSet {
         // Right neighbor
         ySet = this.tiles.get(tile.x + 1)
         return !!ySet && ySet.has(tile.y)
+    }
+
+    /**
+     * Returns the number of tiles in this set.
+     */
+    getSize(): number {
+        return this.size
+    }
+
+    /**
+     * Returns the zoom level of the tiles in this set.
+     */
+    getZoom(): number {
+        return this.zoom
     }
 
     /**

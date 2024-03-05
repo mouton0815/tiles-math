@@ -1,9 +1,11 @@
 import { TileSet } from '../containers/TileSet'
 import { TileClusters } from '../containers/TileClusters'
 
-///
-/// Finds all tile clusters in a set of {@link Tile}s and stores them in a {@link TileClusters} object.
-///
+/**
+ * Finds all tile clusters in a {@link TileSet} and stores them in a {@link TileClusters} object.
+ * @param tiles - a tile set
+ * @returns all tile clusters of the tile set
+ */
 export function tiles2clusters(tiles: TileSet): TileClusters {
     let clusters = new Array<TileSet>()
     const detached = new TileSet(tiles.zoom)

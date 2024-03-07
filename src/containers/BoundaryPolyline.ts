@@ -1,4 +1,4 @@
-import { BoundarySegment } from '../types/BoundarySegment'
+import { BoundarySegment } from './BoundarySegment'
 import { Coords } from '../types/Coords'
 import { tile2coords } from '../algorithms/tile2coords'
 import { TileNo } from '../types/TileNo'

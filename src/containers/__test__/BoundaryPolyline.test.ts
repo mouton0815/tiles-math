@@ -1,5 +1,5 @@
 import { BoundaryPolyline } from '../BoundaryPolyline'
-import { BoundarySegment } from '../../types/BoundarySegment'
+import { BoundarySegment } from '../BoundarySegment'
 
 test('boundary-merge-end-left', () => {
     const boundary = new BoundaryPolyline(BoundarySegment.fromLeftEdge(1, 1), 7)

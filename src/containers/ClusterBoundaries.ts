@@ -1,5 +1,5 @@
 import { BoundaryPolyline } from './BoundaryPolyline'
-import { BoundarySegment } from '../types/BoundarySegment'
+import { BoundarySegment } from './BoundarySegment'
 
 /**
  * Contains all {@link BoundaryPolyline}s of the defined the boundaries of a cluster.

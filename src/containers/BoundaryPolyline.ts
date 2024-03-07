@@ -8,7 +8,7 @@ import { TileNo } from '../types/TileNo'
  * Method {@link positions} returns a sequence of positions that can be passed to Leaflet's Polyline map element.
  */
 export class BoundaryPolyline {
-    private readonly segments: Array<BoundarySegment>
+    private readonly points: Array<TileNo>
     private readonly zoom: number
 
     /**
@@ -17,64 +17,59 @@ export class BoundaryPolyline {
      * @param zoom - the zoom level of the tile cluster.
      */
     constructor(segment: BoundarySegment, zoom: number) {
-        this.segments = new Array<BoundarySegment>()
-        this.segments.push(segment)
+        this.points = new Array<TileNo>()
+        this.points.push({ x: segment.x1, y: segment.y1 })
+        this.points.push({ x: segment.x2, y: segment.y2 })
         this.zoom = zoom
     }
 
     /**
-     * Appends the other polyline to this line.
-     * @param other - the line to append.
+     * Appends the other line to this line if the start point of the other line and the end point of this line match.
+     * @param line - the line to append.
+     * @returns true if the line was appended, false otherwise.
      */
-    appendLine(other: BoundaryPolyline) {
-        this.segments.push(...other.segments)
+    tryAppendLine(line: BoundaryPolyline) : boolean {
+        const firstPoint = line.points[0]
+        const lastPoint = this.points[this.points.length - 1] // Array is never empty
+        if (firstPoint.x === lastPoint.x && firstPoint.y === lastPoint.y) {
+            this.points.push(...line.points.slice(1))
+            return true
+        }
+        return false
     }
 
     /**
-     * Prepends the other polyline to this line.
-     * @param other - the line to prepend.
+     * Prepends the other line to this line if the end point of the other line and the start point of this line match.
+     * @param line - the line to prepend.
+     * @returns true if the line was prepended, false otherwise.
      */
-    prependLine(other: BoundaryPolyline) {
-        this.segments.unshift(...other.segments)
-    }
-
-    /**
-     * Checks whether the given {@link BoundarySegment} can be prepended to this polyline.
-     * That is the case if the end position of the other polyline is equal the start position of this polyline.
-     * @param segment - the {@link BoundarySegment} to prepend.
-     * @returns true iff the passed segment can be prepended, false otherwise.
-     */
-    canPrepend(segment: BoundarySegment): boolean {
-        const firstSegment = this.segments[0] // Array is never empty
-        return segment.x2 === firstSegment.x1 && segment.y2 === firstSegment.y1
-    }
-
-    /**
-     * Checks whether the given {@link BoundarySegment} can be appended to this polyline.
-     * That is the case if the start position of the other polyline is equal the end position of this polyline.
-     * @param segment - the {@link BoundarySegment} to append.
-     * @returns true iff the passed segment can be appended, false otherwise.
-     */
-    canAppend(segment: BoundarySegment): boolean {
-        const lastSegment = this.segments[this.segments.length - 1] // Array is never empty
-        return segment.x1 === lastSegment.x2 && segment.y1 === lastSegment.y2
+    tryPrependLine(line: BoundaryPolyline) : boolean {
+        const firstPoint = this.points[0]
+        const lastPoint = line.points[line.points.length - 1] // Array is never empty
+        if (firstPoint.x === lastPoint.x && firstPoint.y === lastPoint.y) {
+            this.points.unshift(...line.points.slice(0, line.points.length - 1))
+            return true
+        }
+        return false
     }
 
     /**
      * Inserts the new segment before the start of this boundary if the end coordinates of the segment
-     * are equal to the start coordinates of the boundary. Returns true in this case and false otherwise.
+     * are equal to the start coordinates of the boundary line. Updates existing point instead of inserting
+     * a new point if the new segment has the same direction as the start of the line.
      * @param segment - the {@link BoundarySegment} to prepend.
-     * @returns true iff the passed segment was prepended, false otherwise.
+     * @returns true if the passed segment was prepended, false otherwise.
      * */
-    tryPrepend(segment: BoundarySegment): boolean {
-        const firstSegment = this.segments[0] // Array is never empty
-        if (segment.x2 === firstSegment.x1 && segment.y2 === firstSegment.y1) {
-            if (segment.x1 === firstSegment.x2) { // segment has same direction as firstSegment: merge
-                firstSegment.y1 = segment.y1
-            } else if (segment.y1 === firstSegment.y2) { // ditto
-                firstSegment.x1 = segment.x1
+    tryPrependSegment(segment: BoundarySegment): boolean {
+        const firstPoint = this.points[0] // Array always has at least two entries
+        if (segment.x2 === firstPoint.x && segment.y2 === firstPoint.y) {
+            const nextPoint = this.points[1]
+            if (segment.x1 === nextPoint.x) { // Segment has same direction as firstSegment: update
+                firstPoint.y = segment.y1
+            } else if (segment.y1 === nextPoint.y) { // ditto
+                firstPoint.x = segment.x1
             } else {
-                this.segments.unshift(segment)
+                this.points.unshift({ x: segment.x1, y: segment.y1 })
             }
             return true
         }
@@ -83,19 +78,21 @@ export class BoundaryPolyline {
 
     /**
      * Appends the new segment to the end of this boundary if the start coordinates of the new segment
-     * are equal to the end coordinates of the boundary. Returns true in this case and false otherwise.
+     * are equal to the end coordinates of the boundary line. Updates existing point instead of inserting
+     * a new point if the new segment has the same direction as the end of the line.
      * @param segment - the {@link BoundarySegment} to append.
-     * @returns true iff the passed segment was appended, false otherwise.
+     * @returns true if the passed segment was appended, false otherwise.
      */
-    tryAppend(segment: BoundarySegment): boolean {
-        const lastSegment = this.segments[this.segments.length - 1] // Array is never empty
-        if (segment.x1 === lastSegment.x2 && segment.y1 === lastSegment.y2) {
-            if (segment.x2 === lastSegment.x1) { // segment has same direction as lastSegment: merge
-                lastSegment.y2 = segment.y2
-            } else if (segment.y2 === lastSegment.y1) { // ditto
-                lastSegment.x2 = segment.x2
+    tryAppendSegment(segment: BoundarySegment): boolean {
+        const lastPoint = this.points[this.points.length - 1] // Array always has at least two entries
+        if (segment.x1 === lastPoint.x && segment.y1 === lastPoint.y) {
+            const prevPoint = this.points[this.points.length - 2]
+            if (segment.x2 === prevPoint.x) { // Segment has same direction as line: update
+                lastPoint.y = segment.y2
+            } else if (segment.y2 === prevPoint.y) { // ditto
+                lastPoint.x = segment.x2
             } else {
-                this.segments.push(segment)
+                this.points.push({ x: segment.x2, y: segment.y2 })
             }
             return true
         }
@@ -107,9 +104,9 @@ export class BoundaryPolyline {
      * @returns true if the polyline is circular, false otherwise.
      */
     isCircular(): boolean {
-        const firstSegment = this.segments[0]
-        const lastSegment = this.segments[this.segments.length - 1]
-        return firstSegment.x1 === lastSegment.x2 && firstSegment.y1 === lastSegment.y2
+        const firstPoint = this.points[0]
+        const lastPoint = this.points[this.points.length - 1]
+        return firstPoint.x === lastPoint.x && firstPoint.y === lastPoint.y
     }
 
     /**
@@ -128,13 +125,8 @@ export class BoundaryPolyline {
      * @returns the yielded {@link TileNo}.
      */
     *[Symbol.iterator]() : Generator<TileNo, void, undefined> {
-        let first = true
-        for (const segment of this.segments) {
-            if (first) {
-                yield { x: segment.x1, y: segment.y1 }
-                first = false
-            }
-            yield { x: segment.x2, y: segment.y2 }
+        for (const point of this.points) {
+            yield point
         }
     }
 }

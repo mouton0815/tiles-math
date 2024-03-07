@@ -2,10 +2,10 @@
  * An edge as part of a {@link BoundaryPolyline} (internal type).
  */
 export class BoundarySegment {
-    x1: number
-    y1: number
-    x2: number
-    y2: number
+    readonly x1: number
+    readonly y1: number
+    readonly x2: number
+    readonly y2: number
 
     constructor(x1: number, y1: number, x2: number, y2: number) {
         this.x1 = x1

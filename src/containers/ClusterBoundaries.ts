@@ -36,8 +36,14 @@ export class ClusterBoundaries {
      */
     private prepend(segment: BoundarySegment, zoom: number) {
         for (const [index, line] of this.array.entries()) {
-            if (line.tryPrepend(segment)) {
-                this.tryAppend(segment, index)
+            if (line.tryPrependSegment(segment)) {
+                // Check if this line can be appended to another line
+                for (const [otherIndex, otherLine] of this.array.entries()) {
+                    if (otherIndex !== index && otherLine.tryAppendLine(line)) {
+                        this.array.splice(index, 1) // Line appended to another line, delete it
+                        break
+                    }
+                }
                 return
             }
         }
@@ -51,38 +57,18 @@ export class ClusterBoundaries {
      */
     private append(segment: BoundarySegment, zoom: number) {
         for (const [index, line] of this.array.entries()) {
-            if (line.tryAppend(segment)) {
-                this.tryPrepend(segment, index)
+            if (line.tryAppendSegment(segment)) {
+                // Check if this line can be prepended to another line
+                for (const [otherIndex, otherLine] of this.array.entries()) {
+                    if (otherIndex !== index && otherLine.tryPrependLine(line)) {
+                        this.array.splice(index, 1) // Line prepended to another line, delete it
+                        break
+                    }
+                }
                 return
             }
         }
         this.array.push(new BoundaryPolyline(segment, zoom))
-    }
-
-    /**
-     * Tries to prepend the line with otherIndex to another existing line.
-     */
-    private tryPrepend(segment: BoundarySegment, otherIndex: number) {
-        for (const [index, line] of this.array.entries()) {
-            if (index !== otherIndex && line.canPrepend(segment)) {
-                line.prependLine(this.array[otherIndex]) // Prepend other line to this line
-                this.array.splice(otherIndex, 1) // Delete other line
-                break
-            }
-        }
-    }
-
-    /**
-     * Tries to append the line with otherIndex to another existing line.
-     */
-    private tryAppend(segment: BoundarySegment, otherIndex: number) {
-        for (const [index, line] of this.array.entries()) {
-            if (index !== otherIndex && line.canAppend(segment)) {
-                line.appendLine(this.array[otherIndex]) // Append other line to this line
-                this.array.splice(otherIndex, 1) // Delete other line
-                break
-            }
-        }
     }
 
     /**

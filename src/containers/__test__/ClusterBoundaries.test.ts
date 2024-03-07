@@ -1,4 +1,3 @@
-import { BoundarySegment } from '../../types/BoundarySegment'
 import { ClusterBoundaries } from '../ClusterBoundaries'
 
 test('boundary-boundaries-outer-inner', () => {
@@ -26,17 +25,19 @@ test('boundary-boundaries-outer-inner', () => {
     const array = [...boundaries]
     expect(array.length).toBe(2)
     // Outer boundary
-    expect(array[0].segments).toEqual([
-        BoundarySegment.of(4, 4, 4, 1), // Right segment
-        BoundarySegment.of(4, 1, 1, 1), // Upper segment
-        BoundarySegment.of(1, 1, 1, 4), // Left segment
-        BoundarySegment.of(1, 4, 4, 4), // Lower segment
+    expect([...array[0]]).toEqual([
+        { x: 4, y: 4 }, // Lower right
+        { x: 4, y: 1 }, // Upper right
+        { x: 1, y: 1 }, // Upper left
+        { x: 1, y: 4 }, // Lower left
+        { x: 4, y: 4 }, // Circle
     ])
     // Inner boundary
-    expect(array[1].segments).toEqual([
-        BoundarySegment.of(3, 3, 2, 3), // Lower segment
-        BoundarySegment.of(2, 3, 2, 2), // Left segment
-        BoundarySegment.of(2, 2, 3, 2), // Upper segment
-        BoundarySegment.of(3, 2, 3, 3), // Right segment
+    expect([...array[1]]).toEqual([
+        { x: 3, y: 3 }, // Lower right
+        { x: 2, y: 3 }, // Lower left
+        { x: 2, y: 2 }, // Upper left
+        { x: 3, y: 2 }, // Upper right
+        { x: 3, y: 3 }, // Circle
     ])
 })

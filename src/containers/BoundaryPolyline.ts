@@ -1,14 +1,15 @@
 import { BoundarySegment } from '../types/BoundarySegment'
 import { Coords } from '../types/Coords'
 import { tile2coords } from '../algorithms/tile2coords'
+import { TileNo } from '../types/TileNo'
 
 /**
  * A polyline representing the boundaries of a tile cluster.
  * Method {@link positions} returns a sequence of positions that can be passed to Leaflet's Polyline map element.
  */
 export class BoundaryPolyline {
-    readonly segments: Array<BoundarySegment>
-    readonly zoom: number
+    private readonly segments: Array<BoundarySegment>
+    private readonly zoom: number
 
     /**
      * Initializes a new {@link BoundaryPolyline} with an initial segment.
@@ -116,14 +117,24 @@ export class BoundaryPolyline {
      */
     positions(): Array<Coords> {
         const results = new Array<Coords>()
+        for (const { x, y } of this) { // Use Symbol.iterator
+            results.push(tile2coords(x, y, this.zoom))
+        }
+        return results
+    }
+
+    /**
+     * Iterates through the {@link TileNo} positions of this line.
+     * @returns the yielded {@link TileNo}.
+     */
+    *[Symbol.iterator]() : Generator<TileNo, void, undefined> {
         let first = true
         for (const segment of this.segments) {
             if (first) {
-                results.push(tile2coords(segment.x1, segment.y1, this.zoom))
+                yield { x: segment.x1, y: segment.y1 }
                 first = false
             }
-            results.push(tile2coords(segment.x2, segment.y2, this.zoom))
+            yield { x: segment.x2, y: segment.y2 }
         }
-        return results
     }
 }

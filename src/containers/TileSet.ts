@@ -34,7 +34,9 @@ export class TileSet {
      * @returns a shallow copy of this object.
      */
     clone(): TileSet {
-        return Object.assign({}, this)
+        const cloned = new TileSet(this.zoom)
+        Object.assign(cloned, this)
+        return cloned
     }
 
     /**

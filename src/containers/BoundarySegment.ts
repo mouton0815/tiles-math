@@ -14,10 +14,6 @@ export class BoundarySegment {
         this.y2 = y2
     }
 
-    static of(x1: number, y1: number, x2: number, y2: number): BoundarySegment {
-        return new BoundarySegment(x1, y1, x2, y2)
-    }
-
     static fromUpperEdge(x: number, y: number): BoundarySegment {
         return new BoundarySegment(x + 1, y, x, y) // Points to the left
     }

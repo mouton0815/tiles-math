@@ -9,7 +9,7 @@ import { TileClusters } from '../containers/TileClusters'
 export function tiles2clusters(tiles: TileSet): TileClusters {
     const zoom = tiles.getZoom()
     let clusters = new Array<TileSet>()
-    const detached = new TileSet(zoom)
+    const detachedTiles = new TileSet(zoom)
     for (const tile of tiles) {
         if (tiles.hasNeighbors(tile)) {
             let prevCluster : TileSet | null = null
@@ -29,10 +29,10 @@ export function tiles2clusters(tiles: TileSet): TileClusters {
             })
             if (prevCluster === null) {
                 // Tile has four neighbors, but does not belong to an existing cluster yet
-                clusters.push(new TileSet(tiles.getZoom()).addTile(tile))
+                clusters.push(new TileSet(zoom).addTile(tile))
             }
         } else {
-            detached.addTile(tile)
+            detachedTiles.addTile(tile)
         }
     }
 
@@ -42,7 +42,7 @@ export function tiles2clusters(tiles: TileSet): TileClusters {
     }, new TileSet(zoom))
 
     // Merge all other cluster candidates (and filter out maxCluster)
-    const surrounded = clusters.reduce((prev, curr) => {
+    const minorClusters = clusters.reduce((prev, curr) => {
         if (curr === maxCluster) {
             return prev
         }
@@ -53,5 +53,5 @@ export function tiles2clusters(tiles: TileSet): TileClusters {
         return curr.merge(prev)
     }, new TileSet(zoom))
 
-    return { detachedTiles: detached, minorClusters: surrounded, maxCluster }
+    return { detachedTiles, minorClusters, maxCluster }
 }

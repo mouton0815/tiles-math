@@ -1,0 +1,10 @@
+{
+  "name": "tiles-math-perf",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "perf.js",
+  "license": "ISC",
+  "dependencies": {
+    "tiles-math": "file:.."
+  }
+}

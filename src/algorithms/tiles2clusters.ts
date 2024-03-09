@@ -15,8 +15,7 @@ export function tiles2clusters(tiles: TileSet): TileClusters {
     for (const x of tiles.getSortedXs()) {
         for (const y of tiles.getSortedYs(x)) {
             const tile : TileNo = { x, y }
-            // Remove every cluster that cannot contain any further processed tile
-            // because there is a gap between x and the right-most tile  of the cluster.
+            // Remove every cluster that cannot contain any further processed tile with larger x and y values
             activeClusters = activeClusters.filter(cluster => {
                 if (cluster.isOutside(tile)) {
                     closedClusters.push(cluster)
@@ -49,7 +48,7 @@ export function tiles2clusters(tiles: TileSet): TileClusters {
             }
         }
     }
-    activeClusters.push(...closedClusters)
+    activeClusters.unshift(...closedClusters)
 
     // Select the cluster with the largest size
     const maxCluster = activeClusters.reduce((prev, curr) => {

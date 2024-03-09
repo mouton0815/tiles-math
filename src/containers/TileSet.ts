@@ -15,6 +15,7 @@ export class TileSet {
     private size: number // Number of tiles in this set
     private xSum: number // For calculation ...
     private ySum: number // ... of centroid
+    private marginRight: number
 
     /**
      * Constructs a {@TileSet} object for the given zoom level.
@@ -26,6 +27,7 @@ export class TileSet {
         this.size = 0
         this.xSum = 0
         this.ySum = 0
+        this.marginRight = 0
     }
 
     /**
@@ -56,6 +58,7 @@ export class TileSet {
         this.xSum += (x + 0.5) // Use the "center" of every tile to sum up the ...
         this.ySum += (y + 0.5) // ... cluster axes for later centroid calculation
         this.size++
+        this.marginRight = Math.max(this.marginRight, x + 1)
         return this
     }
 
@@ -148,6 +151,13 @@ export class TileSet {
         // Right neighbor
         ySet = this.tiles.get(tile.x + 1)
         return !!ySet && ySet.has(tile.y)
+    }
+
+    /**
+     * Returns true iff the right edge of the right-most tile is to the left of x
+     */
+    isLeftOf(x: number): boolean {
+        return this.marginRight < x
     }
 
     /**

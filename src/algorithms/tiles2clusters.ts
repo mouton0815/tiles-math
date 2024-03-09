@@ -13,17 +13,17 @@ export function tiles2clusters(tiles: TileSet): TileClusters {
     const closedClusters = new Array<Cluster>()
     const detachedTiles = new TileSet(zoom)
     for (const x of tiles.getSortedXs()) {
-        // Remove every cluster that cannot contain any further processed tile
-        // because there is a gap between x and the right-most tile  of the cluster.
-        activeClusters = activeClusters.filter(cluster => {
-            if (cluster.isLeftOf(x)) {
-                closedClusters.push(cluster)
-                return false
-            }
-            return true
-        })
         for (const y of tiles.getSortedYs(x)) {
             const tile : TileNo = { x, y }
+            // Remove every cluster that cannot contain any further processed tile
+            // because there is a gap between x and the right-most tile  of the cluster.
+            activeClusters = activeClusters.filter(cluster => {
+                if (cluster.isOutside(tile)) {
+                    closedClusters.push(cluster)
+                    return false
+                }
+                return true
+            })
             if (tiles.hasNeighbors(tile)) {
                 let prevCluster : Cluster | null = null
                 // Use filter function to allow in-place deletion of merged clusters
@@ -74,16 +74,19 @@ export function tiles2clusters(tiles: TileSet): TileClusters {
 class Cluster {
     tiles: TileSet
     private marginRight: number
+    private marginBelow: number
     constructor(tile: TileNo, zoom: number) {
         this.tiles = new TileSet(zoom).addTile(tile)
         this.marginRight = tile.x + 1
+        this.marginBelow = tile.y + 1
     }
     addTile(tile: TileNo) {
         this.tiles.addTile(tile)
         this.marginRight = Math.max(this.marginRight, tile.x + 1)
+        this.marginBelow = Math.max(this.marginBelow, tile.y + 1)
     }
-    isLeftOf(x: number): boolean {
-        return this.marginRight < x
+    isOutside({ x, y }: TileNo): boolean {
+        return this.marginRight < x || this.marginBelow < y
     }
     merge(other: Cluster) {
         for (const tile of other.tiles) {

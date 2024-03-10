@@ -38,12 +38,7 @@ export class ClusterBoundaries {
         for (const [index, line] of this.array.entries()) {
             if (line.tryPrependSegment(segment)) {
                 // Check if this line can be appended to another line
-                for (const [otherIndex, otherLine] of this.array.entries()) {
-                    if (otherIndex !== index && otherLine.tryAppendLine(line)) {
-                        this.array.splice(index, 1) // Line appended to another line, delete it
-                        break
-                    }
-                }
+                this.tryAppendLine(line, index)
                 return
             }
         }
@@ -59,16 +54,31 @@ export class ClusterBoundaries {
         for (const [index, line] of this.array.entries()) {
             if (line.tryAppendSegment(segment)) {
                 // Check if this line can be prepended to another line
-                for (const [otherIndex, otherLine] of this.array.entries()) {
-                    if (otherIndex !== index && otherLine.tryPrependLine(line)) {
-                        this.array.splice(index, 1) // Line prepended to another line, delete it
-                        break
-                    }
-                }
+                this.tryPrependLine(line, index)
                 return
             }
         }
         this.array.push(new BoundaryPolyline(segment, zoom))
+    }
+
+    // TODO: Documentation
+    private tryAppendLine(line: BoundaryPolyline, index: number) {
+        for (const [otherIndex, otherLine] of this.array.entries()) {
+            if (otherIndex !== index && otherLine.tryAppendLine(line)) {
+                this.array.splice(index, 1) // Line appended to another line, delete it
+                break
+            }
+        }
+    }
+
+    // TODO: Documentation
+    private tryPrependLine(line: BoundaryPolyline, index: number) {
+        for (const [otherIndex, otherLine] of this.array.entries()) {
+            if (otherIndex !== index && otherLine.tryPrependLine(line)) {
+                this.array.splice(index, 1) // Line prepended to another line, delete it
+                break
+            }
+        }
     }
 
     /**

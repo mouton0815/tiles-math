@@ -15,7 +15,7 @@ export function tiles2clusters(tiles: TileSet): TileClusters {
     for (const x of tiles.getSortedXs()) {
         // Remove every cluster that cannot contain any further processed tile with larger x values
         activeClusters = activeClusters.filter(cluster => {
-            if (cluster.isClosed(x)) {
+            if (cluster.isLeftOf(x)) {
                 closedClusters.push(cluster)
                 return false
             }
@@ -81,7 +81,7 @@ class Cluster {
         this.tiles.addTile(tile)
         this.marginRight = Math.max(this.marginRight, tile.x + 1)
     }
-    isClosed(x: number): boolean {
+    isLeftOf(x: number): boolean {
         return this.marginRight < x
     }
     merge(other: Cluster) {

@@ -6,7 +6,7 @@ test('cluster2boundaries-empty', () => {
     expect(lines.length).toBe(0)
 })
 
-test('cluster2boundaries-half-open', () => {
+test('cluster2boundaries-simple', () => {
     //     1
     // 1 | x |
     const cluster = new TileSet(0).addTile({ x: 1, y: 1 })
@@ -119,6 +119,60 @@ test('cluster2boundaries-inner-outer', () => {
     ])
     // Inner boundary
     expect([...lines[1]]).toEqual([
+        { x: 4, y: 3 },
+        { x: 2, y: 3 },
+        { x: 2, y: 2 },
+        { x: 4, y: 2 },
+        { x: 4, y: 3 },
+    ])
+})
+
+test('cluster2boundaries-two-inner', () => {
+    //     1   2   3   4
+    // 1 | x | x | x | x |
+    // 2 | x |   |   | x |
+    // 3 | x | x | x | x |
+    // 4 | x |   | x | x |
+    // 5 | x | x | x | x |
+    const cluster = new TileSet(0).addTiles([
+        { x: 1, y: 1 },
+        { x: 1, y: 2 },
+        { x: 1, y: 3 },
+        { x: 1, y: 4 },
+        { x: 1, y: 5 },
+        { x: 2, y: 1 },
+        { x: 2, y: 3 },
+        { x: 2, y: 5 },
+        { x: 3, y: 1 },
+        { x: 3, y: 3 },
+        { x: 3, y: 4 },
+        { x: 3, y: 5 },
+        { x: 4, y: 1 },
+        { x: 4, y: 2 },
+        { x: 4, y: 3 },
+        { x: 4, y: 4 },
+        { x: 4, y: 5 },
+    ])
+    const lines = [...cluster2boundaries(cluster)]
+    expect(lines.length).toBe(3)
+    // Inner boundary 1
+    expect([...lines[0]]).toEqual([
+        { x: 3, y: 5 },
+        { x: 2, y: 5 },
+        { x: 2, y: 4 },
+        { x: 3, y: 4 },
+        { x: 3, y: 5 },
+    ])
+    // Outer boundary
+    expect([...lines[1]]).toEqual([
+        { x: 5, y: 6 },
+        { x: 5, y: 1 },
+        { x: 1, y: 1 },
+        { x: 1, y: 6 },
+        { x: 5, y: 6 },
+    ])
+    // Inner boundary 2
+    expect([...lines[2]]).toEqual([
         { x: 4, y: 3 },
         { x: 2, y: 3 },
         { x: 2, y: 2 },

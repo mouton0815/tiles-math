@@ -12,6 +12,7 @@ export function cluster2boundaries(cluster: TileSet): ClusterBoundaries {
     const zoom = cluster.getZoom()
     const boundaries = new ClusterBoundaries()
     for (const x of cluster.getSortedXs()) {
+        boundaries.closeLeftOf(x)
         const ySet = cluster.getYSet(x) // All y coordinates of tiles with x
         const ySetL = cluster.getYSet(x - 1) // Left neighbors
         const ySetR = cluster.getYSet(x + 1) // Right neighbors

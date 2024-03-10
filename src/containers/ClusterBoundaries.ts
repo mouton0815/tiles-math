@@ -2,15 +2,44 @@ import { BoundaryPolyline } from './BoundaryPolyline'
 import { BoundarySegment } from './BoundarySegment'
 
 /**
+ * Helper class that wraps a polyline and holds the right-most point of the line.
+ * The latter is used for excluding lines from attempts to join new lines to existing ones.
+ */
+class LineWrapper {
+    line: BoundaryPolyline
+    marginRight: number
+    constructor(segment: BoundarySegment, zoom: number) {
+        this.line = new BoundaryPolyline(segment, zoom)
+        this.marginRight = Math.max(segment.x1, segment.x2)
+    }
+    tryPrependSegment(segment: BoundarySegment): boolean {
+        if (this.line.tryPrependSegment(segment)) {
+            this.marginRight = Math.max(this.marginRight, Math.max(segment.x1, segment.x2))
+            return true
+        }
+        return false
+    }
+    tryAppendSegment(segment: BoundarySegment): boolean {
+        if (this.line.tryAppendSegment(segment)) {
+            this.marginRight = Math.max(this.marginRight, Math.max(segment.x1, segment.x2))
+            return true
+        }
+        return false
+    }
+}
+
+/**
  * Contains all {@link BoundaryPolyline}s of the defined the boundaries of a cluster.
  * Objects of this class are created by algorithm {@link cluster2boundaries}.
  * For consumers, read-only access is recommended.
  */
 export class ClusterBoundaries {
-    private readonly array: Array<BoundaryPolyline>
+    private readonly closed: Array<BoundaryPolyline>
+    private active: Array<LineWrapper>
 
     constructor() {
-        this.array = new Array<BoundaryPolyline>()
+        this.closed = new Array<BoundaryPolyline>()
+        this.active = new Array<LineWrapper>()
     }
 
     addUpperEdge(x: number, y: number, zoom: number) {
@@ -35,14 +64,14 @@ export class ClusterBoundaries {
      * Otherwise, the method creates a new polyline with the segment.
      */
     private prepend(segment: BoundarySegment, zoom: number) {
-        for (const [index, line] of this.array.entries()) {
-            if (line.tryPrependSegment(segment)) {
+        for (const [index, wrapper] of this.active.entries()) {
+            if (wrapper.tryPrependSegment(segment)) {
                 // Check if this line can be appended to another line
-                this.tryAppendLine(line, index)
+                this.tryAppendLine(wrapper.line, index)
                 return
             }
         }
-        this.array.push(new BoundaryPolyline(segment, zoom))
+        this.active.push(new LineWrapper(segment, zoom))
     }
 
     /**
@@ -51,34 +80,61 @@ export class ClusterBoundaries {
      * Otherwise, the method creates a new polyline with the segment.
      */
     private append(segment: BoundarySegment, zoom: number) {
-        for (const [index, line] of this.array.entries()) {
-            if (line.tryAppendSegment(segment)) {
+        for (const [index, wrapper] of this.active.entries()) {
+            if (wrapper.tryAppendSegment(segment)) {
                 // Check if this line can be prepended to another line
-                this.tryPrependLine(line, index)
+                this.tryPrependLine(wrapper.line, index)
                 return
             }
         }
-        this.array.push(new BoundaryPolyline(segment, zoom))
+        this.active.push(new LineWrapper(segment, zoom))
     }
 
-    // TODO: Documentation
+    /**
+     * Tries to append the passed line to any of the other processed lines.
+     * Lines left of the current x position are not part of the array anymore,
+     * see method {@link closeLeftOf}.
+     * @param line - the line that shall be appended.
+     * @param index - the index of the line in array {@link active}.
+     */
     private tryAppendLine(line: BoundaryPolyline, index: number) {
-        for (const [otherIndex, otherLine] of this.array.entries()) {
-            if (otherIndex !== index && otherLine.tryAppendLine(line)) {
-                this.array.splice(index, 1) // Line appended to another line, delete it
+        for (const [otherIndex, otherWrapper] of this.active.entries()) {
+            if (otherIndex !== index && otherWrapper.line.tryAppendLine(line)) {
+                this.active.splice(index, 1) // Line appended to another line, delete it
                 break
             }
         }
     }
 
-    // TODO: Documentation
+    /**
+     * Tries to prepend the passed line to any of the other processed lines.
+     * Lines left of the current x position are not part of the array anymore,
+     * see method {@link closeLeftOf}.
+     * @param line - the line that shall be prepended.
+     * @param index - the index of the line in array {@link active}.
+     */
     private tryPrependLine(line: BoundaryPolyline, index: number) {
-        for (const [otherIndex, otherLine] of this.array.entries()) {
-            if (otherIndex !== index && otherLine.tryPrependLine(line)) {
-                this.array.splice(index, 1) // Line prepended to another line, delete it
+        for (const [otherIndex, otherWrapper] of this.active.entries()) {
+            if (otherIndex !== index && otherWrapper.line.tryPrependLine(line)) {
+                this.active.splice(index, 1) // Line prepended to another line, delete it
                 break
             }
         }
+    }
+
+    /**
+     * Move all lines from array {@link active} to array {@link closed} whose right-most x position
+     * is left of the passed x coordinate. Such lines cannot be candiates for joining.
+     * @param x - the x coordinate to be compared with.
+     */
+    closeLeftOf(x: number) {
+        this.active = this.active.filter(wrapper => {
+            if (wrapper.marginRight < x) {
+                this.closed.push(wrapper.line)
+                return false
+            }
+            return true
+        })
     }
 
     /**
@@ -97,8 +153,11 @@ export class ClusterBoundaries {
      * Iterates through the {@link BoundaryPolyline}s in creation order.
      */
     *[Symbol.iterator]() : Generator<BoundaryPolyline, void, undefined> {
-        for (const line of this.array) {
+        for (const line of this.closed) {
             yield line
+        }
+        for (const wrapper of this.active) {
+            yield wrapper.line
         }
     }
 }

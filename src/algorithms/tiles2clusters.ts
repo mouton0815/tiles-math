@@ -55,6 +55,17 @@ export function tiles2clusters(tiles: TileSet): TileClusters {
         return curr.tiles.getSize() > prev.getSize() ? curr.tiles : prev
     }, new TileSet(zoom))
 
+    // Creates a new TileSet consisting of all tiles of this set plus their direct neighbors.
+    // This is useful for computation of the max square, which covers the max cluster *with* neighbors.
+    const maxClusterEx = new TileSet(zoom)
+    for (const { x, y } of maxCluster) {
+        maxClusterEx.addTile({ x, y })
+        maxClusterEx.addTile({ x: x - 1, y })
+        maxClusterEx.addTile({ x: x + 1, y })
+        maxClusterEx.addTile({ x, y: y - 1 })
+        maxClusterEx.addTile({ x, y: y + 1 })
+    }
+
     // Merge all other cluster candidates (and filter out maxCluster)
     const minorClusters = activeClusters.reduce((prev, curr) => {
         if (curr.tiles === maxCluster) {
@@ -67,7 +78,7 @@ export function tiles2clusters(tiles: TileSet): TileClusters {
         return curr.tiles.merge(prev)
     }, new TileSet(zoom))
 
-    return { detachedTiles, minorClusters, maxCluster }
+    return { detachedTiles, minorClusters, maxCluster, maxClusterEx }
 }
 
 class Cluster {

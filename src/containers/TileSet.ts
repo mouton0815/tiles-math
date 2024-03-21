@@ -3,6 +3,33 @@ import { Centroid } from '../types/Centroid'
 import { TileNo } from '../types/TileNo'
 import { Coords } from '../types/Coords'
 import { coords2tile } from '../algorithms/coords2tile'
+import { TileRectangle } from '../types/TileRectangle'
+
+
+/**
+ * Helper class for bounding-box computation.
+ */
+class BoundingBox {
+    private x1: number
+    private y1: number
+    private x2: number
+    private y2: number
+    constructor() {
+        this.x1 = Number.MAX_SAFE_INTEGER
+        this.y1 = Number.MAX_SAFE_INTEGER
+        this.x2 = Number.MIN_SAFE_INTEGER
+        this.y2 = Number.MIN_SAFE_INTEGER
+    }
+    expand({ x, y }: TileNo) {
+        this.x1 = Math.min(x, this.x1)
+        this.y1 = Math.min(y, this.y1)
+        this.x2 = Math.max(x, this.x2)
+        this.y2 = Math.max(y, this.y2)
+    }
+    getRectangle(margin: number, zoom: number): TileRectangle {
+        return new TileRectangle(this.x1 - margin, this.y1 - margin, this.x2 - this.x1 + 2 * margin + 1, this.y2 - this.y1 + 2 * margin + 1, zoom)
+    }
+}
 
 /**
  * A set of {@link Tile}s stored as columns (x axis) and rows (y axis).
@@ -15,6 +42,7 @@ export class TileSet {
     private size: number // Number of tiles in this set
     private xSum: number // For calculation ...
     private ySum: number // ... of centroid
+    private box: BoundingBox
 
     /**
      * Constructs a {@TileSet} object for the given zoom level.
@@ -26,6 +54,7 @@ export class TileSet {
         this.size = 0
         this.xSum = 0
         this.ySum = 0
+        this.box = new BoundingBox()
     }
 
     /**
@@ -53,9 +82,10 @@ export class TileSet {
         }
         ySet.add(y)
         this.tiles.set(x, ySet)
+        this.size++
         this.xSum += (x + 0.5) // Use the "center" of every tile to sum up the ...
         this.ySum += (y + 0.5) // ... cluster axes for later centroid calculation
-        this.size++
+        this.box.expand({ x, y })
         return this
     }
 
@@ -177,6 +207,15 @@ export class TileSet {
         const xCenter = Math.round(this.xSum / this.size * 100) / 100
         const yCenter = Math.round(this.ySum / this.size * 100) / 100
         return Centroid.of(xCenter, yCenter, this.zoom)
+    }
+
+    /**
+     * Returns the bounding box of this {@link TileSet}.
+     * This is useful for getting the map boundaries by calling {@link TileRectangle.bounds}.
+     * @param margin - number of tiles to add as extra margin
+     */
+    boundingBox(margin: number = 0): TileRectangle | null {
+        return this.size === 0 ? null : this.box.getRectangle(margin, this.zoom)
     }
 
     /**

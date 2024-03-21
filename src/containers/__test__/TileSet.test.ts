@@ -2,6 +2,7 @@ import { TileSet } from '../TileSet'
 import { Tile } from '../../types/Tile'
 import { TileNo } from '../../types/TileNo'
 import { Centroid } from '../../types/Centroid'
+import { TileRectangle } from '../../types/TileRectangle'
 
 /*
 function compareTiles(a: Point, b: Point): number {
@@ -115,6 +116,25 @@ test('centroid', () => {
     expect(tileSet.centroid()).toEqual(Centroid.of(3.86, 3.29, 7))
     tileSet.addTile({ x: 6, y: 1 })
     expect(tileSet.centroid()).toEqual(Centroid.of(4.03, 3.17, 7))
+})
+
+test('boundingBox', () => {
+    //     1   2   3
+    // 1 |   | x |   |
+    // 2 | x |   | x |
+    // 3 |   | x |   |
+    // 4 | x |   |   |
+    const tileSet = new TileSet(0)
+    expect(tileSet.boundingBox()).toBe(null)
+    tileSet.addTile({ x: 1, y: 4 })
+    expect(tileSet.boundingBox()).toEqual(TileRectangle.of(1, 4, 1, 1, 0))
+    expect(tileSet.boundingBox(1)).toEqual(TileRectangle.of(0, 3, 3, 3, 0))
+    tileSet.addTile({ x: 1, y: 2 })
+    tileSet.addTile({ x: 2, y: 1 })
+    tileSet.addTile({ x: 2, y: 3 })
+    tileSet.addTile({ x: 3, y: 2 })
+    expect(tileSet.boundingBox()).toEqual(TileRectangle.of(1, 1, 3, 4, 0))
+    expect(tileSet.boundingBox(2)).toEqual(TileRectangle.of(-1, -1, 7, 8, 0))
 })
 
 test('map', () => {

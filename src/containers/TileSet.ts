@@ -5,6 +5,36 @@ import { Coords } from '../types/Coords'
 import { coords2tile } from '../algorithms/coords2tile'
 import { TileRectangle } from '../types/TileRectangle'
 
+/**
+ * Helper class for tracking the number of tiles and summing up values fo centroid computation.
+ */
+class SetStats {
+    private size: number
+    private xSum: number
+    private ySum: number
+    constructor() {
+        this.size = 0
+        this.xSum = 0
+        this.ySum = 0
+    }
+    addTile(x: number, y: number) {
+        this.size++
+        this.xSum += (x + 0.5) // Use the "center" of every tile to sum up the ...
+        this.ySum += (y + 0.5) // ... cluster axes for later centroid calculation
+    }
+    getSize(): number {
+        return this.size
+    }
+    getCentroid(zoom: number): Centroid | null {
+        if (this.size === 0) {
+            return null // Avoid division by 0
+        }
+        // Round to two decimal places (mainly for stable unit tests)
+        const xCenter = Math.round(this.xSum / this.size * 100) / 100
+        const yCenter = Math.round(this.ySum / this.size * 100) / 100
+        return Centroid.of(xCenter, yCenter, zoom)
+    }
+}
 
 /**
  * Helper class for bounding-box computation.
@@ -20,13 +50,16 @@ class BoundingBox {
         this.x2 = Number.MIN_SAFE_INTEGER
         this.y2 = Number.MIN_SAFE_INTEGER
     }
-    expand({ x, y }: TileNo) {
+    addTile(x: number, y: number) {
         this.x1 = Math.min(x, this.x1)
         this.y1 = Math.min(y, this.y1)
         this.x2 = Math.max(x, this.x2)
         this.y2 = Math.max(y, this.y2)
     }
-    getRectangle(margin: number, zoom: number): TileRectangle {
+    getRectangle(margin: number, zoom: number): TileRectangle | null {
+        if (this.x1 === Number.MAX_SAFE_INTEGER) {
+            return null // Cannot determine bounding box w/o tiles in the set
+        }
         return new TileRectangle(this.x1 - margin, this.y1 - margin, this.x2 - this.x1 + 2 * margin + 1, this.y2 - this.y1 + 2 * margin + 1, zoom)
     }
 }
@@ -39,10 +72,8 @@ export class TileSet {
 
     private readonly tiles: Map<number, Set<number>> // Access-optimized tile storage: Map<x, Set<y>>
     private readonly zoom: number // Zoom factor for all tiles in the set
-    private size: number // Number of tiles in this set
-    private xSum: number // For calculation ...
-    private ySum: number // ... of centroid
-    private box: BoundingBox
+    private readonly stats: SetStats
+    private readonly bounds: BoundingBox
 
     /**
      * Constructs a {@TileSet} object for the given zoom level.
@@ -51,10 +82,8 @@ export class TileSet {
     constructor(zoom: number) {
         this.tiles = new Map<number, Set<number>>()
         this.zoom = zoom
-        this.size = 0
-        this.xSum = 0
-        this.ySum = 0
-        this.box = new BoundingBox()
+        this.stats = new SetStats()
+        this.bounds = new BoundingBox()
     }
 
     /**
@@ -82,10 +111,8 @@ export class TileSet {
         }
         ySet.add(y)
         this.tiles.set(x, ySet)
-        this.size++
-        this.xSum += (x + 0.5) // Use the "center" of every tile to sum up the ...
-        this.ySum += (y + 0.5) // ... cluster axes for later centroid calculation
-        this.box.expand({ x, y })
+        this.stats.addTile(x, y)
+        this.bounds.addTile(x, y)
         return this
     }
 
@@ -184,7 +211,7 @@ export class TileSet {
      * Returns the number of tiles in this set.
      */
     getSize(): number {
-        return this.size
+        return this.stats.getSize()
     }
 
     /**
@@ -200,13 +227,7 @@ export class TileSet {
      * @returns the centroid of this tile set.
      */
     centroid(): Centroid | null {
-        if (this.size === 0) {
-            return null // Avoid division by 0
-        }
-        // Round to two decimal places (mainly for stable unit tests)
-        const xCenter = Math.round(this.xSum / this.size * 100) / 100
-        const yCenter = Math.round(this.ySum / this.size * 100) / 100
-        return Centroid.of(xCenter, yCenter, this.zoom)
+        return this.stats.getCentroid(this.zoom)
     }
 
     /**
@@ -215,7 +236,7 @@ export class TileSet {
      * @param margin - number of tiles to add as extra margin
      */
     boundingBox(margin: number = 0): TileRectangle | null {
-        return this.size === 0 ? null : this.box.getRectangle(margin, this.zoom)
+        return this.bounds.getRectangle(margin, this.zoom)
     }
 
     /**

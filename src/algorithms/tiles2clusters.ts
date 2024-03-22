@@ -4,15 +4,15 @@ import { TileNo } from '../types/TileNo'
 
 /**
  * Finds all tile clusters in a {@link TileSet} and stores them in a {@link TileClusters} object.
- * @param tiles - a tile set
+ * @param allTiles - a tile set
  * @returns all tile clusters of the tile set
  */
-export function tiles2clusters(tiles: TileSet): TileClusters {
-    const zoom = tiles.getZoom()
+export function tiles2clusters(allTiles: TileSet): TileClusters {
+    const zoom = allTiles.getZoom()
     let activeClusters = new Array<Cluster>()
     const closedClusters = new Array<Cluster>()
     const detachedTiles = new TileSet(zoom)
-    for (const x of tiles.getSortedXs()) {
+    for (const x of allTiles.getSortedXs()) {
         // Remove every cluster that cannot contain any further processed tile with larger x values
         activeClusters = activeClusters.filter(cluster => {
             if (cluster.isLeftOf(x)) {
@@ -21,9 +21,9 @@ export function tiles2clusters(tiles: TileSet): TileClusters {
             }
             return true
         })
-        for (const y of tiles.getSortedYs(x)) {
+        for (const y of allTiles.getSortedYs(x)) {
             const tile : TileNo = { x, y }
-            if (tiles.hasNeighbors(tile)) {
+            if (allTiles.hasNeighbors(tile)) {
                 let prevCluster : Cluster | null = null
                 // Use filter function to allow in-place deletion of merged clusters
                 activeClusters = activeClusters.filter(cluster => {
@@ -67,7 +67,7 @@ export function tiles2clusters(tiles: TileSet): TileClusters {
         return curr.tiles.merge(prev)
     }, new TileSet(zoom))
 
-    return { detachedTiles, minorClusters, maxCluster }
+    return { allTiles, detachedTiles, minorClusters, maxCluster }
 }
 
 class Cluster {

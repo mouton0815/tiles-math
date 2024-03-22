@@ -11,6 +11,7 @@ const createSet = (tiles: number[][], zoom: number): TileSet => {
 
 test('cluster-empty', () => {
     const tileClusters = tiles2clusters(new TileSet(0))
+    expect(tileClusters.allTiles.toArray()).toEqual([])
     expect(tileClusters.maxCluster.toArray()).toEqual([])
     expect(tileClusters.minorClusters.toArray()).toEqual([])
     expect(tileClusters.detachedTiles.toArray()).toEqual([])
@@ -24,7 +25,9 @@ test('cluster-none', () => {
         [1, 2],
         [2, 1]
     ]
-    const tileClusters = tiles2clusters(createSet(tiles, 0))
+    const tileSet = createSet(tiles, 0)
+    const tileClusters = tiles2clusters(tileSet)
+    expect(tileClusters.allTiles).toBe(tileSet)
     expect(tileClusters.maxCluster.toArray()).toEqual([])
     expect(tileClusters.minorClusters.toArray()).toEqual([])
     expect(tileClusters.detachedTiles.toArray()).toEqual([

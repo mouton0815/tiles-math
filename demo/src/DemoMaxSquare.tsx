@@ -13,9 +13,9 @@ const tileZoom = 14 // VeloViewer and others use zoom-level 14 tiles
 const mapZoom  = 13
 
 const tiles = new TileSet(tileZoom).addCoords(sampleCoords)
-const { detachedTiles, minorClusters, maxCluster } = tiles2clusters(tiles)
+const { allTiles, detachedTiles, minorClusters, maxCluster } = tiles2clusters(tiles)
 const nonCluster = detachedTiles.merge(minorClusters) // Do not distinguish between normal tiles and smaller clusters
-const maxSquare = cluster2square(maxCluster).getCenterSquare()
+const maxSquare = cluster2square(allTiles).getCenterSquare()
 
 // Displays all tiles, the max cluster, and the max square.
 const TileContainer = () => (

@@ -16,8 +16,8 @@ type TileContainerProps = {
 // Displays detached tiles (red), minor clusters (purple), max cluster (blue), boundaries lines of
 // the max cluster (blue), and the centroid of the max cluster (orange).
 const TileContainer = ({ tiles }: TileContainerProps) => {
-    const { detachedTiles, minorClusters, maxCluster } = tiles2clusters(tiles)
-    const maxSquare = cluster2square(maxCluster).getCenterSquare()
+    const { allTiles, detachedTiles, minorClusters, maxCluster } = tiles2clusters(tiles)
+    const maxSquare = cluster2square(allTiles).getCenterSquare()
     const boundaries = cluster2boundaries(maxCluster)
     const centroid = maxCluster.centroid()
     return (

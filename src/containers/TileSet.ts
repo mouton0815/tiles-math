@@ -128,6 +128,16 @@ export class TileSet {
         return this
     }
 
+    // TODO: Destructive operation, need to update all other variables
+    removeTile({ x, y }: TileNo): void {
+        let ySet = this.tiles.get(x)
+        if (ySet) {
+            if (ySet.delete(y) && ySet.size === 0) {
+                this.tiles.delete(x)
+            }
+        }
+    }
+
     /**
      * Adds a sequence of {@link Coords} and returns this {@link TileSet} object.
      * @param {Iterable<Coords>} coords - an iterable object, for example an Array<TileNo>.
@@ -165,6 +175,26 @@ export class TileSet {
         return this
     }
 
+    // TODO: This is temporary and needs rework
+    // TODO: Immutable would help here
+    deltaMerge(other: TileSet): TileSet {
+        if (this.zoom !== other.zoom) {
+            throw new Error('Cannot merge tile sets of different zoom levels')
+        }
+        const delta = new TileSet(this.zoom)
+        other.tiles.forEach((yset, x) => {
+            yset.forEach(y => {
+                const tile = { x, y }
+                if (!this.has(tile)) {
+                    this.addTile(tile) // TODO: Duplicate check, need other add method
+                    delta.addTile(tile)
+                    console.log('-----> ADD DELTA', tile)
+                }
+            })
+        })
+        return delta
+    }
+
     /**
      * Returns true iff the passed {@link TileNo} has at least one neighbor (upper, lower, left, or right).
      * @param {TileNo} tile - the tile to check for neighborhood.
@@ -185,6 +215,14 @@ export class TileSet {
         ySet = this.tiles.get(tile.x + 1)
         return !!ySet && ySet.has(tile.y)
     }
+
+    /*
+    // TODO: Description
+    hasLeftNeighbor(tile: TileNo): boolean {
+        const ySet = this.tiles.get(tile.x - 1)
+        return !!ySet && ySet.has(tile.y)
+    }
+    */
 
     /**
      * Returns true iff the passed {@link TileNo} has four neighbors (upper, lower, left, and right).

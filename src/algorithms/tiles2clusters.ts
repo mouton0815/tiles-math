@@ -1,5 +1,5 @@
 import { TileSet } from '../containers/TileSet'
-import { TileClusters } from '../containers/TileClusters'
+import { Cluster, TileClusters } from '../containers/TileClusters'
 import { TileNo } from '../types/TileNo'
 
 /**
@@ -9,12 +9,12 @@ import { TileNo } from '../types/TileNo'
  */
 export function tiles2clusters(allTiles: TileSet): TileClusters {
     const zoom = allTiles.getZoom()
-    let activeClusters = new Array<Cluster>()
+    let allClusters = new Array<Cluster>()
     const closedClusters = new Array<Cluster>()
     const detachedTiles = new TileSet(zoom)
     for (const x of allTiles.getSortedXs()) {
         // Remove every cluster that cannot contain any further processed tile with larger x values
-        activeClusters = activeClusters.filter(cluster => {
+        allClusters = allClusters.filter(cluster => {
             if (cluster.isLeftOf(x)) {
                 closedClusters.push(cluster)
                 return false
@@ -26,7 +26,7 @@ export function tiles2clusters(allTiles: TileSet): TileClusters {
             if (allTiles.hasNeighbors(tile)) {
                 let prevCluster : Cluster | null = null
                 // Use filter function to allow in-place deletion of merged clusters
-                activeClusters = activeClusters.filter(cluster => {
+                allClusters = allClusters.filter(cluster => {
                     if (cluster.tiles.hasNeighbor(tile)) {
                         if (prevCluster) {
                             // Tile is neighbor of prevCluster (and has been added to it)
@@ -41,22 +41,22 @@ export function tiles2clusters(allTiles: TileSet): TileClusters {
                 })
                 if (prevCluster === null) {
                     // Tile has four neighbors, but does not belong to an existing cluster yet
-                    activeClusters.push(new Cluster(tile, zoom))
+                    allClusters.push(new Cluster(tile, zoom))
                 }
             } else {
                 detachedTiles.addTile(tile)
             }
         }
     }
-    activeClusters.unshift(...closedClusters)
+    allClusters.unshift(...closedClusters)
 
     // Select the cluster with the largest size
-    const maxCluster = activeClusters.reduce((prev, curr) => {
+    const maxCluster = allClusters.reduce((prev, curr) => {
         return curr.tiles.getSize() > prev.getSize() ? curr.tiles : prev
     }, new TileSet(zoom))
 
     // Merge all other cluster candidates (and filter out maxCluster)
-    const minorClusters = activeClusters.reduce((prev, curr) => {
+    const minorClusters = allClusters.reduce((prev, curr) => {
         if (curr.tiles === maxCluster) {
             return prev
         }
@@ -67,26 +67,5 @@ export function tiles2clusters(allTiles: TileSet): TileClusters {
         return curr.tiles.merge(prev)
     }, new TileSet(zoom))
 
-    return { allTiles, detachedTiles, minorClusters, maxCluster }
-}
-
-class Cluster {
-    tiles: TileSet
-    private marginRight: number
-    constructor(tile: TileNo, zoom: number) {
-        this.tiles = new TileSet(zoom).addTile(tile)
-        this.marginRight = tile.x + 1
-    }
-    addTile(tile: TileNo) {
-        this.tiles.addTile(tile)
-        this.marginRight = Math.max(this.marginRight, tile.x + 1)
-    }
-    isLeftOf(x: number): boolean {
-        return this.marginRight < x
-    }
-    merge(other: Cluster) {
-        for (const tile of other.tiles) {
-            this.addTile(tile)
-        }
-    }
+    return { allTiles, allClusters, detachedTiles, minorClusters, maxCluster }
 }

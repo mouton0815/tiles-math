@@ -130,7 +130,7 @@ export class TileSet {
 
     // TODO: Destructive operation, need to update all other variables
     removeTile({ x, y }: TileNo): void {
-        let ySet = this.tiles.get(x)
+        const ySet = this.tiles.get(x)
         if (ySet) {
             if (ySet.delete(y) && ySet.size === 0) {
                 this.tiles.delete(x)

@@ -8,19 +8,20 @@ import { TileNo } from '../types/TileNo'
 /**
  * Finds all tile clusters in a {@link TileSet} and stores them in a {@link TileClusters} object.
  * @param newTiles - a tile set
+ * @param prevClusters - an optional cluster tuple computed at a previous step
  * @returns all tile clusters of the tile set
  */
 export function delta2clusters(newTiles: TileSet, prevClusters?: TileClusters): TileClusters {
     // console.log('-----> ENTER')
     const zoom = newTiles.getZoom()
     const clusters : TileClusters = prevClusters || {
-        allTiles: new TileSet(zoom),
+        allTiles: newTiles,
         allClusters: new Array<Cluster>(),
         maxCluster: new TileSet(zoom),
         minorClusters: new TileSet(zoom),
         detachedTiles: new TileSet(zoom)
     }
-    const deltaTiles  = clusters.allTiles.deltaMerge(newTiles)
+    const deltaTiles  = prevClusters ? clusters.allTiles.deltaMerge(newTiles) : newTiles
     const closedClusters = new Array<Cluster>()
     for (const x of deltaTiles.getSortedXs()) {
         // console.log('-----> x:', x)

@@ -1,6 +1,7 @@
 import { TileSet } from './TileSet'
 import { TileNo } from '../types/TileNo'
 
+// TODO: Remove this. Can be done by TileSet / Margin
 export class Cluster {
     tiles: TileSet
     private marginRight: number

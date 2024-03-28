@@ -12,7 +12,6 @@ import { TileNo } from '../types/TileNo'
  * @returns all tile clusters of the tile set
  */
 export function delta2clusters(newTiles: TileSet, prevClusters?: TileClusters): TileClusters {
-    // console.log('-----> ENTER')
     const zoom = newTiles.getZoom()
     const clusters : TileClusters = prevClusters || {
         allTiles: newTiles,
@@ -24,7 +23,6 @@ export function delta2clusters(newTiles: TileSet, prevClusters?: TileClusters): 
     const deltaTiles  = prevClusters ? clusters.allTiles.deltaMerge(newTiles) : newTiles
     const closedClusters = new Array<Cluster>()
     for (const x of deltaTiles.getSortedXs()) {
-        // console.log('-----> x:', x)
         // Remove every cluster that cannot contain any further processed tile with larger x values
         clusters.allClusters = clusters.allClusters.filter(cluster => {
             if (cluster.isLeftOf(x)) {
@@ -34,7 +32,6 @@ export function delta2clusters(newTiles: TileSet, prevClusters?: TileClusters): 
             return true
         })
         for (const y of deltaTiles.getSortedYs(x)) { // Note: Iteration through the entire column
-            // console.log('-----> y:', y)
             if (prevClusters) {
                 add2clusters(clusters, { x: x - 1, y }) // Left neighbor
                 add2clusters(clusters, { x: x + 1, y }) // Right neighbor
@@ -47,13 +44,13 @@ export function delta2clusters(newTiles: TileSet, prevClusters?: TileClusters): 
     clusters.allClusters.unshift(...closedClusters)
 
     // Select the cluster with the largest size
-    const maxCluster = clusters.allClusters.reduce((prev, curr) => {
+    clusters.maxCluster = clusters.allClusters.reduce((prev, curr) => {
         return curr.tiles.getSize() > prev.getSize() ? curr.tiles : prev
     }, new TileSet(zoom))
 
     // Merge all other cluster candidates (and filter out maxCluster)
-    const minorClusters = clusters.allClusters.reduce((prev, curr) => {
-        if (curr.tiles === maxCluster) {
+    clusters.minorClusters = clusters.allClusters.reduce((prev, curr) => {
+        if (curr.tiles === clusters.maxCluster) {
             return prev
         }
         // Merge the smaller cluster into the larger one
@@ -63,14 +60,12 @@ export function delta2clusters(newTiles: TileSet, prevClusters?: TileClusters): 
         return curr.tiles.merge(prev)
     }, new TileSet(zoom))
 
-    return Object.assign(clusters,{ minorClusters, maxCluster })
+    return clusters
 }
 
-function add2clusters(clusters:  TileClusters, tile: TileNo, newTile: boolean = false) {
+function add2clusters(clusters: TileClusters, tile: TileNo, newTile: boolean = false) {
     if (newTile || clusters.allTiles.has(tile)) {
-        // console.log('-----> HAS', tile)
         if (clusters.allTiles.hasNeighbors(tile)) {
-            // console.log('-----> HAS_ALL')
             let prevCluster: Cluster | null = null
             // Use filter function to allow in-place deletion of merged clusters
             clusters.allClusters = clusters.allClusters.filter(cluster => {
@@ -78,7 +73,6 @@ function add2clusters(clusters:  TileClusters, tile: TileNo, newTile: boolean = 
                     if (prevCluster) {
                         // Tile is neighbor of prevCluster (and has been added to it)
                         // and of the current cluster: merge both clusters
-                        // console.log('-----> MERGE', tile)
                         prevCluster.merge(cluster)
                         return false
                     }
@@ -90,13 +84,10 @@ function add2clusters(clusters:  TileClusters, tile: TileNo, newTile: boolean = 
             if (prevCluster === null) {
                 // Tile has four neighbors, but does not belong to an existing cluster yet
                 clusters.allClusters.push(new Cluster(tile, clusters.allTiles.getZoom()))
-                // console.log('-----> NEW', tile)
             }
             clusters.detachedTiles.removeTile(tile)
-            // console.log('-----> REM', tile)
         } else if (newTile) {
-            // console.log('-----> DET', tile)
-            clusters.detachedTiles.addTile(tile) // Maybe already part of that set
+            clusters.detachedTiles.addTile(tile)
         }
     }
 }

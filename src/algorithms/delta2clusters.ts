@@ -2,6 +2,9 @@ import { TileSet } from '../containers/TileSet'
 import { Cluster, TileClusters } from '../containers/TileClusters'
 import { TileNo } from '../types/TileNo'
 
+// TODO: Accept null input cluster
+// TODO: Create new instances
+// TODO: Merge algo with tiles2clusters ?
 /**
  * Finds all tile clusters in a {@link TileSet} and stores them in a {@link TileClusters} object.
  * @param newTiles - a tile set
@@ -65,6 +68,7 @@ function add2clusters(clusters:  TileClusters, tile: TileNo) {
                     if (prevCluster) {
                         // Tile is neighbor of prevCluster (and has been added to it)
                         // and of the current cluster: merge both clusters
+                        console.log('-----> MERGE', tile)
                         prevCluster.merge(cluster)
                         return false
                     }

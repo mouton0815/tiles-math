@@ -188,7 +188,7 @@ export class TileSet {
                 if (!this.has(tile)) {
                     this.addTile(tile) // TODO: Duplicate check, need other add method
                     delta.addTile(tile)
-                    console.log('-----> ADD DELTA', tile)
+                    // console.log('-----> ADD DELTA', tile)
                 }
             })
         })

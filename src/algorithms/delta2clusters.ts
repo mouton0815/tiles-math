@@ -34,10 +34,12 @@ export function delta2clusters(newTiles: TileSet, prevClusters?: TileClusters): 
         })
         for (const y of deltaTiles.getSortedYs(x)) { // Note: Iteration through the entire column
             // console.log('-----> y:', y)
-            add2clusters(clusters, { x: x - 1, y }) // Left neighbor
-            add2clusters(clusters, { x: x + 1, y }) // Right neighbor
-            add2clusters(clusters, { x, y: y - 1 }) // Upper neighbor
-            add2clusters(clusters, { x, y: y + 1 }) // Lower neighbor
+            if (prevClusters) {
+                add2clusters(clusters, { x: x - 1, y }) // Left neighbor
+                add2clusters(clusters, { x: x + 1, y }) // Right neighbor
+                add2clusters(clusters, { x, y: y - 1 }) // Upper neighbor
+                add2clusters(clusters, { x, y: y + 1 }) // Lower neighbor
+            }
             add2clusters(clusters, { x, y }, true)
         }
     }
@@ -64,7 +66,7 @@ export function delta2clusters(newTiles: TileSet, prevClusters?: TileClusters): 
 }
 
 function add2clusters(clusters:  TileClusters, tile: TileNo, newTile: boolean = false) {
-    if (clusters.allTiles.has(tile)) { // TODO: This should always be true!
+    if (newTile || clusters.allTiles.has(tile)) {
         // console.log('-----> HAS', tile)
         if (clusters.allTiles.hasNeighbors(tile)) {
             // console.log('-----> HAS_ALL')
@@ -92,7 +94,7 @@ function add2clusters(clusters:  TileClusters, tile: TileNo, newTile: boolean = 
             clusters.detachedTiles.removeTile(tile)
             // console.log('-----> REM', tile)
         } else if (newTile) {
-            console.log('-----> DET', tile)
+            // console.log('-----> DET', tile)
             clusters.detachedTiles.addTile(tile) // Maybe already part of that set
         }
     }

@@ -1,4 +1,4 @@
-import { cluster2boundaries, cluster2square, tiles2clusters, TileSet } from 'tiles-math'
+import { cluster2boundaries, cluster2square, delta2clusters, tiles2clusters, TileSet } from 'tiles-math'
 
 const tileZoom = 14
 const tileSet = new TileSet(tileZoom)
@@ -7,12 +7,20 @@ const coords = []
 for (let i = 0; i < 500000; ++i) {
     coords.push([48 + 6 * Math.random(), 7 + 10 * Math.random()])
 }
-console.log('Start  :', new Date().toISOString())
+const date1 = new Date()
+console.log('Start  :', date1.toISOString())
 tileSet.addCoords(coords)
-console.log('TileSet:', new Date().toISOString(), tileSet.getSize())
+const date2 = new Date()
+console.log('TileSet:', date2.toISOString(), date2 - date1, tileSet.getSize())
 const clusters = tiles2clusters(tileSet)
-console.log('Cluster:', new Date().toISOString(), clusters.minorClusters.getSize(), clusters.maxCluster.getSize())
+const date3 = new Date()
+console.log('Cluster:', date3.toISOString(), date3 - date2, clusters.minorClusters.getSize(), clusters.maxCluster.getSize())
+const delta = delta2clusters(tileSet)
+const date4 = new Date()
+console.log('Delta  :', date4.toISOString(), date4 - date3, delta.minorClusters.getSize(), delta.maxCluster.getSize())
 const squares = cluster2square(clusters.allTiles)
-console.log('Squares:', new Date().toISOString(), squares.getRectangles().length)
+const date5 = new Date()
+console.log('Squares:', date5.toISOString(), date5 - date4, squares.getRectangles().length)
 const boundaries = cluster2boundaries(clusters.maxCluster)
-console.log('Bounds :', new Date().toISOString(), [...boundaries].length)
+const date6 = new Date()
+console.log('Bounds :', date6.toISOString(), date6 - date5, [...boundaries].length)

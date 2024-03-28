@@ -23,7 +23,7 @@ test('cluster-delta-top', () => {
     const clustersA = delta2clusters(createSet(tilesA, 0))
     expect(clustersA.maxCluster.toArray()).toEqual([])
     expect(clustersA.minorClusters.toArray()).toEqual([])
-    console.log(clustersA.detachedTiles.map(fromTile))
+    // console.log(clustersA.detachedTiles.map(fromTile))
     expect(clustersA.detachedTiles.map(fromTile)).toEqual([
         [1, 2],
         [2, 2],
@@ -147,7 +147,7 @@ test('cluster-delta-bottom', () => {
         [2, 2],
     ])
     expect(clustersB.minorClusters.toArray()).toEqual([])
-    console.log(clustersB.detachedTiles.map(fromTile))
+    // console.log(clustersB.detachedTiles.map(fromTile))
     expect(clustersB.detachedTiles.map(fromTile)).toEqual([
         [1, 2],
         [2, 1],

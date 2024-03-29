@@ -5,26 +5,29 @@ import { TileNo } from '../types/TileNo'
 // TODO: Merge algo with tiles2clusters ?
 /**
  * Finds all tile clusters in a {@link TileSet} and stores them in a {@link TileClusters} object.
- * @param newTiles - a tile set
+ * @param tiles - a tile set to be clustered (or added to an existing cluster tuple)
  * @param prevClusters - an optional cluster tuple computed at a previous step
  * @returns all tile clusters of the tile set
  */
-export function delta2clusters(newTiles: TileSet, prevClusters?: TileClusters): TileClusters {
-    const zoom = newTiles.getZoom()
+export function delta2clusters(tiles: TileSet, prevClusters?: TileClusters): TileClusters {
+    const zoom = tiles.getZoom()
     const clusters : TileClusters = prevClusters || {
-        allTiles: newTiles,
+        allTiles: tiles,
         allClusters: new Array<TileSet>(),
         maxCluster: new TileSet(zoom),
         minorClusters: new TileSet(zoom),
         detachedTiles: new TileSet(zoom)
     }
-    // All tiles in newTiles that are indeed new, that is, not part of clusters.allTiles:
-    const diffTiles  = prevClusters ? clusters.allTiles.mergeDiff(newTiles) : newTiles
+    // All tiles in the input set that are indeed new, i.e., are not part of clusters.allTiles:
+    const newTiles  = prevClusters ? clusters.allTiles.mergeDiff(tiles) : tiles
     // Tiles that were formerly detached and are now part of a cluster:
     const clusteredTiles = new TileSet(zoom)
+    // Stores all tile clusters that are out of reach for the current tiles:
     const closedClusters = new Array<TileSet>()
-    for (const x of diffTiles.getSortedXs()) {
-        // Remove every cluster that cannot contain any further processed tile with larger x values
+    // TODO: Put all non-intersecting clusters in closedClusters
+    for (const x of newTiles.getSortedXs()) {
+        // Remove every cluster that cannot contain any further processed tile with larger x values.
+        // Note that the x and y axes are ordered.
         clusters.allClusters = clusters.allClusters.filter(cluster => {
             if (cluster.isLeftOf(x)) {
                 closedClusters.push(cluster)
@@ -32,7 +35,7 @@ export function delta2clusters(newTiles: TileSet, prevClusters?: TileClusters): 
             }
             return true
         })
-        for (const y of diffTiles.getSortedYs(x)) { // Note: Iteration through the entire column
+        for (const y of newTiles.getSortedYs(x)) {
             if (prevClusters) {
                 add2clusters(clusters, clusteredTiles, { x: x - 1, y }) // Left neighbor
                 add2clusters(clusters, clusteredTiles, { x: x + 1, y }) // Right neighbor
@@ -76,7 +79,7 @@ export function delta2clusters(newTiles: TileSet, prevClusters?: TileClusters): 
     return clusters
 }
 
-function add2clusters(clusters: TileClusters, detachedDrop: TileSet, tile: TileNo, newTile: boolean = false) {
+function add2clusters(clusters: TileClusters, clusteredTiles: TileSet, tile: TileNo, newTile: boolean = false) {
     if (newTile || clusters.allTiles.has(tile)) {
         if (clusters.allTiles.hasNeighbors(tile)) {
             let prevCluster: TileSet | null = null
@@ -99,9 +102,9 @@ function add2clusters(clusters: TileClusters, detachedDrop: TileSet, tile: TileN
                 clusters.allClusters.push(new TileSet(clusters.allTiles.getZoom()).addTiles([tile]))
             }
             if (clusters.detachedTiles.has(tile)) {
-                detachedDrop.addTile(tile)
+                clusteredTiles.addTile(tile)
             }
-        } else if (newTile) {
+        } else if (newTile) { // Otherwise it is already in detachedTiles
             clusters.detachedTiles.addTile(tile)
         }
     }

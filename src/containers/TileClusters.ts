@@ -6,7 +6,7 @@ export class Cluster {
     tiles: TileSet
     private marginRight: number
     constructor(tile: TileNo, zoom: number) {
-        this.tiles = new TileSet(zoom).addTile(tile)
+        this.tiles = new TileSet(zoom).addTiles([tile])
         this.marginRight = tile.x + 1
     }
     addTile(tile: TileNo) {

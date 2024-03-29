@@ -26,24 +26,26 @@ test('clone', () => {
 
 test('has', () => {
     const tile = { x: 1, y: 3 }
-    const tileSet = new TileSet(0).addTile(tile)
+    const tileSet = new TileSet(0).addTiles([tile])
     expect(tileSet.has(tile)).toBe(true)
 })
 
 test('add', () => {
     const tile = { x: 1, y: 3 }
-    const tileSet = new TileSet(0).addTile(tile).addTile(tile)
+    const tileSet = new TileSet(0)
+    expect(tileSet.addTile(tile)).toBe(true)
+    expect(tileSet.addTile(tile)).toBe(false)
     expect(tileSet.has(tile)).toBe(true)
     expect(tileSet.getSize()).toBe(1)
 })
 
 test('merge', () => {
     const tile1 = { x: 1, y: 2 }
-    const tileSet = new TileSet(0).addTile(tile1)
+    const tileSet = new TileSet(0).addTiles([tile1])
 
     const tile2 = { x: 1, y: 3 }
     const tile3 = { x: 2, y: 2 }
-    const otherMap = new TileSet(0).addTile(tile2).addTile(tile3)
+    const otherMap = new TileSet(0).addTiles([tile2, tile3])
 
     tileSet.merge(otherMap)
     expect(tileSet.getSize()).toBe(3)
@@ -52,8 +54,22 @@ test('merge', () => {
     expect(tileSet.has(tile3)).toBe(true)
 })
 
+test('mergeDiff', () => {
+    const tile1 = { x: 1, y: 2 }
+    const tileSet = new TileSet(0).addTiles([tile1])
+
+    const tile2 = { x: 1, y: 3 }
+    const tile3 = { x: 2, y: 2 }
+    const otherMap = new TileSet(0).addTiles([tile2, tile1, tile3])
+
+    const diffSet = tileSet.mergeDiff(otherMap)
+    expect(diffSet.getSize()).toBe(2)
+    expect(diffSet.has(tile2)).toBe(true)
+    expect(diffSet.has(tile3)).toBe(true)
+})
+
 test('hasNeighbor', () => {
-    const tileSet = new TileSet(0).addTile({ x: 1, y: 2 })
+    const tileSet = new TileSet(0).addTiles([{ x: 1, y: 2 }])
     expect(tileSet.hasNeighbor({ x: 1, y: 2 })).toBe(false)
     expect(tileSet.hasNeighbor({ x: 1, y: 1 })).toBe(true)
     expect(tileSet.hasNeighbor({ x: 1, y: 3 })).toBe(true)

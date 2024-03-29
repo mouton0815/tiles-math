@@ -100,20 +100,20 @@ export class TileSet {
     /**
      * Adds a {@link TileNo} and returns this {@link TileSet} object. Duplicate tiles are ignored.
      * @param {TileNo} tileNo - A tile to add.
-     * @returns this object.
+     * @returns true if the tile has been added, false otherwise.
      */
-    addTile({ x, y }: TileNo): this {
+    addTile({ x, y }: TileNo): boolean {
         let ySet = this.tiles.get(x)
         if (!ySet) {
            ySet = new Set<number>()
         } else if (ySet.has(y)) {
-            return this // Duplicate tile
+            return false // Duplicate tile
         }
         ySet.add(y)
         this.tiles.set(x, ySet)
         this.stats.addTile(x, y)
         this.bounds.addTile(x, y)
-        return this
+        return true
     }
 
     /**
@@ -126,16 +126,6 @@ export class TileSet {
             this.addTile(tile)
         }
         return this
-    }
-
-    // TODO: Destructive operation, need to update all other variables
-    removeTile({ x, y }: TileNo): void {
-        const ySet = this.tiles.get(x)
-        if (ySet) {
-            if (ySet.delete(y) && ySet.size === 0) {
-                this.tiles.delete(x)
-            }
-        }
     }
 
     /**
@@ -161,7 +151,7 @@ export class TileSet {
     }
 
     /**
-     * Merges the other {@link TileSet} into this TileSet. Duplicates are discarded.
+     * Merges the other {@link TileSet} into this TileSet. Duplicates are ignored.
      * @param {TileSet} other - the tile set to be merged into this tile set.
      * @returns this object.
      */
@@ -175,9 +165,14 @@ export class TileSet {
         return this
     }
 
-    // TODO: This is temporary and needs rework
-    // TODO: Immutable would help here
-    deltaMerge(other: TileSet): TileSet {
+    /**
+     * Merges the other {@link TileSet} into this TileSet. Duplicates are ignored.
+     * In addition to the {@link merge} method, this method returns all tiles that were indeed inserted.
+     * Mathematically, this is the set difference of the other and this TileSet.
+     * @param {TileSet} other - the tile set to be merged into this tile set.
+     * @returns the set of inserted tiles.
+     */
+    mergeDiff(other: TileSet): TileSet {
         if (this.zoom !== other.zoom) {
             throw new Error('Cannot merge tile sets of different zoom levels')
         }
@@ -185,10 +180,8 @@ export class TileSet {
         other.tiles.forEach((yset, x) => {
             yset.forEach(y => {
                 const tile = { x, y }
-                if (!this.has(tile)) {
-                    this.addTile(tile) // TODO: Duplicate check, need other add method
+                if (this.addTile(tile)) {
                     delta.addTile(tile)
-                    // console.log('-----> ADD DELTA', tile)
                 }
             })
         })

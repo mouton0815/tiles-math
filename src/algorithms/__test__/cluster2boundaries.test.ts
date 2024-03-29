@@ -9,7 +9,7 @@ test('cluster2boundaries-empty', () => {
 test('cluster2boundaries-simple', () => {
     //     1
     // 1 | x |
-    const cluster = new TileSet(0).addTile({ x: 1, y: 1 })
+    const cluster = new TileSet(0).addTiles([{ x: 1, y: 1 }])
     const lines = [...cluster2boundaries(cluster)]
     expect(lines.length).toBe(1)
     expect([...lines[0]]).toEqual([

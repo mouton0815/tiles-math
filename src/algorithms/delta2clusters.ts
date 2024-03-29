@@ -1,8 +1,7 @@
 import { TileSet } from '../containers/TileSet'
-import { Cluster, TileClusters } from '../containers/TileClusters'
+import { TileClusters } from '../containers/TileClusters'
 import { TileNo } from '../types/TileNo'
 
-// TODO: Create new instances
 // TODO: Merge algo with tiles2clusters ?
 /**
  * Finds all tile clusters in a {@link TileSet} and stores them in a {@link TileClusters} object.
@@ -14,7 +13,7 @@ export function delta2clusters(newTiles: TileSet, prevClusters?: TileClusters): 
     const zoom = newTiles.getZoom()
     const clusters : TileClusters = prevClusters || {
         allTiles: newTiles,
-        allClusters: new Array<Cluster>(),
+        allClusters: new Array<TileSet>(),
         maxCluster: new TileSet(zoom),
         minorClusters: new TileSet(zoom),
         detachedTiles: new TileSet(zoom)
@@ -23,7 +22,7 @@ export function delta2clusters(newTiles: TileSet, prevClusters?: TileClusters): 
     const diffTiles  = prevClusters ? clusters.allTiles.mergeDiff(newTiles) : newTiles
     // Tiles that were formerly detached and are now part of a cluster:
     const clusteredTiles = new TileSet(zoom)
-    const closedClusters = new Array<Cluster>()
+    const closedClusters = new Array<TileSet>()
     for (const x of diffTiles.getSortedXs()) {
         // Remove every cluster that cannot contain any further processed tile with larger x values
         clusters.allClusters = clusters.allClusters.filter(cluster => {
@@ -47,19 +46,19 @@ export function delta2clusters(newTiles: TileSet, prevClusters?: TileClusters): 
 
     // Select the cluster with the largest size
     clusters.maxCluster = clusters.allClusters.reduce((prev, curr) => {
-        return curr.tiles.getSize() > prev.getSize() ? curr.tiles : prev
+        return curr.getSize() > prev.getSize() ? curr : prev
     }, new TileSet(zoom))
 
     // Merge all other cluster candidates (and filter out maxCluster)
     clusters.minorClusters = clusters.allClusters.reduce((prev, curr) => {
-        if (curr.tiles === clusters.maxCluster) {
+        if (curr === clusters.maxCluster) {
             return prev
         }
         // Merge the smaller cluster into the larger one
-        if (prev.getSize() >= curr.tiles.getSize()) {
-            return prev.merge(curr.tiles)
+        if (prev.getSize() >= curr.getSize()) {
+            return prev.merge(curr)
         }
-        return curr.tiles.merge(prev)
+        return curr.merge(prev)
     }, new TileSet(zoom))
 
     if (clusteredTiles.getSize() > 0) {
@@ -80,10 +79,10 @@ export function delta2clusters(newTiles: TileSet, prevClusters?: TileClusters): 
 function add2clusters(clusters: TileClusters, detachedDrop: TileSet, tile: TileNo, newTile: boolean = false) {
     if (newTile || clusters.allTiles.has(tile)) {
         if (clusters.allTiles.hasNeighbors(tile)) {
-            let prevCluster: Cluster | null = null
+            let prevCluster: TileSet | null = null
             // Use filter function to allow in-place deletion of merged clusters
             clusters.allClusters = clusters.allClusters.filter(cluster => {
-                if (cluster.tiles.hasNeighbor(tile)) {
+                if (cluster.hasNeighbor(tile)) {
                     if (prevCluster) {
                         // Tile is neighbor of prevCluster (and has been added to it)
                         // and of the current cluster: merge both clusters
@@ -97,7 +96,7 @@ function add2clusters(clusters: TileClusters, detachedDrop: TileSet, tile: TileN
             })
             if (prevCluster === null) {
                 // Tile has four neighbors, but does not belong to an existing cluster yet
-                clusters.allClusters.push(new Cluster(tile, clusters.allTiles.getZoom()))
+                clusters.allClusters.push(new TileSet(clusters.allTiles.getZoom()).addTiles([tile]))
             }
             if (clusters.detachedTiles.has(tile)) {
                 detachedDrop.addTile(tile)

@@ -56,6 +56,9 @@ class BoundingBox {
         this.x2 = Math.max(x, this.x2)
         this.y2 = Math.max(y, this.y2)
     }
+    isLeftOf(x: number): boolean {
+        return this.x2 + 1 < x
+    }
     getRectangle(margin: number, zoom: number): TileRectangle | null {
         if (this.x1 === Number.MAX_SAFE_INTEGER) {
             return null // Cannot determine bounding box w/o tiles in the set
@@ -228,6 +231,13 @@ export class TileSet {
         // Right neighbor
         ySet = this.tiles.get(tile.x + 1)
         return !!ySet && ySet.has(tile.y)
+    }
+
+    /**
+     * Returns true iff all tiles of this set are to the left of x (there is a gap of one tile minimum).
+     */
+    isLeftOf(x: number): boolean {
+        return this.bounds.isLeftOf(x)
     }
 
     /**

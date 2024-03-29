@@ -1,3 +1,6 @@
+//
+// Tests for incremental cluster creation
+//
 import { delta2clusters } from '../delta2clusters'
 import { Tile } from '../../types/Tile'
 import { TileNo } from '../../types/TileNo'

@@ -2,7 +2,6 @@ import { TileSet } from '../containers/TileSet'
 import { Cluster, TileClusters } from '../containers/TileClusters'
 import { TileNo } from '../types/TileNo'
 
-// TODO: Accept null input cluster
 // TODO: Create new instances
 // TODO: Merge algo with tiles2clusters ?
 /**

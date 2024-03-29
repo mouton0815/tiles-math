@@ -216,14 +216,6 @@ export class TileSet {
         return !!ySet && ySet.has(tile.y)
     }
 
-    /*
-    // TODO: Description
-    hasLeftNeighbor(tile: TileNo): boolean {
-        const ySet = this.tiles.get(tile.x - 1)
-        return !!ySet && ySet.has(tile.y)
-    }
-    */
-
     /**
      * Returns true iff the passed {@link TileNo} has four neighbors (upper, lower, left, and right).
      * @param {TileNo} tile - the tile to check for neighborhood.

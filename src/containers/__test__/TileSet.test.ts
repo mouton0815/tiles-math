@@ -92,6 +92,27 @@ test('hasNeighbors', () => {
     expect(tileSet.hasNeighbors(tile)).toBe(true) // Finally...
 })
 
+test('isDetachedFrom', () => {
+    //     1   2   3   4   5
+    // 1 | A |   |   | D |   |
+    // 2 |   | B |   | D | D |
+    // 3 | B | B |   |   |   |
+    // 4 |   |   | C | C | C |
+    const tileSetA = new TileSet(0).addTiles([{ x: 1, y: 1 }])
+    const tileSetB = new TileSet(0).addTiles([{ x: 2, y: 2 }, { x: 2, y: 3 }, { x: 1, y: 3 }])
+    const tileSetC = new TileSet(0).addTiles([{ x: 4, y: 4 }, { x: 5, y: 4 }, { x: 3, y: 4 }])
+    const tileSetD = new TileSet(0).addTiles([{ x: 4, y: 2 }, { x: 4, y: 1 }, { x: 5, y: 2 }])
+    expect(tileSetA.isDetachedFrom(tileSetA)).toBe(false)
+    expect(tileSetA.isDetachedFrom(tileSetB)).toBe(false)
+    expect(tileSetA.isDetachedFrom(tileSetC)).toBe(true)
+    expect(tileSetA.isDetachedFrom(tileSetD)).toBe(true)
+    expect(tileSetB.isDetachedFrom(tileSetC)).toBe(false)
+    expect(tileSetB.isDetachedFrom(tileSetD)).toBe(true)
+    expect(tileSetC.isDetachedFrom(tileSetD)).toBe(true)
+    expect(tileSetC.merge(tileSetD).isDetachedFrom(tileSetD)).toBe(false)
+})
+
+
 test('centroid', () => {
     //     1   2   3   4   5   6
     // 1 |   | x |   |   | x | x |

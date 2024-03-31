@@ -24,7 +24,18 @@ export function delta2clusters(tiles: TileSet, prevClusters?: TileClusters): Til
     const clusteredTiles = new TileSet(zoom)
     // Stores all tile clusters that are out of reach for the current tiles:
     const closedClusters = new Array<TileSet>()
-    // TODO: Put all non-intersecting clusters in closedClusters
+
+    // Put all non-intersecting clusters in closedClusters (in incremental mode only):
+    if (prevClusters) {
+        clusters.allClusters = clusters.allClusters.filter(cluster => {
+            if (cluster.isDetachedFrom(newTiles)) {
+                closedClusters.push(cluster)
+                return false
+            }
+            return true
+        })
+    }
+
     for (const x of newTiles.getSortedXs()) {
         // Remove every cluster that cannot contain any further processed tile with larger x values.
         // Note that the x and y axes are ordered.
@@ -36,7 +47,7 @@ export function delta2clusters(tiles: TileSet, prevClusters?: TileClusters): Til
             return true
         })
         for (const y of newTiles.getSortedYs(x)) {
-            if (prevClusters) {
+            if (prevClusters) { // Those checks are only needed in incremental mode
                 add2clusters(clusters, clusteredTiles, { x: x - 1, y }) // Left neighbor
                 add2clusters(clusters, clusteredTiles, { x: x + 1, y }) // Right neighbor
                 add2clusters(clusters, clusteredTiles, { x, y: y - 1 }) // Upper neighbor

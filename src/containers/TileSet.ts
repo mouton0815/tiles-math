@@ -59,6 +59,9 @@ class BoundingBox {
     isLeftOf(x: number): boolean {
         return this.x2 + 1 < x
     }
+    isDetachedFrom(other: BoundingBox) {
+        return this.x2 + 1 < other.x1 || other.x2 + 1 < this.x1 || this.y2 + 1 < other.y1 || other.y2 + 1 < this.y1
+    }
     getRectangle(margin: number, zoom: number): TileRectangle | null {
         if (this.x1 === Number.MAX_SAFE_INTEGER) {
             return null // Cannot determine bounding box w/o tiles in the set
@@ -238,6 +241,16 @@ export class TileSet {
      */
     isLeftOf(x: number): boolean {
         return this.bounds.isLeftOf(x)
+    }
+
+    /**
+     * Returns true iff the {@link boundingBox}s of this and the other {@link TileSet} have no touching points.
+     * This is useful during clustering to make sure that the tiles sets cannot be merged. Note that the opposite
+     * is *not* true: If this method returns false, both tile sets do not necessarily have adjacent tiles.
+     @param {TileSet} other - the tile set to be compared with this tile set.
+     */
+    isDetachedFrom(other: TileSet): boolean {
+        return this.bounds.isDetachedFrom(other.bounds)
     }
 
     /**

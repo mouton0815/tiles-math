@@ -21,7 +21,7 @@ export function delta2clusters(tiles: TileSet, prevClusters?: TileClusters): Til
     // All tiles in the input set that are indeed new, i.e., are not part of clusters.allTiles:
     const newTiles  = prevClusters ? clusters.allTiles.mergeDiff(tiles) : tiles
     // Tiles that were formerly detached and are now part of a cluster:
-    const clusteredTiles = new TileSet(zoom)
+    const undetachedTiles = new TileSet(zoom)
     // Stores all tile clusters that are out of reach for the current tiles:
     const closedClusters = new Array<TileSet>()
 
@@ -48,12 +48,12 @@ export function delta2clusters(tiles: TileSet, prevClusters?: TileClusters): Til
         })
         for (const y of newTiles.getSortedYs(x)) {
             if (prevClusters) { // Those checks are only needed in incremental mode
-                add2clusters(clusters, clusteredTiles, { x: x - 1, y }) // Left neighbor
-                add2clusters(clusters, clusteredTiles, { x: x + 1, y }) // Right neighbor
-                add2clusters(clusters, clusteredTiles, { x, y: y - 1 }) // Upper neighbor
-                add2clusters(clusters, clusteredTiles, { x, y: y + 1 }) // Lower neighbor
+                add2clusters(clusters, undetachedTiles, { x: x - 1, y }) // Left neighbor
+                add2clusters(clusters, undetachedTiles, { x: x + 1, y }) // Right neighbor
+                add2clusters(clusters, undetachedTiles, { x, y: y - 1 }) // Upper neighbor
+                add2clusters(clusters, undetachedTiles, { x, y: y + 1 }) // Lower neighbor
             }
-            add2clusters(clusters, clusteredTiles, { x, y }, true)
+            add2clusters(clusters, undetachedTiles, { x, y }, true)
         }
     }
     clusters.allClusters.unshift(...closedClusters)
@@ -71,14 +71,14 @@ export function delta2clusters(tiles: TileSet, prevClusters?: TileClusters): Til
         return prev.merge(curr)
     }, new TileSet(zoom))
 
-    if (clusteredTiles.getSize() > 0) {
+    if (undetachedTiles.getSize() > 0) {
         // If tiles needed to be removed from detachedTile, we have to copy the set.
         // Just removing a tile from detachedTiles would not work, because the re-computation of
         // the bounding box is expensive (potentially requires touching every tile in the set).
         const detachedOld = clusters.detachedTiles
         clusters.detachedTiles = new TileSet(zoom)
         for (const tile of detachedOld) {
-            if (!clusteredTiles.has(tile)) {
+            if (!undetachedTiles.has(tile)) {
                 clusters.detachedTiles.addTile(tile)
             }
         }
@@ -86,7 +86,7 @@ export function delta2clusters(tiles: TileSet, prevClusters?: TileClusters): Til
     return clusters
 }
 
-function add2clusters(clusters: TileClusters, clusteredTiles: TileSet, tile: TileNo, newTile: boolean = false) {
+function add2clusters(clusters: TileClusters, unDetachedTiles: TileSet, tile: TileNo, newTile: boolean = false) {
     if (newTile || clusters.allTiles.has(tile)) {
         if (clusters.allTiles.hasNeighbors(tile)) {
             let prevCluster: TileSet | null = null
@@ -109,7 +109,7 @@ function add2clusters(clusters: TileClusters, clusteredTiles: TileSet, tile: Til
                 clusters.allClusters.push(new TileSet(clusters.allTiles.getZoom()).addTiles([tile]))
             }
             if (clusters.detachedTiles.has(tile)) { // TODO: !newTile should be sufficient
-                clusteredTiles.addTile(tile) // TODO: Rename clusteredTiles
+                unDetachedTiles.addTile(tile)
             }
         } else if (newTile) { // Otherwise it is already in detachedTiles
             clusters.detachedTiles.addTile(tile)

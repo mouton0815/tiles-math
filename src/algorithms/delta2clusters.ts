@@ -108,7 +108,8 @@ function add2clusters(clusters: TileClusters, unDetachedTiles: TileSet, tile: Ti
                 // Tile has four neighbors, but does not belong to an existing cluster yet
                 clusters.allClusters.push(new TileSet(clusters.allTiles.getZoom()).addTiles([tile]))
             }
-            if (clusters.detachedTiles.has(tile)) { // TODO: !newTile should be sufficient
+            // !newTile would be sufficient, but then addTile would be called multiple times:
+            if (clusters.detachedTiles.has(tile)) {
                 unDetachedTiles.addTile(tile)
             }
         } else if (newTile) { // Otherwise it is already in detachedTiles

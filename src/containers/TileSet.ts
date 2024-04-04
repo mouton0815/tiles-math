@@ -56,11 +56,12 @@ class BoundingBox {
         this.x2 = Math.max(x, this.x2)
         this.y2 = Math.max(y, this.y2)
     }
-    isLeftOf(x: number): boolean {
-        return this.x2 + 1 < x
+    isLeftOf(x: number, margin: number): boolean {
+        return this.x2 + margin < x
     }
-    isDetachedFrom(other: BoundingBox) {
-        return this.x2 + 1 < other.x1 || other.x2 + 1 < this.x1 || this.y2 + 1 < other.y1 || other.y2 + 1 < this.y1
+    isDetachedFrom(other: BoundingBox, margin: number) {
+        return this.x2 + margin < other.x1 || other.x2 + margin < this.x1
+            || this.y2 + margin < other.y1 || other.y2 + margin < this.y1
     }
     getRectangle(margin: number, zoom: number): TileRectangle | null {
         if (this.x1 === Number.MAX_SAFE_INTEGER) {
@@ -238,19 +239,23 @@ export class TileSet {
 
     /**
      * Returns true iff all tiles of this set are to the left of x (there is a gap of one tile minimum).
+     * @param {number} x - the tile x position to check against the right margin of the bounding box.
+     * @param {number} margin - minimum number of tiles between x and the right marging of the bounding box.
      */
-    isLeftOf(x: number): boolean {
-        return this.bounds.isLeftOf(x)
+    isLeftOf(x: number, margin: number = 2): boolean {
+        return this.bounds.isLeftOf(x, margin)
     }
 
     /**
      * Returns true iff the {@link boundingBox}s of this and the other {@link TileSet} have no touching points.
      * This is useful during clustering to make sure that the tiles sets cannot be merged. Note that the opposite
      * is *not* true: If this method returns false, both tile sets do not necessarily have adjacent tiles.
-     @param {TileSet} other - the tile set to be compared with this tile set.
+     * @param {TileSet} other - the tile set to be compared with this tile set.
+     * @param {number} margin - minimum number of tiles between the bounding boxes.
+     *                          The default 2 is useful if one set is a cluster and the other a set of tiles.
      */
-    isDetachedFrom(other: TileSet): boolean {
-        return this.bounds.isDetachedFrom(other.bounds)
+    isDetachedFrom(other: TileSet, margin: number = 2): boolean {
+        return this.bounds.isDetachedFrom(other.bounds, margin)
     }
 
     /**
@@ -312,7 +317,7 @@ export class TileSet {
      * @returns the set of x coordinates of all stored tiles in ascending order.
      */
     getSortedXs(): Array<number> {
-        return Array.from(this.tiles.keys()).toSorted()
+        return Array.from(this.tiles.keys()).toSorted((a, b) => (a - b))
     }
 
     /**
@@ -322,7 +327,7 @@ export class TileSet {
      * @returns the array of y coordinates of tiles with the given x coordinate in ascending order.
      */
     getSortedYs(x: number): Array<number> {
-        return Array.from(this.tiles.get(x) || TileSet.EMPTY_SET).toSorted()
+        return Array.from(this.tiles.get(x) || TileSet.EMPTY_SET).toSorted((a, b) => (a - b))
     }
 
     /**

@@ -102,14 +102,14 @@ test('isDetachedFrom', () => {
     const tileSetB = new TileSet(0).addTiles([{ x: 2, y: 2 }, { x: 2, y: 3 }, { x: 1, y: 3 }])
     const tileSetC = new TileSet(0).addTiles([{ x: 4, y: 4 }, { x: 5, y: 4 }, { x: 3, y: 4 }])
     const tileSetD = new TileSet(0).addTiles([{ x: 4, y: 2 }, { x: 4, y: 1 }, { x: 5, y: 2 }])
-    expect(tileSetA.isDetachedFrom(tileSetA)).toBe(false)
-    expect(tileSetA.isDetachedFrom(tileSetB)).toBe(false)
-    expect(tileSetA.isDetachedFrom(tileSetC)).toBe(true)
+    expect(tileSetA.isDetachedFrom(tileSetA, 1)).toBe(false)
+    expect(tileSetA.isDetachedFrom(tileSetB, 1)).toBe(false)
+    expect(tileSetA.isDetachedFrom(tileSetC)).toBe(true) // Use default margin
     expect(tileSetA.isDetachedFrom(tileSetD)).toBe(true)
-    expect(tileSetB.isDetachedFrom(tileSetC)).toBe(false)
-    expect(tileSetB.isDetachedFrom(tileSetD)).toBe(true)
-    expect(tileSetC.isDetachedFrom(tileSetD)).toBe(true)
-    expect(tileSetC.merge(tileSetD).isDetachedFrom(tileSetD)).toBe(false)
+    expect(tileSetB.isDetachedFrom(tileSetC, 1)).toBe(false)
+    expect(tileSetB.isDetachedFrom(tileSetD, 1)).toBe(true)
+    expect(tileSetC.isDetachedFrom(tileSetD, 1)).toBe(true)
+    expect(tileSetC.merge(tileSetD).isDetachedFrom(tileSetD, 1)).toBe(false)
 })
 
 

@@ -68,11 +68,7 @@ export function delta2clusters(tiles: TileSet, prevClusters?: TileClusters): Til
         if (curr === clusters.maxCluster) {
             return prev
         }
-        // Merge the smaller cluster into the larger one
-        if (prev.getSize() >= curr.getSize()) {
-            return prev.merge(curr)
-        }
-        return curr.merge(prev)
+        return prev.merge(curr)
     }, new TileSet(zoom))
 
     if (clusteredTiles.getSize() > 0) {
@@ -112,8 +108,8 @@ function add2clusters(clusters: TileClusters, clusteredTiles: TileSet, tile: Til
                 // Tile has four neighbors, but does not belong to an existing cluster yet
                 clusters.allClusters.push(new TileSet(clusters.allTiles.getZoom()).addTiles([tile]))
             }
-            if (clusters.detachedTiles.has(tile)) {
-                clusteredTiles.addTile(tile)
+            if (clusters.detachedTiles.has(tile)) { // TODO: !newTile should be sufficient
+                clusteredTiles.addTile(tile) // TODO: Rename clusteredTiles
             }
         } else if (newTile) { // Otherwise it is already in detachedTiles
             clusters.detachedTiles.addTile(tile)

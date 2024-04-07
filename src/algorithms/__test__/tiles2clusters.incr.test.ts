@@ -358,7 +358,7 @@ test('cluster-delta-complex', () => {
         [3, 1],
     ]
     const clustersD = delta2clusters(createSet(tilesD, 0), clustersC)
-    expect(clustersC.allClusters.length).toBe(1)
+    expect(clustersD.allClusters.length).toBe(1)
     expect(clustersD.maxCluster.map(fromTile)).toEqual([
         [2, 2],
         [3, 2],

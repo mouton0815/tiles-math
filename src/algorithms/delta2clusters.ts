@@ -5,13 +5,14 @@ import { TileNo } from '../types/TileNo'
 // TODO: Merge algo with tiles2clusters ?
 /**
  * Finds all tile clusters in a {@link TileSet} and stores them in a {@link TileClusters} object.
- * @param tiles - a tile set to be clustered (or added to an existing cluster tuple)
- * @param prevClusters - an optional cluster tuple computed at a previous step
- * @returns all tile clusters of the tile set
+ * @param tiles - a tile set to be clustered (or added to an existing cluster tuple).
+ * @param prevClusters - an optional cluster tuple computed at a previous step.
+ * @returns all tile clusters of the tile set. The function always returns a new clusters tuple
+ *          (shallow copy) to make it usable e.g. with React's useState hook.
  */
 export function delta2clusters(tiles: TileSet, prevClusters?: TileClusters): TileClusters {
     const zoom = tiles.getZoom()
-    const clusters : TileClusters = prevClusters || { // TODO: Use Object.assign
+    const clusters : TileClusters = prevClusters ? Object.assign({}, prevClusters) : {
         allTiles: tiles,
         allClusters: new Array<TileSet>(),
         maxCluster: new TileSet(zoom),

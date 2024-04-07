@@ -11,7 +11,7 @@ import { TileNo } from '../types/TileNo'
  */
 export function delta2clusters(tiles: TileSet, prevClusters?: TileClusters): TileClusters {
     const zoom = tiles.getZoom()
-    const clusters : TileClusters = prevClusters || {
+    const clusters : TileClusters = prevClusters || { // TODO: Use Object.assign
         allTiles: tiles,
         allClusters: new Array<TileSet>(),
         maxCluster: new TileSet(zoom),
@@ -71,18 +71,6 @@ export function delta2clusters(tiles: TileSet, prevClusters?: TileClusters): Til
         return prev.merge(curr)
     }, new TileSet(zoom))
 
-    if (unDetachedTiles.getSize() > 0) {
-        // If tiles needed to be removed from detachedTile, we have to copy the set.
-        // Just removing a tile from detachedTiles would not work, because the re-computation of
-        // the bounding box is expensive (potentially requires touching every tile in the set).
-        const detachedOld = clusters.detachedTiles
-        clusters.detachedTiles = new TileSet(zoom)
-        for (const tile of detachedOld) {
-            if (!unDetachedTiles.has(tile)) {
-                clusters.detachedTiles.addTile(tile)
-            }
-        }
-    }
     return clusters
 }
 
@@ -92,6 +80,10 @@ function add2clusters(clusters: TileClusters, unDetachedTiles: TileSet, tile: Ti
             let prevCluster: TileSet | null = null
             // Use filter function to allow in-place deletion of merged clusters
             clusters.allClusters = clusters.allClusters.filter(cluster => {
+                if (cluster.has(tile)) {
+                    prevCluster = cluster
+                    return true
+                }
                 if (cluster.hasNeighbor(tile)) {
                     if (prevCluster) {
                         // Tile is neighbor of prevCluster (and has been added to it)
@@ -108,10 +100,10 @@ function add2clusters(clusters: TileClusters, unDetachedTiles: TileSet, tile: Ti
                 // Tile has four neighbors, but does not belong to an existing cluster yet
                 clusters.allClusters.push(new TileSet(clusters.allTiles.getZoom()).addTiles([tile]))
             }
-            // !newTile would be sufficient, but then addTile would be called multiple times:
-            if (clusters.detachedTiles.has(tile)) {
-                unDetachedTiles.addTile(tile)
-            }
+            // Note that method removeTile does not adjust the bounding box of the detached-tiles set.
+            // However, this is irrelevant, because the removal of a tile with four neighbors will
+            // never affect an outermost tile.
+            clusters.detachedTiles.removeTile(tile)
         } else if (newTile) { // Otherwise it is already in detachedTiles
             clusters.detachedTiles.addTile(tile)
         }

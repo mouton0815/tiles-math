@@ -22,6 +22,11 @@ class SetStats {
         this.xSum += (x + 0.5) // Use the "center" of every tile to sum up the ...
         this.ySum += (y + 0.5) // ... cluster axes for later centroid calculation
     }
+    removeTile(x: number, y: number) {
+        this.size--
+        this.xSum -= (x + 0.5) // Use the "center" of every tile to sum up the ...
+        this.ySum -= (y + 0.5) // ... cluster axes for later centroid calculation
+    }
     getSize(): number {
         return this.size
     }
@@ -133,6 +138,27 @@ export class TileSet {
             this.addTile(tile)
         }
         return this
+    }
+
+    /**
+     * Removes a tile from the set, if present.
+     *
+     * **Beware**: This operation does **not** adjust the bounding box (this would be O(n)).
+     * So either make sure to not remove the outermost tiles or do not rely on the bounding box
+     * after calling this method.
+     * @param {TileNo} tileNo - A tile to remove.
+     * @returns true if the tile has been removed, false otherwise.
+     */
+    removeTile({ x, y }: TileNo): boolean {
+        const ySet = this.tiles.get(x)
+        if (ySet && ySet.delete(y)) {
+            if (ySet.size === 0) {
+                this.tiles.delete(x)
+            }
+            this.stats.removeTile(x, y)
+            return true
+        }
+        return false
     }
 
     /**

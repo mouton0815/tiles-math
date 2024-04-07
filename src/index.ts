@@ -2,6 +2,7 @@
 export { Bounds } from './types/Bounds'
 export { Coords } from './types/Coords'
 export { Centroid } from './types/Centroid'
+export { TileNo } from './types/TileNo'
 export { Tile } from './types/Tile'
 export { TileRectangle } from './types/TileRectangle'
 export { TileSquare } from './types/TileSquare'

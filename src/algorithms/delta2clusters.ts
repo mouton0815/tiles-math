@@ -20,8 +20,6 @@ export function delta2clusters(tiles: TileSet, prevClusters?: TileClusters): Til
     }
     // All tiles in the input set that are indeed new, i.e., are not part of clusters.allTiles:
     const newTiles  = prevClusters ? clusters.allTiles.mergeDiff(tiles) : tiles
-    // Tiles that were formerly detached and are now part of a cluster:
-    const unDetachedTiles = new TileSet(zoom)
     // Stores all tile clusters that are out of reach for the current tiles:
     const closedClusters = new Array<TileSet>()
 
@@ -48,12 +46,12 @@ export function delta2clusters(tiles: TileSet, prevClusters?: TileClusters): Til
         })
         for (const y of newTiles.getSortedYs(x)) {
             if (prevClusters) { // Those checks are only needed in incremental mode
-                add2clusters(clusters, unDetachedTiles, { x: x - 1, y }) // Left neighbor
-                add2clusters(clusters, unDetachedTiles, { x: x + 1, y }) // Right neighbor
-                add2clusters(clusters, unDetachedTiles, { x, y: y - 1 }) // Upper neighbor
-                add2clusters(clusters, unDetachedTiles, { x, y: y + 1 }) // Lower neighbor
+                add2clusters(clusters, { x: x - 1, y }) // Left neighbor
+                add2clusters(clusters, { x: x + 1, y }) // Right neighbor
+                add2clusters(clusters, { x, y: y - 1 }) // Upper neighbor
+                add2clusters(clusters, { x, y: y + 1 }) // Lower neighbor
             }
-            add2clusters(clusters, unDetachedTiles, { x, y }, true)
+            add2clusters(clusters, { x, y }, true)
         }
     }
     clusters.allClusters.unshift(...closedClusters)
@@ -74,7 +72,7 @@ export function delta2clusters(tiles: TileSet, prevClusters?: TileClusters): Til
     return clusters
 }
 
-function add2clusters(clusters: TileClusters, unDetachedTiles: TileSet, tile: TileNo, newTile: boolean = false) {
+function add2clusters(clusters: TileClusters, tile: TileNo, newTile: boolean = false) {
     if (newTile || clusters.allTiles.has(tile)) {
         if (clusters.allTiles.hasNeighbors(tile)) {
             let prevCluster: TileSet | null = null

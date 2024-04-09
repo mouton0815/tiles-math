@@ -1,7 +1,7 @@
 //
 // Tests for cluster creation in one run
 //
-import { delta2clusters } from '../delta2clusters'
+import { tiles2clusters } from '../tiles2clusters'
 import { TileSet } from '../../containers/TileSet'
 import { Tile } from '../../types/Tile'
 import { TileNo } from '../../types/TileNo'
@@ -13,7 +13,7 @@ const createSet = (tiles: number[][], zoom: number): TileSet => {
 }
 
 test('cluster-empty', () => {
-    const tileClusters = delta2clusters(new TileSet(0))
+    const tileClusters = tiles2clusters(new TileSet(0))
     expect(tileClusters.allTiles.toArray()).toEqual([])
     expect(tileClusters.maxCluster.toArray()).toEqual([])
     expect(tileClusters.minorClusters.toArray()).toEqual([])
@@ -29,7 +29,7 @@ test('cluster-none', () => {
         [2, 1]
     ]
     const tileSet = createSet(tiles, 0)
-    const tileClusters = delta2clusters(tileSet)
+    const tileClusters = tiles2clusters(tileSet)
     expect(tileClusters.allTiles).toBe(tileSet)
     expect(tileClusters.maxCluster.toArray()).toEqual([])
     expect(tileClusters.minorClusters.toArray()).toEqual([])
@@ -49,7 +49,7 @@ test('cluster-simple', () => {
         [1, 2], [2, 2], [3, 2],
         [2, 3],
     ]
-    const tileClusters = delta2clusters(createSet(tiles, 0))
+    const tileClusters = tiles2clusters(createSet(tiles, 0))
     expect(tileClusters.maxCluster.toArray()).toEqual([
         Tile.of(2, 2, 0)
     ])
@@ -73,7 +73,7 @@ test('cluster-separated', () => {
         [2, 3], [3, 3], [4, 3],
         [3, 4],
     ]
-    const tileClusters = delta2clusters(createSet(tiles, 0))
+    const tileClusters = tiles2clusters(createSet(tiles, 0))
     expect(tileClusters.maxCluster.toArray()).toEqual([
         Tile.of(2, 2, 0),
     ])
@@ -100,7 +100,7 @@ test('cluster-large', () => {
         [1, 2], [2, 2], [3, 2], [4, 2],
         [2, 3], [3, 3]
     ]
-    const tileClusters = delta2clusters(createSet(tiles, 0))
+    const tileClusters = tiles2clusters(createSet(tiles, 0))
     expect(tileClusters.maxCluster.toArray()).toEqual([
         Tile.of(2, 2, 0),
         Tile.of(3, 2, 0),
@@ -132,7 +132,7 @@ test('cluster-large-and-separated', () => {
         [1, 5], [2, 5], [3, 5], [4, 5],
         [2, 6], [3, 6],
     ]
-    const tileClusters = delta2clusters(createSet(tiles, 0))
+    const tileClusters = tiles2clusters(createSet(tiles, 0))
     expect(tileClusters.maxCluster.toArray()).toEqual([
         Tile.of(2, 5, 0),
         Tile.of(3, 5, 0),
@@ -174,7 +174,7 @@ test('cluster-bugfix-early-vertical-drop', () => {
         [1, 4], [2, 4], [3, 4], [4, 4],
         [2, 5], [3, 5],
     ]
-    const tileClusters = delta2clusters(createSet(tiles, 0))
+    const tileClusters = tiles2clusters(createSet(tiles, 0))
     expect(tileClusters.maxCluster.toArray()).toEqual([
         Tile.of(2, 2, 0),
         Tile.of(2, 4, 0),
@@ -219,7 +219,7 @@ test('cluster-nested', () => {
         [2, 8], [3, 8], [4, 8], [5, 8], [6, 8], [7, 8], [8, 8],
         [3, 9], [4, 9], [5, 9], [6, 9], [7, 9],
     ]
-    const tileClusters = delta2clusters(createSet(tiles, 0))
+    const tileClusters = tiles2clusters(createSet(tiles, 0))
     expect(tileClusters.maxCluster.toArray()).toEqual([
         Tile.of(2, 3, 0),
         Tile.of(2, 4, 0),

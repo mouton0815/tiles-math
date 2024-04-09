@@ -1,7 +1,7 @@
 //
 // Tests for incremental cluster creation
 //
-import { delta2clusters } from '../delta2clusters'
+import { tiles2clusters } from '../tiles2clusters'
 import { Tile } from '../../types/Tile'
 import { TileNo } from '../../types/TileNo'
 import { TileSet } from '../../containers/TileSet'
@@ -23,7 +23,7 @@ test('cluster-delta-top', () => {
         [1, 2], [2, 2], [3, 2],
         [2, 3]
     ]
-    const clustersA = delta2clusters(createSet(tilesA, 0))
+    const clustersA = tiles2clusters(createSet(tilesA, 0))
     expect(clustersA.maxCluster.toArray()).toEqual([])
     expect(clustersA.minorClusters.toArray()).toEqual([])
     // console.log(clustersA.detachedTiles.map(fromTile))
@@ -37,7 +37,7 @@ test('cluster-delta-top', () => {
     const tilesB = [
         [2, 1],
     ]
-    const clustersB = delta2clusters(createSet(tilesB, 0), clustersA)
+    const clustersB = tiles2clusters(createSet(tilesB, 0), clustersA)
     expect(clustersB.maxCluster.map(fromTile)).toEqual([
         [2, 2],
     ])
@@ -60,7 +60,7 @@ test('cluster-delta-left', () => {
         [2, 2], [3, 2],
         [2, 3]
     ]
-    const clustersA = delta2clusters(createSet(tilesA, 0))
+    const clustersA = tiles2clusters(createSet(tilesA, 0))
     expect(clustersA.maxCluster.toArray()).toEqual([])
     expect(clustersA.minorClusters.toArray()).toEqual([])
     expect(clustersA.detachedTiles.map(fromTile)).toEqual([
@@ -73,7 +73,7 @@ test('cluster-delta-left', () => {
     const tilesB = [
         [1, 2],
     ]
-    const clustersB = delta2clusters(createSet(tilesB, 0), clustersA)
+    const clustersB = tiles2clusters(createSet(tilesB, 0), clustersA)
     expect(clustersB.maxCluster.map(fromTile)).toEqual([
         [2, 2],
     ])
@@ -96,7 +96,7 @@ test('cluster-delta-right', () => {
         [1, 2], [2, 2],
         [2, 3]
     ]
-    const clustersA = delta2clusters(createSet(tilesA, 0))
+    const clustersA = tiles2clusters(createSet(tilesA, 0))
     expect(clustersA.maxCluster.toArray()).toEqual([])
     expect(clustersA.minorClusters.toArray()).toEqual([])
     expect(clustersA.detachedTiles.map(fromTile)).toEqual([
@@ -109,7 +109,7 @@ test('cluster-delta-right', () => {
     const tilesB = [
         [3, 2],
     ]
-    const clustersB = delta2clusters(createSet(tilesB, 0), clustersA)
+    const clustersB = tiles2clusters(createSet(tilesB, 0), clustersA)
     expect(clustersB.maxCluster.map(fromTile)).toEqual([
         [2, 2],
     ])
@@ -132,7 +132,7 @@ test('cluster-delta-bottom', () => {
         [2, 1],
         [1, 2], [2, 2], [3, 2],
     ]
-    const clustersA = delta2clusters(createSet(tilesA, 0))
+    const clustersA = tiles2clusters(createSet(tilesA, 0))
     expect(clustersA.maxCluster.toArray()).toEqual([])
     expect(clustersA.minorClusters.toArray()).toEqual([])
     expect(clustersA.detachedTiles.map(fromTile)).toEqual([
@@ -145,7 +145,7 @@ test('cluster-delta-bottom', () => {
     const tilesB = [
         [2, 3],
     ]
-    const clustersB = delta2clusters(createSet(tilesB, 0), clustersA)
+    const clustersB = tiles2clusters(createSet(tilesB, 0), clustersA)
     expect(clustersB.maxCluster.map(fromTile)).toEqual([
         [2, 2],
     ])
@@ -171,7 +171,7 @@ test('cluster-delta-extend-bottom', () => {
         [1, 2], [2, 2], [3, 2],
         [1, 3], [2, 3], [3, 3],
     ]
-    const clustersA = delta2clusters(createSet(tilesA, 0))
+    const clustersA = tiles2clusters(createSet(tilesA, 0))
     expect(clustersA.maxCluster.map(fromTile)).toEqual([
         [2, 2],
     ])
@@ -188,7 +188,7 @@ test('cluster-delta-extend-bottom', () => {
     const tilesB = [
         [2, 4],
     ]
-    const clustersB = delta2clusters(createSet(tilesB, 0), clustersA)
+    const clustersB = tiles2clusters(createSet(tilesB, 0), clustersA)
     expect(clustersB.maxCluster.map(fromTile)).toEqual([
         [2, 2],
         [2, 3],
@@ -215,7 +215,7 @@ test('cluster-delta-connect', () => {
         [1, 2], [2, 2], [4, 2], [5, 2],
         [2, 3], [4, 3],
     ]
-    const clustersA = delta2clusters(createSet(tilesA, 0))
+    const clustersA = tiles2clusters(createSet(tilesA, 0))
     expect(clustersA.maxCluster.toArray()).toEqual([])
     expect(clustersA.minorClusters.toArray()).toEqual([])
     expect(clustersA.detachedTiles.map(fromTile)).toEqual([
@@ -232,7 +232,7 @@ test('cluster-delta-connect', () => {
     const tilesB = [
         [3, 2],
     ]
-    const clustersB = delta2clusters(createSet(tilesB, 0), clustersA)
+    const clustersB = tiles2clusters(createSet(tilesB, 0), clustersA)
     expect(clustersB.maxCluster.map(fromTile)).toEqual([
         [2, 2],
     ])
@@ -253,7 +253,7 @@ test('cluster-delta-connect', () => {
         [3, 3],
         [3, 1],
     ]
-    const clustersC = delta2clusters(createSet(tilesC, 0), clustersB)
+    const clustersC = tiles2clusters(createSet(tilesC, 0), clustersB)
     expect(clustersC.maxCluster.map(fromTile)).toEqual([
         [2, 2],
         [3, 2],
@@ -289,7 +289,7 @@ test('cluster-delta-complex', () => {
         [2, 3], [4, 3],
         [3, 4],
     ]
-    const clustersA = delta2clusters(createSet(tilesA, 0))
+    const clustersA = tiles2clusters(createSet(tilesA, 0))
     expect(clustersA.maxCluster.toArray()).toEqual([])
     expect(clustersA.minorClusters.toArray()).toEqual([])
     expect(clustersA.detachedTiles.map(fromTile)).toEqual([
@@ -309,7 +309,7 @@ test('cluster-delta-complex', () => {
     const tilesB = [
         [3, 2],
     ]
-    const clustersB = delta2clusters(createSet(tilesB, 0), clustersA)
+    const clustersB = tiles2clusters(createSet(tilesB, 0), clustersA)
     expect(clustersB.maxCluster.map(fromTile)).toEqual([
         [2, 2],
     ])
@@ -331,7 +331,7 @@ test('cluster-delta-complex', () => {
     const tilesC = [
         [3, 3],
     ]
-    const clustersC = delta2clusters(createSet(tilesC, 0), clustersB)
+    const clustersC = tiles2clusters(createSet(tilesC, 0), clustersB)
     expect(clustersC.allClusters.length).toBe(2)
     expect(clustersC.maxCluster.map(fromTile)).toEqual([
         [2, 2],
@@ -357,7 +357,7 @@ test('cluster-delta-complex', () => {
         [4, 2],
         [3, 1],
     ]
-    const clustersD = delta2clusters(createSet(tilesD, 0), clustersC)
+    const clustersD = tiles2clusters(createSet(tilesD, 0), clustersC)
     expect(clustersD.allClusters.length).toBe(1)
     expect(clustersD.maxCluster.map(fromTile)).toEqual([
         [2, 2],
@@ -387,7 +387,7 @@ test('cluster-delta-wrongly-connected', () => {
         [1, 2], [2, 2], [3, 2], [4, 2], [6, 2], [7, 2], [8, 2], [10, 2], [11, 2], [12, 2], [13, 2],
         [2, 3], [3, 3], [7, 3], [11, 3], [12, 3],
     ]
-    const clustersA = delta2clusters(createSet(tilesA, 0))
+    const clustersA = tiles2clusters(createSet(tilesA, 0))
     expect(clustersA.allClusters.length).toBe(3)
     expect(clustersA.maxCluster.map(fromTile)).toEqual([
         [2, 2],
@@ -404,7 +404,7 @@ test('cluster-delta-wrongly-connected', () => {
     // However, since in the previous step, clustersA.allClusters[1] was wrongly merged
     // into clustersA.allClusters[2], the latter cluster became the maximum one.
     const tilesB: number[][] = []
-    const clustersB = delta2clusters(createSet(tilesB, 0), clustersA)
+    const clustersB = tiles2clusters(createSet(tilesB, 0), clustersA)
     expect(clustersB.allClusters.length).toBe(3)
     expect(clustersB.maxCluster.map(fromTile)).toEqual([
         [2, 2],

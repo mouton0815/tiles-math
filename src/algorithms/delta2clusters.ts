@@ -79,7 +79,7 @@ function add2clusters(clusters: TileClusters, tile: TileNo, newTile: boolean = f
             let prevCluster: TileSet | null = null
             // Use filter function to allow in-place deletion of merged clusters
             clusters.allClusters = clusters.allClusters.filter(cluster => {
-                if (cluster.has(tile)) {
+                if (cluster.has(tile)) { // This will only be true in incremental mode
                     prevCluster = cluster
                     return true
                 }
@@ -103,7 +103,7 @@ function add2clusters(clusters: TileClusters, tile: TileNo, newTile: boolean = f
             // However, this is irrelevant, because the removal of a tile with four neighbors will
             // never affect an outermost tile.
             clusters.detachedTiles.removeTile(tile)
-        } else if (newTile) { // Otherwise it is already in detachedTiles
+        } else {
             clusters.detachedTiles.addTile(tile)
         }
     }

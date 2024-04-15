@@ -27,6 +27,11 @@ class SetStats {
         this.xSum -= (x + 0.5) // Use the "center" of every tile to sum up the ...
         this.ySum -= (y + 0.5) // ... cluster axes for later centroid calculation
     }
+    clear() {
+        this.size = 0
+        this.xSum = 0
+        this.ySum = 0
+    }
     getSize(): number {
         return this.size
     }
@@ -60,6 +65,12 @@ class BoundingBox {
         this.y1 = Math.min(y, this.y1)
         this.x2 = Math.max(x, this.x2)
         this.y2 = Math.max(y, this.y2)
+    }
+    clear() {
+        this.x1 = Number.MAX_SAFE_INTEGER
+        this.y1 = Number.MAX_SAFE_INTEGER
+        this.x2 = Number.MIN_SAFE_INTEGER
+        this.y2 = Number.MIN_SAFE_INTEGER
     }
     isLeftOf(x: number, margin: number): boolean {
         return this.x2 + margin < x
@@ -141,6 +152,18 @@ export class TileSet {
     }
 
     /**
+     * Adds a sequence of {@link Coords} and returns this {@link TileSet} object.
+     * @param {Iterable<Coords>} coords - an iterable object, for example an Array<TileNo>.
+     * @returns this object.
+     */
+    addCoords(coords: Iterable<Coords>): this {
+        for (const coord of coords) {
+            this.addTile(coords2tile(coord, this.zoom))
+        }
+        return this
+    }
+
+    /**
      * Removes a tile from the set, if present.
      *
      * **Beware**: This operation does **not** adjust the bounding box (this would be O(n)).
@@ -162,25 +185,12 @@ export class TileSet {
     }
 
     /**
-     * Adds a sequence of {@link Coords} and returns this {@link TileSet} object.
-     * @param {Iterable<Coords>} coords - an iterable object, for example an Array<TileNo>.
-     * @returns this object.
+     * Removes all tiles.
      */
-    addCoords(coords: Iterable<Coords>): this {
-        for (const coord of coords) {
-            this.addTile(coords2tile(coord, this.zoom))
-        }
-        return this
-    }
-
-    /**
-     * Checks whether this {@TileSet} contains the given tile.
-     * @param {TileNo} tile - the tile to check for containment.
-     * @returns true if the {@TileSet} contains the given tile, false otherwise.
-     */
-    has(tile: TileNo): boolean {
-        const ySet = this.tiles.get(tile.x)
-        return !!ySet && ySet.has(tile.y)
+    clear() {
+        this.tiles.clear()
+        this.stats.clear()
+        this.bounds.clear()
     }
 
     /**
@@ -219,6 +229,16 @@ export class TileSet {
             })
         })
         return delta
+    }
+
+    /**
+     * Checks whether this {@TileSet} contains the given tile.
+     * @param {TileNo} tile - the tile to check for containment.
+     * @returns true if the {@TileSet} contains the given tile, false otherwise.
+     */
+    has(tile: TileNo): boolean {
+        const ySet = this.tiles.get(tile.x)
+        return !!ySet && ySet.has(tile.y)
     }
 
     /**

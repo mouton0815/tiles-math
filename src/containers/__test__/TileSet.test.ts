@@ -24,12 +24,6 @@ test('clone', () => {
     expect(tileSet.has(tile2)).toBe(true)
 })
 
-test('has', () => {
-    const tile = { x: 1, y: 3 }
-    const tileSet = new TileSet(0).addTiles([tile])
-    expect(tileSet.has(tile)).toBe(true)
-})
-
 test('add', () => {
     const tile = { x: 1, y: 3 }
     const tileSet = new TileSet(0)
@@ -37,6 +31,14 @@ test('add', () => {
     expect(tileSet.addTile(tile)).toBe(false)
     expect(tileSet.has(tile)).toBe(true)
     expect(tileSet.getSize()).toBe(1)
+})
+
+test('clear', () => {
+    const tileSet = new TileSet(0).addTiles([{ x: 1, y: 3 }, { x: 3, y: 2 }])
+    expect(tileSet.boundingBox(0)).toEqual(TileRectangle.of(1, 2, 3, 2, 0))
+    tileSet.clear()
+    expect(tileSet.toArray()).toEqual([])
+    expect(tileSet.boundingBox(0)).toBe(null)
 })
 
 test('merge', () => {
@@ -66,6 +68,12 @@ test('mergeDiff', () => {
     expect(diffSet.getSize()).toBe(2)
     expect(diffSet.has(tile2)).toBe(true)
     expect(diffSet.has(tile3)).toBe(true)
+})
+
+test('has', () => {
+    const tile = { x: 1, y: 3 }
+    const tileSet = new TileSet(0).addTiles([tile])
+    expect(tileSet.has(tile)).toBe(true)
 })
 
 test('hasNeighbor', () => {

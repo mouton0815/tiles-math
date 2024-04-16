@@ -11,13 +11,7 @@ import { TileNo } from '../types/TileNo'
  */
 export function tiles2clusters(tiles: TileSet, prevClusters?: TileClusters): TileClusters {
     const zoom = tiles.getZoom()
-    const clusters : TileClusters = prevClusters ? Object.assign({}, prevClusters) : {
-        allTiles: tiles,
-        allClusters: new Array<TileSet>(),
-        maxCluster: new TileSet(zoom),
-        minorClusters: new TileSet(zoom),
-        detachedTiles: new TileSet(zoom)
-    }
+    const clusters : TileClusters = prevClusters ? prevClusters.clone() : new TileClusters(tiles)
     // All tiles in the input set that are indeed new, i.e., are not part of clusters.allTiles:
     const newTiles  = prevClusters ? clusters.allTiles.mergeDiff(tiles) : tiles
     // Stores all tile clusters that are out of reach for the current tiles:

@@ -63,7 +63,7 @@ export const DemoAllFeatures = () => {
     const mapZoom = tileZoom - Math.ceil(edgeSize / 12) - 1
     const areaSize = edgeSize * edgeSize
 
-    const initTileSet = new TileSet(tileZoom).addTile(centerTile)
+    const initTileSet = new TileSet(tileZoom).addTiles([centerTile])
     const [tileSet, setTileSet] = useState<TileSet>(initTileSet)
 
     useEffect(() => {
@@ -72,7 +72,8 @@ export const DemoAllFeatures = () => {
         (async function() {
             while (tileSet.getSize() < areaSize) {
                 const tileNo = { x: leftBorder + randomInt(edgeSize), y: upperBorder + randomInt(edgeSize) }
-                setTileSet(tileSet.addTile(tileNo).clone())
+                tileSet.addTile(tileNo)
+                setTileSet(tileSet.clone())
                 await timer(addDelay)
             }
         })()

@@ -14,6 +14,34 @@ const createSet = (tiles: number[][], zoom: number): TileSet => {
     return new TileSet(zoom).addTiles(tiles.map(toTileNo))
 }
 
+test('cluster-delta-noop', () => {
+    //     1   2   3
+    // 1 |   | A |   |
+    // 2 | A | A | A |
+    // 3 |   | A |   |
+    const tilesA = [
+        [2, 1],
+        [1, 2], [2, 2], [3, 2],
+        [2, 3]
+    ]
+    const clustersA = tiles2clusters(createSet(tilesA, 0))
+
+    const tilesB = [
+        [2, 2], // This is already part of the cluster and will be filtered out
+    ]
+    const clustersB = tiles2clusters(createSet(tilesB, 0), clustersA)
+    expect(clustersB.maxCluster.map(fromTile)).toEqual([
+        [2, 2],
+    ])
+    expect(clustersB.minorClusters.toArray()).toEqual([])
+    expect(clustersB.detachedTiles.map(fromTile)).toEqual([
+        [1, 2],
+        [2, 1],
+        [2, 3],
+        [3, 2],
+    ])
+})
+
 test('cluster-delta-top', () => {
     //     1   2   3
     // 1 |   | B |   |

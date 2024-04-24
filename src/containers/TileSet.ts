@@ -110,14 +110,14 @@ export class TileSet {
     }
 
     /**
-     * Creates a shallow copy of the passed {@link TileSet}.
-     * This is useful for React's useState effect that tests for object identity.
-     * @returns a shallow copy of this object.
+     * Creates a shallow or deep copy of the passed {@link TileSet}.
+     * A shallow copy is useful for React's useState effect that tests for object identity.
+     * @param {boolean} deep - if true, creates a deep copy (default is false).
+     * @returns a deep or shallow copy of this object.
      */
-    clone(): TileSet {
+    clone(deep: boolean = false): TileSet {
         const cloned = new TileSet(this.zoom)
-        Object.assign(cloned, this)
-        return cloned
+        return deep ? cloned.addTiles(this.toArray()) : Object.assign(cloned, this)
     }
 
     /**

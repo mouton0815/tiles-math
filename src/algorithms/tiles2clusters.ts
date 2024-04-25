@@ -11,16 +11,14 @@ import { TileNo } from '../types/TileNo'
  */
 export function tiles2clusters(tiles: TileSet, prevClusters?: TileClusters): TileClusters {
     const zoom = tiles.getZoom()
-    const clusters : TileClusters = prevClusters ? prevClusters.clone() : new TileClusters(tiles)
-    // All tiles in the input set that are indeed new, i.e., are not part of clusters.allTiles:
-    const newTiles  = prevClusters ? clusters.allTiles.mergeDiff(tiles) : tiles
+    const clusters = new TileClusters(tiles, prevClusters)
     // Stores all tile clusters that are out of reach for the current tiles:
     const closedClusters = new Array<TileSet>()
 
     // Put all non-intersecting clusters in closedClusters (in incremental mode only):
     if (prevClusters) {
         clusters.allClusters = clusters.allClusters.filter(cluster => {
-            if (cluster.isDetachedFrom(newTiles)) {
+            if (cluster.isDetachedFrom(clusters.newTiles)) {
                 closedClusters.push(cluster)
                 return false
             }
@@ -28,7 +26,7 @@ export function tiles2clusters(tiles: TileSet, prevClusters?: TileClusters): Til
         })
     }
 
-    for (const x of newTiles.getSortedXs()) {
+    for (const x of clusters.newTiles.getSortedXs()) {
         // Remove every cluster that cannot contain any further processed tile with larger x values.
         // Note that the x and y axes are ordered.
         clusters.allClusters = clusters.allClusters.filter(cluster => {
@@ -38,7 +36,7 @@ export function tiles2clusters(tiles: TileSet, prevClusters?: TileClusters): Til
             }
             return true
         })
-        for (const y of newTiles.getSortedYs(x)) {
+        for (const y of clusters.newTiles.getSortedYs(x)) {
             if (prevClusters) { // Those checks are only needed in incremental mode
                 add2clusters(clusters, { x: x - 1, y }) // Left neighbor
                 add2clusters(clusters, { x: x + 1, y }) // Right neighbor

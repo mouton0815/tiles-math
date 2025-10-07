@@ -15,8 +15,8 @@ export { BoundaryPolyline } from './containers/BoundaryPolyline'
 export { ClusterBoundaries } from './containers/ClusterBoundaries'
 
 // Algorithms
-export { coords2tile } from './algorithms/coords2tile'
-export { tile2coords } from './algorithms/tile2coords'
+export { coords2tile, lon2x, lat2y } from './algorithms/coords2tile'
+export { tile2coords, x2lon, y2lat } from './algorithms/tile2coords'
 export { tiles2clusters } from './algorithms/tiles2clusters'
 export { cluster2square } from './algorithms/cluster2square'
 export { cluster2boundaries } from './algorithms/cluster2boundaries'
